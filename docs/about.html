@@ -280,6 +280,9 @@ $(document).ready(function () {
     <li>
       <a href="fertility_parameters.html">How fertility parameters affect kin counts</a>
     </li>
+    <li>
+      <a href="family_size_findability.html">Family Size and Identification Probability</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -384,15 +387,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomlasisilabkincountstree5c7bdf16f2b1f71074118a15790a3c6d148b73d9targetblank5c7bdf1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomlasisilabkincountstree67f620fc4042f1353d4beca2c704a7a88ab7779btargetblank67f620fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/lasisilab/kincounts/tree/5c7bdf16f2b1f71074118a15790a3c6d148b73d9" target="_blank">5c7bdf1</a>
+<a href="https://github.com/lasisilab/kincounts/tree/67f620fc4042f1353d4beca2c704a7a88ab7779b" target="_blank">67f620f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomlasisilabkincountstree5c7bdf16f2b1f71074118a15790a3c6d148b73d9targetblank5c7bdf1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomlasisilabkincountstree67f620fc4042f1353d4beca2c704a7a88ab7779btargetblank67f620fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -402,7 +405,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/lasisilab/kincounts/tree/5c7bdf16f2b1f71074118a15790a3c6d148b73d9" target="_blank">5c7bdf1</a>.
+<a href="https://github.com/lasisilab/kincounts/tree/67f620fc4042f1353d4beca2c704a7a88ab7779b" target="_blank">67f620f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -417,17 +420,9 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    output/pmf_sibling_counts.csv
-
-Untracked files:
-    Untracked:  analysis/fert_model.Rmd
-    Untracked:  analysis/fertility_parameters.Rmd
-    Untracked:  data/data_filtered_recoded.csv
-    Untracked:  data/proportions_table_by_race_year.csv
-    Untracked:  output/pmf_sibling_counts.png
+    Ignored:    app/rsconnect/
 
 Unstaged changes:
-    Modified:   .DS_Store
     Modified:   analysis/_site.yml
 
 </code></pre>
@@ -472,6 +467,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/lasisilab/kincounts/blob/67f620fc4042f1353d4beca2c704a7a88ab7779b/analysis/about.Rmd" target="_blank">67f620f</a>
+</td>
+<td>
+Junhui He
+</td>
+<td>
+2025-12-17
+</td>
+<td>
+modify about
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/lasisilab/kincounts/62cfbe1788ff1e4a16106d627282ec444b064c7f/docs/about.html" target="_blank">62cfbe1</a>
+</td>
+<td>
+Junhui He
+</td>
+<td>
+2025-12-17
+</td>
+<td>
+add fertility modelling
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -522,32 +551,18 @@ dispersion parameter</p>
 </div>
 <div id="sibling-distribution" class="section level3">
 <h3>Sibling Distribution</h3>
-<p>The sibling distribution is derived from the fertility distribution
-through size-biased sampling, resulting in a negative binomial
-distribution with adjusted parameters:</p>
-<ul>
-<li><span class="math inline">\(\mu_{sib} = \mu_{fert} \cdot \frac{1 +
-\theta}{\theta}\)</span></li>
-<li><span class="math inline">\(\theta_{sib} = \theta_{fert} +
-1\)</span></li>
-</ul>
+<p>The sibling distribution is derived from the fertility distribution,
+using the relationship: <span class="math display">\[P(num_{sib}=k)
+\propto (k+1)P(num_{child}=k+1).\]</span></p>
 </div>
 <div id="genetic-match-probability" class="section level3">
 <h3>Genetic Match Probability</h3>
-<p>The probability of detecting a genetic match with a relative
-separated by <span class="math inline">\(g\)</span> meioses is
-calculated as:</p>
-<p><span class="math display">\[P(\text{match}) = P(\text{genetic
-sharing}) \times P(\text{in database})\]</span></p>
-<p>where the probability of sharing at least <span
-class="math inline">\(n\)</span> segments of length <span
-class="math inline">\(m\)</span> cM is:</p>
-<p><span class="math display">\[P(X \geq n) = 1 - \sum_{k=0}^{n-1}
-\binom{N}{k} f^k (1-f)^{N-k}\]</span></p>
-<p>with <span class="math inline">\(f =
-\frac{e^{-2gm}}{2^{2g-2}}\)</span> and <span
-class="math inline">\(N\)</span> being the number of opportunities for
-segments.</p>
+<p>The probability of a genetic match is modelled based on a binomial
+distribution <span class="math inline">\(\text{Binomial}(r,
+cp)\)</span>, where <span class="math inline">\(r\)</span> is the number
+of cousins, <span class="math inline">\(c\)</span> is the database
+coverage, and <span class="math inline">\(p\)</span> is the genetic
+match probability.</p>
 </div>
 </div>
 <div id="software" class="section level2">
