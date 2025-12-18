@@ -29,22 +29,11 @@ where:
 
 ### Sibling Distribution
 
-The sibling distribution is derived from the fertility distribution through size-biased sampling, resulting in a negative binomial distribution with adjusted parameters:
-
-- $\mu_{sib} = \mu_{fert} \cdot \frac{1 + \theta}{\theta}$
-- $\theta_{sib} = \theta_{fert} + 1$
+The sibling distribution is derived from the fertility distribution, using the relationship: $$P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).$$
 
 ### Genetic Match Probability
 
-The probability of detecting a genetic match with a relative separated by $g$ meioses is calculated as:
-
-$$P(\text{match}) = P(\text{genetic sharing}) \times P(\text{in database})$$
-
-where the probability of sharing at least $n$ segments of length $m$ cM is:
-
-$$P(X \geq n) = 1 - \sum_{k=0}^{n-1} \binom{N}{k} f^k (1-f)^{N-k}$$
-
-with $f = \frac{e^{-2gm}}{2^{2g-2}}$ and $N$ being the number of opportunities for segments.
+The probability of a genetic match is modelled based on a binomial distribution $\text{Binomial}(r, cp)$, where $r$ is the number of cousins, $c$ is the database coverage, and $p$ is the genetic match probability.
 
 ## Software
 
