@@ -11,12 +11,10 @@ navbar:
     href: license.html
   - text: Analyses
     menu:
-    - text: Fertility Analysis
-      href: fertility_analysis.html
-    - text: Simulation Analysis
-      href: simulation_analysis.html
-    - text: Identity Probability
-      href: identity_probability.html
+    - text: Fertility Modelling
+      href: fert_model.html
+    - text: How fertility parameters affect kin counts
+      href: fertility_parameters.html
   right:
   - icon: fab fa-github
     text: Source code
