@@ -51,11 +51,3 @@ rsconnect/
 # Workflowr-specific files
 .Rproj.user
 .nojekyll
-
-# Output files
-output/*.csv
-output/*.rds
-
-# Keep docs structure but ignore specific files
-docs/*
-!docs/.nojekyll
