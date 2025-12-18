@@ -1,0 +1,39 @@
+---
+title: "Family size findability"
+author: "Junhui He"
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+site: workflowr::wflow_site
+output: html_document
+---
+
+
+## 1. Introduction
+
+We aim to clarify the probability of finding at least one cousin in a database, given the family structure in the PODFRIDGE project. This probability depends on two key factors: the number of relatives—determined by the family size (number of children per family) distribution—and the database coverage, which is the proportion of individuals in the database relative to the total population.
+
+Erlich’s earlier paper modeled the family size distribution using a Poisson distribution, a common approach in many genetic studies. However, this assumption doesn’t accurately capture real-world family sizes, which often show overdispersion and an excess of zeros (i.e., families with no children).
+
+In this report, we simulate the family size distribution using a Zero-Inflated Negative Binomial (ZINB) distribution, which better reflects real-world data than the Poisson model. We then calculate the probability of finding at least one cousin in the database based on the simulated family sizes and different levels of database coverage.
+
+## 2. Methods
+
+### 2.1. Zero-Inflated Negative Binomial (ZINB) Distribution
+
+Based on the empirical data from the US, we find that the distribution of family size is better modeled as a Zero-Inflated Negative Binomial (ZINB) distribution. The ZINB distribution is a more realistic family size distribution, as it accounts for the excess zeros (families with no children) and the overdispersion often observed in family size data.
+
+The Zero-Inflated Negative Binomial (ZINB) distribution is a statistical model that combines a negative binomial distribution with an additional process that generates excess zeros. It is characterized by three parameters: the zero-inflated probability $p$, the mean number $\mu$ and the size $s$ of the negative binomial distribution, denoted by $\text{ZINB}(p, s, \mu) = p\delta_0 + (1-p)\text{NB}(s,\mu)$. The average family size is $(1-p)\mu$. Based on empirical data, we set the parameters to $p=0.1, ~ s=3, ~ \mu = 3$.
+
+### 2.2. Calculating the Number of Relatives
+
+In this report, we only consider the relatives whose generation difference between the individual and the relative is less than or equal to 1. Therefore, the first-degree relatives include parents, siblings, and children; the second-degree relatives include aunts, uncles, nephews, nieces, and half-siblings; and the third-degree relatives include first cousins. The number of relatives is calculated based on the family size distribution simulated by the ZINB distribution. For now, the number of half-siblings is set to 0. 
+
+Specifically, if one couple is known as the ancestor couple of the individual, this couple has at least one child, and the number of children is simulated from the ZINB distribution conditional on at least one child. For simplicity, we assume that $X$ follows a ZINB distribution and $Y$ follows a ZINB distribution conditional on at least one child minus one.
+
+The number of first-degree relatives is given by $2+Y+X$. The number of second-degree relatives is given by $4 + \sum_{i=1}^2Y_i + \sum_{i=1}^{Y}X_i$. The number of third-degree relatives is given by $\sum_{i=1}^{\sum_{j=1}^2 Y_j} X_i$.
+
+
+### 2.3 The Probability of Finding at Least One Cousin in the Database
+
+The number of cousins is simulated from the ZINB distribution as above. The simulated data is denoted as $\{r_k\}_{k=1}^n$, where $n$ is the number of simulations. For each simulated number of cousins $r_k$, we assume that the number of cousins found in the database follows a binomial distribution with parameters $r_k$ and the coverage of the database $c$, denoted as $\text{Binomial}(r_k, c)$. The probability of finding at least one cousin in the database is therefore $1-(1-c)^{r_k}$. The expected probability across all simulations is given by $\frac{1}{n}\sum_{k=1}^n (1-(1-c)^{r_k})$.
+
+
