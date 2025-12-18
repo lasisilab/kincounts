@@ -1,0 +1,30 @@
+name: "kincounts"
+output_dir: ../docs
+navbar:
+  title: "Kincounts"
+  left:
+  - text: Home
+    href: index.html
+  - text: About
+    href: about.html
+  - text: License
+    href: license.html
+  - text: Analyses
+    menu:
+    - text: Fertility Analysis
+      href: fertility_analysis.html
+    - text: Simulation Analysis
+      href: simulation_analysis.html
+    - text: Identity Probability
+      href: identity_probability.html
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/lasisilab/kincounts
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: cosmo
+    highlight: textmate
+    code_folding: hide

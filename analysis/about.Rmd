@@ -1,0 +1,65 @@
+---
+title: "About"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+## Project Description
+
+This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases.
+
+## Methods
+
+### Fertility Modeling
+
+We use a zero-inflated negative binomial (ZINB) distribution to model fertility patterns:
+
+$$P(X = k) = \begin{cases}
+\pi + (1 - \pi) \cdot NB(0; \mu, \theta) & \text{if } k = 0 \\
+(1 - \pi) \cdot NB(k; \mu, \theta) & \text{if } k > 0
+\end{cases}$$
+
+where:
+- $\pi$ is the zero-inflation probability (excess childlessness)
+- $\mu$ is the mean of the negative binomial component
+- $\theta$ is the dispersion parameter
+
+### Sibling Distribution
+
+The sibling distribution is derived from the fertility distribution through size-biased sampling, resulting in a negative binomial distribution with adjusted parameters:
+
+- $\mu_{sib} = \mu_{fert} \cdot \frac{1 + \theta}{\theta}$
+- $\theta_{sib} = \theta_{fert} + 1$
+
+### Genetic Match Probability
+
+The probability of detecting a genetic match with a relative separated by $g$ meioses is calculated as:
+
+$$P(\text{match}) = P(\text{genetic sharing}) \times P(\text{in database})$$
+
+where the probability of sharing at least $n$ segments of length $m$ cM is:
+
+$$P(X \geq n) = 1 - \sum_{k=0}^{n-1} \binom{N}{k} f^k (1-f)^{N-k}$$
+
+with $f = \frac{e^{-2gm}}{2^{2g-2}}$ and $N$ being the number of opportunities for segments.
+
+## Software
+
+This project uses:
+
+- R for statistical computing
+- Shiny for interactive visualizations
+- workflowr for reproducible research
+- pscl for zero-inflated models
+- ggplot2 for data visualization
+
+## Authors
+
+This research is conducted at the Lasisi Lab.
+
+## Contact
+
+For questions or collaborations, please visit our [GitHub repository](https://github.com/lasisilab/kincounts).

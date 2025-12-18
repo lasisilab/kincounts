@@ -1,0 +1,18 @@
+---
+title: "License"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+## Software License
+
+The code in this repository is licensed under the MIT License.
+
+See the [LICENSE](https://github.com/lasisilab/kincounts/blob/main/LICENSE) file for the full license text.
+
+## Data and Analysis
+
+All data and analyses are provided for research and educational purposes.

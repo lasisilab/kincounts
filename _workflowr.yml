@@ -1,0 +1,28 @@
+# workflowr options
+# Version 1.7.1
+
+# The seed to use for random number generation. See ?set.seed for details.
+seed: 20231217
+# The working directory to build the R Markdown files. The path is relative to
+# the root of the project (i.e. the directory that contains _workflowr.yml).
+# Use "." to build files in the root of the project. See ?rmarkdown::render for
+# details.
+knit_root_dir: "."
+# The directory that contains the R Markdown files to be built. The path is
+# relative to the root of the project. See ?wflow_build for details.
+analysis_dir: "analysis"
+# The directory that contains the HTML files to be published. The path is
+# relative to the root of the project. See ?wflow_build for details.
+docs_dir: "docs"
+# The directory that contains the data files. The path is relative to the root
+# of the project.
+data_dir: "data"
+# The directory that contains the code files. The path is relative to the root
+# of the project.
+code_dir: "code"
+# The directory that contains the output files. The path is relative to the
+# root of the project.
+output_dir: "output"
+# The name of the branch that will be used to host the website on GitHub Pages.
+# See ?wflow_git_push for details.
+github_pages_branch: "gh-pages"

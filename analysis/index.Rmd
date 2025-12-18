@@ -1,0 +1,53 @@
+---
+title: "Home"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+# Kincounts: Long Range Familial Search
+
+Welcome to the kincounts research website.
+
+## Overview
+
+This project estimates the probability of identifying individuals through genetic databases by modeling extended family relationships. It simulates the distribution of distant relatives (cousins) based on fertility patterns and calculates the likelihood of finding genetic matches in a database.
+
+## Key Features
+
+- **Fertility Distribution Estimation**: Fit zero-inflated negative binomial (ZINB) models to fertility count data
+- **Relative Count Simulation**: Generate simulated counts of relatives at various degrees
+- **Identity Probability Calculation**: Estimate the probability of finding genetic matches in databases
+
+## Interactive Application
+
+We provide a Shiny web application for interactive exploration of the models. The app includes:
+
+- Parameter estimation from uploaded fertility data
+- Customizable simulations with adjustable parameters
+- Visualization of relative count distributions
+- Identity probability calculations based on population and database sizes
+
+## Methods
+
+The application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. Genetic match probabilities are calculated based on the expected length and number of shared DNA segments between cousins of varying degrees.
+
+## Repository Structure
+
+- `analysis/`: R Markdown analysis files
+- `app/`: Shiny application code
+- `code/`: Utility functions and analysis scripts
+- `data/`: Example datasets
+- `docs/`: Generated website files
+- `output/`: Analysis outputs
+
+## Getting Started
+
+Explore the analyses using the navigation bar above, or run the Shiny application locally:
+
+```r
+shiny::runApp("app/app.R")
+```

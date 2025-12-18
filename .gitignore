@@ -40,10 +40,22 @@ vignettes/*.pdf
 .Renviron
 
 # pkgdown site
-docs/
+# docs/ - commented out for workflowr
 
 # translation temp files
 po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Workflowr-specific files
+.Rproj.user
+.nojekyll
+
+# Output files
+output/*.csv
+output/*.rds
+
+# Keep docs structure but ignore specific files
+docs/*
+!docs/.nojekyll
