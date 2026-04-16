@@ -1,0 +1,52 @@
+---
+title: "About"
+format:
+  html:
+    toc: false
+---
+
+## Project Description
+
+This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases.
+
+## Methods
+
+### Fertility Modeling
+
+We use a zero-inflated negative binomial (ZINB) distribution to model fertility patterns:
+
+$$P(X = k) = \begin{cases}
+\pi + (1 - \pi) \cdot NB(0; \mu, \theta) & \text{if } k = 0 \\
+(1 - \pi) \cdot NB(k; \mu, \theta) & \text{if } k > 0
+\end{cases}$$
+
+where:
+- $\pi$ is the zero-inflation probability (excess childlessness)
+- $\mu$ is the mean of the negative binomial component
+- $\theta$ is the dispersion parameter
+
+### Sibling Distribution
+
+The sibling distribution is derived from the fertility distribution, using the relationship: $$P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).$$
+
+### Genetic Match Probability
+
+The probability of a genetic match is modelled based on a binomial distribution $\text{Binomial}(r, cp)$, where $r$ is the number of cousins, $c$ is the database coverage, and $p$ is the genetic match probability.
+
+## Software
+
+This project uses:
+
+- R for statistical computing
+- Shiny for interactive visualizations
+- workflowr for reproducible research
+- pscl for zero-inflated models
+- ggplot2 for data visualization
+
+## Authors
+
+This research is conducted at the Lasisi Lab.
+
+## Contact
+
+For questions or collaborations, please visit our [GitHub repository](https://github.com/lasisilab/kincounts).

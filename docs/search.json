@@ -1,0 +1,331 @@
+[
+  {
+    "objectID": "license.html",
+    "href": "license.html",
+    "title": "License",
+    "section": "",
+    "text": "The code in this repository is licensed under the MIT License.\nSee the LICENSE file for the full license text."
+  },
+  {
+    "objectID": "license.html#software-license",
+    "href": "license.html#software-license",
+    "title": "License",
+    "section": "",
+    "text": "The code in this repository is licensed under the MIT License.\nSee the LICENSE file for the full license text."
+  },
+  {
+    "objectID": "license.html#data-and-analysis",
+    "href": "license.html#data-and-analysis",
+    "title": "License",
+    "section": "Data and Analysis",
+    "text": "Data and Analysis\nAll data and analyses are provided for research and educational purposes."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases."
+  },
+  {
+    "objectID": "about.html#project-description",
+    "href": "about.html#project-description",
+    "title": "About",
+    "section": "",
+    "text": "This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases."
+  },
+  {
+    "objectID": "about.html#methods",
+    "href": "about.html#methods",
+    "title": "About",
+    "section": "Methods",
+    "text": "Methods\n\nFertility Modeling\nWe use a zero-inflated negative binomial (ZINB) distribution to model fertility patterns:\n\\[P(X = k) = \\begin{cases}\n\\pi + (1 - \\pi) \\cdot NB(0; \\mu, \\theta) & \\text{if } k = 0 \\\\\n(1 - \\pi) \\cdot NB(k; \\mu, \\theta) & \\text{if } k &gt; 0\n\\end{cases}\\]\nwhere: - \\(\\pi\\) is the zero-inflation probability (excess childlessness) - \\(\\mu\\) is the mean of the negative binomial component - \\(\\theta\\) is the dispersion parameter\n\n\nSibling Distribution\nThe sibling distribution is derived from the fertility distribution, using the relationship: \\[P(num_{sib}=k) \\propto (k+1)P(num_{child}=k+1).\\]\n\n\nGenetic Match Probability\nThe probability of a genetic match is modelled based on a binomial distribution \\(\\text{Binomial}(r, cp)\\), where \\(r\\) is the number of cousins, \\(c\\) is the database coverage, and \\(p\\) is the genetic match probability."
+  },
+  {
+    "objectID": "about.html#software",
+    "href": "about.html#software",
+    "title": "About",
+    "section": "Software",
+    "text": "Software\nThis project uses:\n\nR for statistical computing\nShiny for interactive visualizations\nworkflowr for reproducible research\npscl for zero-inflated models\nggplot2 for data visualization"
+  },
+  {
+    "objectID": "about.html#authors",
+    "href": "about.html#authors",
+    "title": "About",
+    "section": "Authors",
+    "text": "Authors\nThis research is conducted at the Lasisi Lab."
+  },
+  {
+    "objectID": "about.html#contact",
+    "href": "about.html#contact",
+    "title": "About",
+    "section": "Contact",
+    "text": "Contact\nFor questions or collaborations, please visit our GitHub repository."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "Welcome to the kincounts research website.\n\n\nThis project estimates the probability of identifying individuals through genetic databases by modeling extended family relationships. It simulates the distribution of distant relatives (cousins) based on fertility patterns and calculates the likelihood of finding genetic matches in a database.\n\n\n\n\nFertility Distribution Estimation: Fit zero-inflated negative binomial (ZINB) models to fertility count data\nRelative Count Simulation: Generate simulated counts of relatives at various degrees\nIdentity Probability Calculation: Estimate the probability of finding genetic matches in databases\n\n\n\n\nWe provide a Shiny web application for interactive exploration of the models. The app includes:\n\nParameter estimation from uploaded fertility data\nCustomizable simulations with adjustable parameters\nVisualization of relative count distributions\nIdentity probability calculations based on population and database sizes\n\n\n\n\nThe application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. Genetic match probabilities are calculated based on the expected length and number of shared DNA segments between cousins of varying degrees.\n\n\n\n\nanalysis/: R Markdown analysis files\napp/: Shiny application code\ncode/: Utility functions and analysis scripts\ndata/: Example datasets\ndocs/: Generated website files\noutput/: Analysis outputs\n\n\n\n\nExplore the analyses using the navigation bar above, or run the Shiny application locally:\nshiny::runApp(\"app/app.R\")"
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "Home",
+    "section": "",
+    "text": "This project estimates the probability of identifying individuals through genetic databases by modeling extended family relationships. It simulates the distribution of distant relatives (cousins) based on fertility patterns and calculates the likelihood of finding genetic matches in a database."
+  },
+  {
+    "objectID": "index.html#key-features",
+    "href": "index.html#key-features",
+    "title": "Home",
+    "section": "",
+    "text": "Fertility Distribution Estimation: Fit zero-inflated negative binomial (ZINB) models to fertility count data\nRelative Count Simulation: Generate simulated counts of relatives at various degrees\nIdentity Probability Calculation: Estimate the probability of finding genetic matches in databases"
+  },
+  {
+    "objectID": "index.html#interactive-application",
+    "href": "index.html#interactive-application",
+    "title": "Home",
+    "section": "",
+    "text": "We provide a Shiny web application for interactive exploration of the models. The app includes:\n\nParameter estimation from uploaded fertility data\nCustomizable simulations with adjustable parameters\nVisualization of relative count distributions\nIdentity probability calculations based on population and database sizes"
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "Home",
+    "section": "",
+    "text": "The application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. Genetic match probabilities are calculated based on the expected length and number of shared DNA segments between cousins of varying degrees."
+  },
+  {
+    "objectID": "index.html#repository-structure",
+    "href": "index.html#repository-structure",
+    "title": "Home",
+    "section": "",
+    "text": "analysis/: R Markdown analysis files\napp/: Shiny application code\ncode/: Utility functions and analysis scripts\ndata/: Example datasets\ndocs/: Generated website files\noutput/: Analysis outputs"
+  },
+  {
+    "objectID": "index.html#getting-started",
+    "href": "index.html#getting-started",
+    "title": "Home",
+    "section": "",
+    "text": "Explore the analyses using the navigation bar above, or run the Shiny application locally:\nshiny::runApp(\"app/app.R\")"
+  },
+  {
+    "objectID": "fert_sibling.html",
+    "href": "fert_sibling.html",
+    "title": "Relationship between Fertility Distribution and Sibling Distribution",
+    "section": "",
+    "text": "In this article, we develop a statistical framework for modelling the relationship between the fertility distribution and sibling distribution: Given a fertility distribution, we derive what the resulting sibling distribution would be in the next generation. Specifically, the fertility distribution describes the number of children per parent, while the sibling distribution describes the number of siblings per person in the next generation."
+  },
+  {
+    "objectID": "fert_sibling.html#poisson-distribution",
+    "href": "fert_sibling.html#poisson-distribution",
+    "title": "Relationship between Fertility Distribution and Sibling Distribution",
+    "section": "Poisson distribution",
+    "text": "Poisson distribution\nThe Poisson distribution is a popular model for count data, particularly when the mean and variance are equal. However, it may not be very suitable for fertility data, which often exhibit zero-inflation and overdispersion (variance greater than the mean). The Poisson distribution with mean fertility (\\(\\mu\\)) is defined as: for the number of children \\(k \\geq 0\\), \\[P(N_{child}=k)=e^{-\\mu}\\frac{\\mu^k}{k!}, \\tag{1}\\] denoted by \\(\\text{Poisson}(\\mu)\\). The mean and variance of \\(\\text{Poisson}(\\mu)\\) are both \\(\\mu\\)."
+  },
+  {
+    "objectID": "fert_sibling.html#zero-inflated-negative-binomial-distribution",
+    "href": "fert_sibling.html#zero-inflated-negative-binomial-distribution",
+    "title": "Relationship between Fertility Distribution and Sibling Distribution",
+    "section": "Zero inflated negative binomial distribution",
+    "text": "Zero inflated negative binomial distribution\nThe zero inflated negative binomial distribution with parameters mean fertility (\\(\\mu\\)), dispersion/size (\\(\\theta\\)), and zero‑inflation probability (\\(\\pi_0\\))—denoted as \\(\\text{ZINB}(\\mu, \\theta, \\pi_0)\\)—is defined as: for the number of children \\(k \\geq 0\\), \\[P(N_{child}=k)=\\begin{cases}\n\\pi_0 + (1-\\pi_0)p^{\\theta} & \\text{if } k=0, \\\\\n(1-\\pi_0)\\binom{k+\\theta-1}{k}(1-p)^k p ^{\\theta} & \\text{if } k \\geq 1,\n\\end{cases} \\tag{2}\\] where \\(p = \\frac{\\theta}{\\mu+\\theta}\\) is denoted as the success probability. For the negative binomial distribution \\(\\text{NB}(\\mu,\\theta)\\), the mean and variance are \\(\\mu\\) and \\(\\mu + \\frac{\\mu^2}{\\theta}\\). Therefore, the mean and variance of \\(\\text{ZINB}(\\mu, \\theta, \\pi_0)\\) are given by \\(\\mu(1-\\pi_0)\\) and \\(\\mu(1-\\pi_0) + \\frac{\\mu^2(1-\\pi_0)}{\\theta}+\\mu^2\\pi_0(1-\\pi_0)\\), respectively."
+  },
+  {
+    "objectID": "fert_sibling.html#sibship-size-paradox",
+    "href": "fert_sibling.html#sibship-size-paradox",
+    "title": "Relationship between Fertility Distribution and Sibling Distribution",
+    "section": "Sibship size paradox",
+    "text": "Sibship size paradox\nA common mistake is that the sibling distribution should be the same as the fertility distribution minus one. However, this is not the case due to the sibship size paradox: individuals with more siblings are more likely to be sampled in the population, leading to a bias in the observed sibling distribution compared to the underlying fertility distribution.\nFor example, if we have a population \\(2N_0\\) where \\(50\\%\\) of parents have 0 children, \\(25\\%\\) of parents have 1 child, and \\(25\\%\\) of parents have 2 children, the fertility distribution is \\(P(N_{child}=0)=0.5\\), \\(P(N_{child}=1)=0.25\\), and \\(P(N_{child}=2)=0.25\\). Thus, in the next generation, the population size is \\[N_1 = 0.5N_0 \\cdot 0 + 0.25N_0 \\cdot 1 + 0.25N_0 \\cdot 2 = 0.75N_0.\\] And \\(0.25N_0 \\cdot 1\\) individuals have 0 siblings, \\(0.25N_0 \\cdot 2\\) individuals have 1 sibling. Therefore, the sibling distribution is \\[P(N_{sib}=0)=\\frac{0.25N_0}{0.75N_0}=\\frac{1}{3},\\quad P(N_{sib}=1)=\\frac{0.25N_0 \\cdot 2}{0.75N_0}=\\frac{2}{3}.\\]\nTo conclude, most people come from large families even when most families are small, because the number of siblings is weighted by family size. Formally, the relationship between the fertility distribution and sibling distribution can be expressed as follows: Let \\(N_{child}\\) be the random variable representing the number of children per parent, and \\(N_{sib}\\) be the random variable representing the number of siblings per person in the next generation. Then, for any count \\(k \\geq 0\\), the probability that an individual has \\(k\\) siblings is proportional to the probability that their mother has \\(k+1\\) children, multiplied by the number of ways the individual could be one of those children. Therefore, we have: \\[P(N_{sib}=k) \\propto (k+1)P(N_{child}=k+1). \\tag{3}\\] This relationship holds for any fertility distribution, and the sibling distribution can be derived accordingly."
+  },
+  {
+    "objectID": "fert_sibling.html#sibling-distribution-for-different-fertility-distributions",
+    "href": "fert_sibling.html#sibling-distribution-for-different-fertility-distributions",
+    "title": "Relationship between Fertility Distribution and Sibling Distribution",
+    "section": "Sibling distribution for different fertility distributions",
+    "text": "Sibling distribution for different fertility distributions\nIn this section, we derive the sibling distribution for the two fertility distributions discussed above: Poisson distribution and zero inflated negative binomial distribution, using the relationship established in the previous section.\n\nFertility distribution: Poisson distribution\nIf the fertility distribution is \\(\\text{Poisson}(\\mu)\\), then the sibling distribution is given by: for a count \\(k \\geq 0\\), \\[\\begin{equation}\n\\begin{split}\nP(N_{sib}=k) & \\propto (k+1)P(N_{child}=k+1) \\\\\n& \\propto (k+1)e^{-\\mu}\\frac{\\mu^{k+1}}{(k+1)!} \\\\\n& = e^{-\\mu}\\frac{\\mu^{k+1}}{k!}\\propto e^{-\\mu}\\frac{\\mu^k}{k!}, \\\\\n\\end{split}\n\\end{equation}\n\\tag{4}\\] which is also a Poisson distribution with mean \\(\\mu\\).\n\n\nFertility distribution: Zero inflated negative binomial distribution\nIf the fertility distribution is \\(\\text{ZINB}(\\mu, \\theta, \\pi_0)\\), then the sibling distribution is given by: for a count \\(k \\geq 0\\), \\[\\begin{equation}\n\\begin{split}\nP(N_{sib}=k) & \\propto (k+1)P(N_{child}=k+1) \\\\\n& \\propto (1-\\pi_0)(k+1)\\binom{k+\\theta}{k+1}(1-p)^{k+1} p^{\\theta} \\\\\n& \\propto \\frac{\\theta(1-p)}{p} \\frac{(k+\\theta)!}{k!\\theta!}(1-p)^k p^{\\theta+1} \\\\\n& \\propto \\binom{k+\\theta}{k}(1-p)^k p^{\\theta+1}, \\\\\n\\end{split}\n\\end{equation} \\tag{5}\\] where \\(p = \\frac{\\theta}{\\mu+\\theta}\\). Therefore, the sibling distribution is a negative binomial distribution with parameters mean fertility (\\(\\frac{\\mu(\\theta+1)}{\\theta}\\)), dispersion/size (\\(\\theta+1\\)), denoted as \\(\\text{NB}(\\frac{\\mu(\\theta+1)}{\\theta}, \\theta+1)\\). The variance is \\(\\frac{\\mu(\\theta+1)}{\\theta} + \\frac{\\mu^2(\\theta+1)}{\\theta^2}\\)."
+  },
+  {
+    "objectID": "fertility_parameters.html",
+    "href": "fertility_parameters.html",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "",
+    "text": "Here we establish a zero inflated negative binomial distribution for the number of children per family—fertility distribution with parameters: mean fertility (\\(\\mu\\)), dispersion/size (\\(\\theta\\)), and zero‑inflation probability (\\(\\pi_0\\)), denoted as \\(ZINB(\\mu, \\theta, \\pi_0)\\). According to the definition of the negative binomial distribution, the mean and variance of \\(NB(\\mu,\\theta)\\) is given by \\(\\mu\\) and \\(\\mu + \\frac{\\mu^2}{\\theta}\\), respectively. Therefore, the mean and variance of \\(ZINB(\\mu, \\theta, \\pi_0)\\) is defined by \\(\\mu(1-\\pi_0)\\) and \\(\\mu(1-\\pi_0) + \\frac{\\mu^2(1-\\pi_0)}{\\theta}+\\mu^2\\pi_0(1-\\pi_0)\\), respectively.\n\n\n\nThe sibling distribution is the distribution of the number of siblings per person, which can be derived from the fertility distribution. For any \\(k \\geq 0\\), the probability of having \\(k\\) siblings is given by: \\[P(num_{sib}=k) \\propto (k+1)P(num_{child}=k+1).\\] This is because a person with \\(k\\) siblings must have been born into a family with \\(k+1\\) children, and there are \\(k+1\\) ways to choose which child they are among those children. If the fertility distribution is \\(ZINB(\\mu, \\theta, \\pi_0)\\), then the sibling distribution is a negative binomial distribution with parameters mean fertility (\\(\\frac{\\mu(\\theta+1)}{\\theta}\\)), dispersion/size (\\(\\theta+1\\)), denoted as \\(NB(\\frac{\\mu(\\theta+1)}{\\theta}, \\theta+1)\\). We note that the average number of siblings per person \\(\\frac{\\mu(\\theta+1)}{\\theta}\\) is higher than the average number of children \\(\\mu(1-\\pi_0)\\) minus one, called the “sibship size paradox”.\n\n\n\nBased on the empirical data on U.S. women, a reasonable range of parameters for the fertility distribution is \\[\\mu \\in [2, 6], ~ \\theta \\in [1, 10], ~ and ~ \\pi_0 \\in [0, 0.2].\\]"
+  },
+  {
+    "objectID": "fertility_parameters.html#fertility-distribution",
+    "href": "fertility_parameters.html#fertility-distribution",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "",
+    "text": "Here we establish a zero inflated negative binomial distribution for the number of children per family—fertility distribution with parameters: mean fertility (\\(\\mu\\)), dispersion/size (\\(\\theta\\)), and zero‑inflation probability (\\(\\pi_0\\)), denoted as \\(ZINB(\\mu, \\theta, \\pi_0)\\). According to the definition of the negative binomial distribution, the mean and variance of \\(NB(\\mu,\\theta)\\) is given by \\(\\mu\\) and \\(\\mu + \\frac{\\mu^2}{\\theta}\\), respectively. Therefore, the mean and variance of \\(ZINB(\\mu, \\theta, \\pi_0)\\) is defined by \\(\\mu(1-\\pi_0)\\) and \\(\\mu(1-\\pi_0) + \\frac{\\mu^2(1-\\pi_0)}{\\theta}+\\mu^2\\pi_0(1-\\pi_0)\\), respectively."
+  },
+  {
+    "objectID": "fertility_parameters.html#sibling-distribution",
+    "href": "fertility_parameters.html#sibling-distribution",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "",
+    "text": "The sibling distribution is the distribution of the number of siblings per person, which can be derived from the fertility distribution. For any \\(k \\geq 0\\), the probability of having \\(k\\) siblings is given by: \\[P(num_{sib}=k) \\propto (k+1)P(num_{child}=k+1).\\] This is because a person with \\(k\\) siblings must have been born into a family with \\(k+1\\) children, and there are \\(k+1\\) ways to choose which child they are among those children. If the fertility distribution is \\(ZINB(\\mu, \\theta, \\pi_0)\\), then the sibling distribution is a negative binomial distribution with parameters mean fertility (\\(\\frac{\\mu(\\theta+1)}{\\theta}\\)), dispersion/size (\\(\\theta+1\\)), denoted as \\(NB(\\frac{\\mu(\\theta+1)}{\\theta}, \\theta+1)\\). We note that the average number of siblings per person \\(\\frac{\\mu(\\theta+1)}{\\theta}\\) is higher than the average number of children \\(\\mu(1-\\pi_0)\\) minus one, called the “sibship size paradox”."
+  },
+  {
+    "objectID": "fertility_parameters.html#fertility-and-sibling-parameters",
+    "href": "fertility_parameters.html#fertility-and-sibling-parameters",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "",
+    "text": "Based on the empirical data on U.S. women, a reasonable range of parameters for the fertility distribution is \\[\\mu \\in [2, 6], ~ \\theta \\in [1, 10], ~ and ~ \\pi_0 \\in [0, 0.2].\\]"
+  },
+  {
+    "objectID": "fertility_parameters.html#simulate-the-relative-counts-for-the-focal-individual",
+    "href": "fertility_parameters.html#simulate-the-relative-counts-for-the-focal-individual",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.1 Simulate the relative counts for the focal individual",
+    "text": "2.1 Simulate the relative counts for the focal individual\n\n\nCode\nsimulate_relatives_zinb &lt;- function(mu, size, pi0,\n                                    n_sim = 10000,\n                                    max_kids = 20) {\n  draw_fert &lt;- function(n) {\n    ifelse(runif(n) &lt; pi0, 0L,\n           as.integer(pmin(rnbinom(n, size, mu = mu), max_kids)))\n  }\n  \n  draw_sibs &lt;- function(n) {\n    as.integer(pmin(rnbinom(n, size + 1, mu = mu * (size + 1) / size), max_kids - 1))\n  }\n  \n  # 1. Siblings for the focal individual\n  siblings &lt;- draw_sibs(n_sim)\n\n  # 2. Aunts & uncles (no subtraction needed)\n  aunts_maternal &lt;- draw_sibs(n_sim)   # mother’s siblings\n  aunts_paternal &lt;- draw_sibs(n_sim)   # father’s siblings\n  aunts_uncles   &lt;- aunts_maternal + aunts_paternal\n\n\n  # 3. Cousins: for each aunt/uncle, simulate their fertility and sum\n  cousins &lt;- purrr::map_int(aunts_uncles, function(n_au) {\n    if (n_au == 0L) 0L else as.integer(sum(draw_fert(n_au)))\n  })\n\n  tibble::tibble(\n    Siblings    = siblings,\n    AuntsUncles = aunts_uncles,\n    Cousins     = cousins,\n    Parents     = 2L,\n    Grandparents= 4L,\n    TotalKin = siblings + aunts_uncles + cousins + 2L + 4L\n  )\n}"
+  },
+  {
+    "objectID": "fertility_parameters.html#prepare-parameter-combinations",
+    "href": "fertility_parameters.html#prepare-parameter-combinations",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.2 Prepare parameter combinations",
+    "text": "2.2 Prepare parameter combinations\n\n\nCode\n# Prepare fertility parameter tables\nfert_params = expand.grid(\n  mu = c(3, 4, 5, 6),\n  size = c(1, 4, 10),\n  pi0 = c(0, 0.1, 0.2)\n)\nfert_params = as.data.frame(fert_params)[, c(\"pi0\", \"size\", \"mu\")]\nn_sim = 10000  # Number of simulations per parameter combination"
+  },
+  {
+    "objectID": "fertility_parameters.html#simulate-relative-counts-for-each-parameter-combination",
+    "href": "fertility_parameters.html#simulate-relative-counts-for-each-parameter-combination",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.3 Simulate relative counts for each parameter combination",
+    "text": "2.3 Simulate relative counts for each parameter combination\n\n\nCode\nrelative_counts = list()\nfor (i in seq_len(nrow(fert_params))) {\n  params = fert_params[i, ]\n  relative_counts[[i]] = simulate_relatives_zinb(\n    mu = params$mu,\n    size = params$size,\n    pi0 = params$pi0,\n    n_sim = n_sim\n  )\n}"
+  },
+  {
+    "objectID": "fertility_parameters.html#summarize-mean-relative-counts",
+    "href": "fertility_parameters.html#summarize-mean-relative-counts",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.4 Summarize mean relative counts",
+    "text": "2.4 Summarize mean relative counts\n\n\nCode\nmean_relative_counts = t(sapply(relative_counts, colMeans))[, c(\"Siblings\", \"AuntsUncles\", \"Cousins\", \"TotalKin\")]\nmean_relative_counts = as.data.frame(mean_relative_counts)\ncolnames(mean_relative_counts) = c(\"mean_siblings\", \"mean_aunts_uncles\", \"mean_cousins\", \"mean_total\")\nmean_relative_counts = cbind(fert_params, mean_relative_counts)\n\nkable(mean_relative_counts, \n      digits = 2, \n      caption = \"Expected number of first-, second-, and third-degree relatives for a focal individual (simulated, by each fertility paramater combination)\")"
+  },
+  {
+    "objectID": "fertility_parameters.html#visualize-the-simulated-relative-distributions",
+    "href": "fertility_parameters.html#visualize-the-simulated-relative-distributions",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.5 Visualize the simulated relative distributions",
+    "text": "2.5 Visualize the simulated relative distributions\n\n\nCode\nlibrary(ggplot2)\n# Combine all relative counts into a single data frame\nrelative_counts_df = bind_rows(relative_counts)\nrelative_counts_df = relative_counts_df %&gt;%\n  mutate(\n    mu = rep(fert_params$mu, each = n_sim),\n    size = rep(fert_params$size, each = n_sim),\n    pi0 = rep(fert_params$pi0, each = n_sim)\n  )\n# Pivot to long format for plotting\nrelative_counts_long = relative_counts_df %&gt;%\n  pivot_longer(cols = c(Siblings, AuntsUncles, Cousins), \n               names_to = \"RelativeType\", values_to = \"Count\") %&gt;% \n  mutate(\n    mu = factor(mu, labels = c(\"3\", \"4\", \"5\", \"6\")),\n    RelativeType = factor(RelativeType, levels = c(\"Siblings\", \"AuntsUncles\", \"Cousins\")),\n    size = factor(size, labels = c(\"theta = 1\", \"theta = 4\", \"theta = 10\")),\n    pi0 = factor(pi0, labels = c(\"pi_0 = 0\", \"pi_0 = 0.1\", \"pi_0 = 0.2\"))\n  )\n\n# Plot the distributions\nggplot(relative_counts_long,\n       aes(x = mu, y = Count, fill = RelativeType)) +\n  geom_boxplot(position = position_dodge(width = 0.8),\n               width = 0.7, alpha = .8, outlier.size = .3) +\n  stat_summary(fun = mean, geom = \"point\", shape = 21, size = 1.4,\n               aes(group = RelativeType),\n               position = position_dodge(width = 0.8),\n               colour = \"black\", fill = \"white\") +\n  facet_grid(pi0 ~ size) +\n  scale_fill_viridis_d(option = \"D\") +\n  labs(title   = \"Simulated relative distributions under different fertility parameters\",\n       x       = \"Mean fertility (mu)\",\n       y       = \"Relative count\",\n       fill    = \"Relative type\") +\n  theme_minimal(base_size = 11) +\n  theme(legend.position = \"top\")\n\n\nBased on the simulated relative distributions, we observe the following patterns: the number of relatives increases with higher mean fertility (\\(\\mu\\)), and decreases as the dispersion parameter (\\(\\theta\\)) increases—–since greater dispersion corresponds to lower fertility variance. Similarly, the number of relatives declines as the zero-inflation probability (\\(\\pi_0\\)) increases, though this effect is less pronounced. In general, the number of siblings is lower than that of aunts and uncles, which in turn is lower than the number of cousins—–consistent with the real family structure."
+  },
+  {
+    "objectID": "fertility_parameters.html#regression-model-to-analyze-the-effects-of-fertility-parameters",
+    "href": "fertility_parameters.html#regression-model-to-analyze-the-effects-of-fertility-parameters",
+    "title": "How fertility parameters affect the family structure distribution",
+    "section": "2.6 Regression Model to analyze the effects of fertility parameters",
+    "text": "2.6 Regression Model to analyze the effects of fertility parameters\n\nCode\n# Prepare wide fertility parameter tables\nfert_params = expand.grid(\n  mu = c(2, 3, 4, 5, 6),\n  size = c(1, 2, 4, 6, 10),\n  pi0 = c(0, 0.05, 0.1, 0.15, 0.2)\n)\nfert_params = as.data.frame(fert_params)[, c(\"pi0\", \"size\", \"mu\")]\nn_sim = 10000  # Number of simulations per parameter combination\n\n# Simulate relative counts for each parameter combination\nrelative_counts = list()\nfor (i in seq_len(nrow(fert_params))) {\n  params = fert_params[i, ]\n  relative_counts[[i]] = simulate_relatives_zinb(\n    mu = params$mu,\n    size = params$size,\n    pi0 = params$pi0,\n    n_sim = n_sim\n  )\n}\n\n# Combine all relative counts into a single data frame\nrelative_counts_df = bind_rows(relative_counts)\nrelative_counts_df = relative_counts_df %&gt;%\n  mutate(\n    mu = rep(fert_params$mu, each = n_sim),\n    size = rep(fert_params$size, each = n_sim),\n    pi0 = rep(fert_params$pi0, each = n_sim)\n  )\n\nlibrary(broom)\n\nrelatives &lt;- c(\"Siblings\", \"AuntsUncles\", \"Cousins\")\n\nfor (rel in relatives) {\n  cat(\"\\n\\n### Focal-individual model for\", rel, \"\\n\\n\")\n  form &lt;- as.formula(paste0(rel, \" ~ mu + size + pi0\"))\n  lm_fit &lt;- lm(form, data = relative_counts_df)\n  lm_tidy &lt;- broom::tidy(lm_fit, conf.int = TRUE)\n  print(kable(\n    lm_tidy,\n    digits = 3,\n    caption = paste(\n      \"Regression coefficients for\", rel, \n      \"(focal-individual)\"\n    )\n  ))\n}\n\nWe can conclude that the mean fertility (\\(\\mu\\)) has a positive effect on the number of relatives, while the dispersion parameter (\\(\\theta\\)) have a negative effects. The zero-inflation probability (\\(\\pi_0\\)) has a negative effect on the number of cousins, but the effect is not significant for siblings and aunts/uncles."
+  },
+  {
+    "objectID": "fert_model.html",
+    "href": "fert_model.html",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "",
+    "text": "We extract the fertility information for U.S. women aged 50‑59 in the 1990 Census. Women aged 50–59 in the 1990 U.S. Census were born between 1931 and 1940. Assuming a typical childbearing age range of 25–45, their children would have been born between approximately 1956 and 1985. Therefore, the fertility distributions and relative counts estimated from this cohort primarily reflect the family-building behaviors and social contexts of the mid-1950s through the mid-1980s. We filter to Black/African American and White American groups as these are of interest to our paper.\n\n\n\n\nCode\npath         &lt;- file.path(\"data\")\nprop_race_year &lt;- file.path(path, \"proportions_table_by_race_year.csv\")\ndata_filter    &lt;- file.path(path, \"data_filtered_recoded.csv\")\n\n## original script loads both; we only need mother_data for this step\nmother_data &lt;- read_csv(data_filter, show_col_types = FALSE)\n\n\nmother_data already contains:\n\nYEAR – Census year (1960,1970,1980,1990)\nAGE – respondent age\nRACE – recoded as “White” or “Black/African American”\nchborn_num – completed fertility (children ever born)\n\n\n\n\n\n\nCode\ncohort &lt;- mother_data %&gt;%\n  filter(YEAR == 1990,\n         AGE  &gt;= 50, AGE &lt;= 59,\n         RACE %in% c(\"White\", \"Black/African American\")) %&gt;%\n  mutate(RACE = droplevels(factor(RACE))) %&gt;% dplyr::select(\"YEAR\", \"AGE\", \"RACE\", \"chborn_num\")\n\ncohort %&gt;% count(RACE, name = \"n_women\")\n\nkable(head(cohort, n = 15), caption = \"Fertility data for U.S. women aged 50‑59 in the 1990 Census.\")\n\n\n\n\n\n\n\nCode\n# Prepare individual-level sibling count\nsibs_long &lt;- cohort %&gt;%\n  mutate(mother_id = row_number()) %&gt;%\n  filter(chborn_num &gt; 0) %&gt;%\n  tidyr::uncount(chborn_num, .remove = FALSE) %&gt;%\n  mutate(n_sib = chborn_num - 1)\n\nkable(head(sibs_long, n = 15), caption = \"Corresponding sibling data calculated from fertility data\")"
+  },
+  {
+    "objectID": "fert_model.html#load-the-prefiltered-ipums-subset",
+    "href": "fert_model.html#load-the-prefiltered-ipums-subset",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "",
+    "text": "Code\npath         &lt;- file.path(\"data\")\nprop_race_year &lt;- file.path(path, \"proportions_table_by_race_year.csv\")\ndata_filter    &lt;- file.path(path, \"data_filtered_recoded.csv\")\n\n## original script loads both; we only need mother_data for this step\nmother_data &lt;- read_csv(data_filter, show_col_types = FALSE)\n\n\nmother_data already contains:\n\nYEAR – Census year (1960,1970,1980,1990)\nAGE – respondent age\nRACE – recoded as “White” or “Black/African American”\nchborn_num – completed fertility (children ever born)"
+  },
+  {
+    "objectID": "fert_model.html#select-the-1990-age-5059-cohort",
+    "href": "fert_model.html#select-the-1990-age-5059-cohort",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "",
+    "text": "Code\ncohort &lt;- mother_data %&gt;%\n  filter(YEAR == 1990,\n         AGE  &gt;= 50, AGE &lt;= 59,\n         RACE %in% c(\"White\", \"Black/African American\")) %&gt;%\n  mutate(RACE = droplevels(factor(RACE))) %&gt;% dplyr::select(\"YEAR\", \"AGE\", \"RACE\", \"chborn_num\")\n\ncohort %&gt;% count(RACE, name = \"n_women\")\n\nkable(head(cohort, n = 15), caption = \"Fertility data for U.S. women aged 50‑59 in the 1990 Census.\")"
+  },
+  {
+    "objectID": "fert_model.html#prepare-individual-level-sibling-counts",
+    "href": "fert_model.html#prepare-individual-level-sibling-counts",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "",
+    "text": "Code\n# Prepare individual-level sibling count\nsibs_long &lt;- cohort %&gt;%\n  mutate(mother_id = row_number()) %&gt;%\n  filter(chborn_num &gt; 0) %&gt;%\n  tidyr::uncount(chborn_num, .remove = FALSE) %&gt;%\n  mutate(n_sib = chborn_num - 1)\n\nkable(head(sibs_long, n = 15), caption = \"Corresponding sibling data calculated from fertility data\")"
+  },
+  {
+    "objectID": "fert_model.html#fertility-distribution",
+    "href": "fert_model.html#fertility-distribution",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Fertility distribution",
+    "text": "Fertility distribution\nWe model the number of children per family using a Poisson distribution and a zero inflated negative binomial distribution (ZINB), respectively.\n\nPoisson distribution\nThe Poisson distribution is a common model for count data, particularly when the mean and variance are equal. However, it may not be suitable for fertility data, which often exhibit zero-inflation and overdispersion (variance greater than the mean). The Poisson distribution with mean fertility (\\(\\mu\\)) is defined as: for a count \\(k \\geq 0\\), \\[P(num_{child}=k)=e^{-\\mu}\\frac{\\mu^k}{k!},\\] denoted by \\(Poisson(\\mu)\\). The mean and variance of \\(Poisson(\\mu)\\) are both \\(\\mu\\).\n\n\nZero inflated negative binomial distribution\nThe zero inflated negative binomial distribution with parameters mean fertility (\\(\\mu\\)), dispersion/size (\\(\\theta\\)), and zero‑inflation probability (\\(\\pi_0\\))—denoted as \\(ZINB(\\mu, \\theta, \\pi_0)\\)—is defined as: for a count \\(k \\geq 0\\), \\[P(num_{child}=k)=\\begin{cases}\n\\pi_0 + (1-\\pi_0)p^{\\theta} & \\text{if } k=0, \\\\\n(1-\\pi_0)\\binom{k+\\theta-1}{k}(1-p)^k p ^{\\theta} & \\text{if } k \\geq 1,\n\\end{cases}\\] where \\(p = \\frac{\\theta}{\\mu+\\theta}\\) represents the success probability of the negative binomial distribution.\nAccording to the definition of the negative binomial distribution, the mean and variance of \\(NB(\\mu,\\theta)\\) are given by \\(\\mu\\) and \\(\\mu + \\frac{\\mu^2}{\\theta}\\), respectively. Therefore, the mean and variance of \\(ZINB(\\mu, \\theta, \\pi_0)\\) are defined by \\(\\mu(1-\\pi_0)\\) and \\(\\mu(1-\\pi_0) + \\frac{\\mu^2(1-\\pi_0)}{\\theta}+\\mu^2\\pi_0(1-\\pi_0)\\), respectively."
+  },
+  {
+    "objectID": "fert_model.html#sibling-distribution",
+    "href": "fert_model.html#sibling-distribution",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Sibling distribution",
+    "text": "Sibling distribution\nThe sibling distribution can be derived from the fertility distribution. For any count \\(k \\geq 0\\), the probability that an individual has \\(k\\) siblings is proportional to the probability that their mother has \\(k+1\\) children, multiplied by the number of ways the individual could be one of those children. Therefore, the sibling distribution satisfies: \\[P(num_{sib}=k) \\propto (k+1)P(num_{child}=k+1).\\]\n\nDerivation of sibling distribution\nIf the fertility distribution is \\(Poisson(\\mu)\\), then the sibling distribution is given by: for a count \\(k \\geq 0\\), \\[P(num_{sib}=k) \\propto (k+1)e^{-\\mu}\\frac{\\mu^{k+1}}{(k+1)!} = e^{-\\mu}\\frac{\\mu^{k+1}}{k!}\\propto e^{-\\mu}\\frac{\\mu^k}{k!},\\] which is also a Poisson distribution with mean \\(\\mu\\).\nIf the fertility distribution is \\(ZINB(\\mu, \\theta, \\pi_0)\\), then the sibling distribution is given by: for a count \\(k \\geq 0\\), \\[\\begin{align*}\nP(num_{sib}=k) & \\propto (1-\\pi_0)(k+1)\\binom{k+\\theta}{k+1}(1-p)^{k+1} p^{\\theta} \\\\\n& = (1-\\pi_0)(k+1)\\frac{(k+\\theta)!}{(k+1)!(\\theta-1)!}(1-p)^{k+1} p^{\\theta} \\\\\n& \\propto \\frac{\\theta(1-p)}{p} \\frac{(k+\\theta)!}{k!\\theta!}(1-p)^k p^{\\theta+1} \\\\\n& \\propto \\binom{k+\\theta}{k}(1-p)^k p^{\\theta+1}, \\\\\n\\end{align*}\\] where \\(p = \\frac{\\theta}{\\mu+\\theta}\\). Therefore, the sibling distribution is a negative binomial distribution with parameters mean fertility (\\(\\frac{\\mu(\\theta+1)}{\\theta}\\)), dispersion/size (\\(\\theta+1\\)), denoted as \\(NB(\\frac{\\mu(\\theta+1)}{\\theta}, \\theta+1)\\). The variance is \\(\\frac{\\mu(\\theta+1)}{\\theta} + \\frac{\\mu^2(\\theta+1)}{\\theta^2}\\)."
+  },
+  {
+    "objectID": "fert_model.html#fit-the-poisson-and-zinb-models",
+    "href": "fert_model.html#fit-the-poisson-and-zinb-models",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Fit the Poisson and ZINB models",
+    "text": "Fit the Poisson and ZINB models\n\n\nCode\nfit_fert &lt;- function(dat) {\n  ## Poisson model\n  pois &lt;- glm(chborn_num ~ 1, family = poisson, data = dat)\n  \n  ## Zero‑inflated negative binomial model\n  zinb &lt;- zeroinfl(chborn_num ~ 1 | 1, data = dat, dist = \"negbin\")\n  \n  tibble(\n    Model = c(\"Poisson\", \"ZINB\"),\n    mu    = c(exp(coef(pois)[1]),                    ## log‑link → exp() gives mean\n              exp(zinb$coefficients$count[1])),\n    size  = c(Inf,                                   ## dispersion θ; Inf = Poisson\n              zinb$theta),\n    pi0   = c(0,                                      ## zero‑inflation prob.\n              plogis(zinb$coefficients$zero[1]))\n  )\n}\n\nparam_fert &lt;- cohort %&gt;%\n  group_by(RACE) %&gt;%\n  group_modify(~ fit_fert(.x)) %&gt;%\n  ungroup()"
+  },
+  {
+    "objectID": "fert_model.html#estimated-fertility-parameters",
+    "href": "fert_model.html#estimated-fertility-parameters",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Estimated fertility parameters",
+    "text": "Estimated fertility parameters\n\n\nCode\nkable(param_fert, digits = 3, caption = \"Fertility‑model parameter estimates for women aged50‑59 (1990 Census)\")"
+  },
+  {
+    "objectID": "fert_model.html#compare-the-mean-and-variance-from-the-models-and-data",
+    "href": "fert_model.html#compare-the-mean-and-variance-from-the-models-and-data",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Compare the mean and variance from the models and data",
+    "text": "Compare the mean and variance from the models and data\n\n\nCode\ncal_mean_var &lt;- function(model, mu, size, pi0) {\n  if (model == \"Poisson\") {\n    mean_fert = mu\n    var_fert  = mu\n    mean_sib = mu\n    var_sib  = mu\n  } else if (model == \"ZINB\") {\n    mean_fert = mu * (1 - pi0)\n    var_fert  = mu * (1 - pi0) + (mu^2 * (1 - pi0) / size) + (mu^2 * pi0 * (1 - pi0))\n    mean_sib = mu * ((size + 1) / size)\n    var_sib  = mu * ((size + 1) / size) + (mu^2 * ((size + 1) / size) / size)\n  }\n  \n  tibble(\n    Model = model,\n    Mean_Fertility = mean_fert,\n    Variance_Fertility = var_fert,\n    Mean_Sibling = mean_sib,\n    Variance_Sibling = var_sib\n  )\n}\n\nmean_var_fitted &lt;- param_fert %&gt;%\n  rowwise() %&gt;%\n  do(cal_mean_var(.$Model, .$mu, .$size, .$pi0)) %&gt;%\n  ungroup()\n\nmean_var = data.frame(\n  Race = rep(c(\"Black/African American\", \"White\"), each = 3),\n  Model = rep(c(\"Data\", \"Poisson\", \"ZINB\"), 2),\n  Mean_Fertility = c(mean(cohort$chborn_num[cohort$RACE == \"Black/African American\"]), mean_var_fitted$Mean_Fertility[1], mean_var_fitted$Mean_Fertility[2], mean(cohort$chborn_num[cohort$RACE == \"White\"]), mean_var_fitted$Mean_Fertility[3], mean_var_fitted$Mean_Fertility[4]),\n  Variance_Fertility = c(var(cohort$chborn_num[cohort$RACE == \"Black/African American\"]), mean_var_fitted$Variance_Fertility[1], mean_var_fitted$Variance_Fertility[2], var(cohort$chborn_num[cohort$RACE == \"White\"]), mean_var_fitted$Variance_Fertility[3], mean_var_fitted$Variance_Fertility[4]),\n  Mean_Sibling = c(mean(sibs_long$n_sib[sibs_long$RACE == \"Black/African American\"]), mean_var_fitted$Mean_Sibling[1], mean_var_fitted$Mean_Sibling[2], mean(sibs_long$n_sib[sibs_long$RACE == \"White\"]), mean_var_fitted$Mean_Sibling[3], mean_var_fitted$Mean_Sibling[4]),\n  Variance_Sibling = c(var(sibs_long$n_sib[sibs_long$RACE == \"Black/African American\"]), mean_var_fitted$Variance_Sibling[1], mean_var_fitted$Variance_Sibling[2], var(sibs_long$n_sib[sibs_long$RACE == \"White\"]), mean_var_fitted$Variance_Sibling[3], mean_var_fitted$Variance_Sibling[4])\n)\n\nkable(mean_var, digits = 3, caption = \"Mean and variance of fertility and sibling distributions from the fitted models and data.\")"
+  },
+  {
+    "objectID": "fert_model.html#model-evaluation",
+    "href": "fert_model.html#model-evaluation",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Model evaluation",
+    "text": "Model evaluation\nBased on the table of mean and variance, we can see that the fertility data exhibits overdispersion (variance greater than mean), especially for Black/African American. The Poisson Model assumes equal mean and variance, which does not fit the data well. The ZINB Model accounts for overdispersion and zero-inflation, providing a better fit to the data. The ZINB model’s mean and variance estimates for both fertility and sibling distributions align more closely with the observed data, particularly for the Black/African American group, where the Poisson model fails to capture the higher variance. Nevertheless, both models yield the same mean fertility counts, which is equal to the sample mean of fertility data."
+  },
+  {
+    "objectID": "fert_model.html#simulate-the-fertility-and-sibling-counts",
+    "href": "fert_model.html#simulate-the-fertility-and-sibling-counts",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Simulate the fertility and sibling counts",
+    "text": "Simulate the fertility and sibling counts\n\n\nCode\nsimulate_fert_sib &lt;- function(model, mu, size, pi0, n_sim = 20000, max_kids = 20) {\n  if (model == \"Poisson\") {\n    # Simulate fertility counts from Poisson distribution\n    fert_counts &lt;- pmin(rpois(n_sim, lambda = mu), max_kids)\n  } else if (model == \"ZINB\") {\n    # Simulate fertility counts from ZINB distribution\n    fert_counts &lt;- ifelse(runif(n_sim) &lt; pi0, 0, pmin(rnbinom(n_sim, size, mu = mu), max_kids))\n  }\n  \n  # Simulate sibling counts based on fertility counts\n  fert_counts_tibble &lt;- tibble(fert_counts = fert_counts)\n  sib_counts_tibble &lt;- fert_counts_tibble %&gt;%\n    filter(fert_counts &gt; 0) %&gt;%\n    tidyr::uncount(fert_counts, .remove = FALSE) %&gt;%\n    mutate(sib_counts = fert_counts - 1)\n  sib_counts &lt;- sib_counts_tibble$sib_counts\n  \n  list(\n    model = model,\n    fert_counts = fert_counts,\n    sib_counts = sib_counts\n  )\n}"
+  },
+  {
+    "objectID": "fert_model.html#compare-sibling-counts-from-simulations-with-theoretical-values",
+    "href": "fert_model.html#compare-sibling-counts-from-simulations-with-theoretical-values",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Compare sibling counts from simulations with theoretical values",
+    "text": "Compare sibling counts from simulations with theoretical values\nWe run simulations for fertility means of 1.5, 2.0, 2.5, 3.0, 3.5, and 4.0 for both Poisson and ZINB models. Additionally, in ZINB models, we set the dispersion parameter \\(\\theta\\) to 4, and the zero-inflation probability \\(\\pi_0\\) to 0.05.\nWe compare the empirical mean and variance of sibling counts from the simulated data with the theoretical values. The comparison shows that the theoretical values align closely with the simulated results, confirming the correctness of our derivation.\n\n\nCode\nmeans = c(1.5, 2.0, 2.5, 3.0, 3.5, 4.0)\nsize = 4\npi0 = 0.05\n\ncal_mean_var_simulated &lt;- function(sim_data) {\n  sib_counts &lt;- sim_data$sib_counts\n  \n  mean_sib = mean(sib_counts)\n  var_sib = var(sib_counts)\n  \n  tibble(\n    Mean_Sibling = mean_sib,\n    Variance_Sibling = var_sib\n  )\n}\n\n# Poisson Model\nsimulated_poisson &lt;- lapply(means, function(mu) {\n  simulate_fert_sib(\"Poisson\", mu, Inf, 0)\n})\n\nsimulated_poisson_results &lt;- lapply(simulated_poisson, cal_mean_var_simulated) %&gt;% bind_rows() %&gt;%\n  mutate(Fertility_Parameter = sapply(means, function(mu) paste0(\"Fertility Mean = \", mu)),\n         Value_Type = \"Simulated Poisson\") %&gt;% dplyr::select(Fertility_Parameter, Value_Type, everything())\nthreo_possion_results &lt;- tibble(\n  Fertility_Parameter = sapply(means, function(mu) paste0(\"Fertility Mean = \", mu)),\n  Value_Type = \"Theoretical Poisson\",\n  Mean_Sibling = means,\n  Variance_Sibling = means\n)\n\npoisson_results &lt;- bind_rows(simulated_poisson_results, threo_possion_results) %&gt;%\n  arrange(Fertility_Parameter) %&gt;%\n  mutate(Value_Type = factor(Value_Type, levels = c(\"Theoretical Poisson\", \"Simulated Poisson\")))\n\nkable(poisson_results, digits = 3, caption = \"Mean and Variance of Sibling counts from simulations and theoretical values based on Poisson distribution.\")\n\n# ZINB Model\nsimulated_zinb &lt;- lapply(means, function(mu) {\n  simulate_fert_sib(\"ZINB\", mu/(1-pi0), size, pi0)\n})\nsimulated_zinb_results &lt;- lapply(simulated_zinb, cal_mean_var_simulated) %&gt;% bind_rows() %&gt;%\n  mutate(Fertility_Parameter = sapply(means, function(mu) paste0(\"Fertility Mean = \", mu)),\n         Value_Type = \"Simulated ZINB\") %&gt;% dplyr::select(Fertility_Parameter, Value_Type, everything())\nmean_var_zinb &lt;- lapply(means, function(mu) cal_mean_var(\"ZINB\", mu/(1-pi0), size, pi0)) %&gt;% bind_rows()\nthreo_zinb_results &lt;- tibble(\n  Fertility_Parameter = sapply(means, function(mu) paste0(\"Fertility Mean = \", mu)),\n  Value_Type = \"Theoretical ZINB\",\n  Mean_Sibling = mean_var_zinb$Mean_Sibling,\n  Variance_Sibling = mean_var_zinb$Variance_Sibling\n)\n\nzinb_results &lt;- bind_rows(simulated_zinb_results, threo_zinb_results) %&gt;%\n  arrange(Fertility_Parameter) %&gt;%\n  mutate(Value_Type = factor(Value_Type, levels = c(\"Theoretical ZINB\", \"Simulated ZINB\")))\n\nkable(zinb_results, digits = 3, caption = \"Mean and Variance of Sibling counts from simulations and theoretical values based on ZINB distribution.\")"
+  },
+  {
+    "objectID": "fert_model.html#visualize-sibling-distributions",
+    "href": "fert_model.html#visualize-sibling-distributions",
+    "title": "Fertility Modelling and Sibling Estimates",
+    "section": "Visualize sibling distributions",
+    "text": "Visualize sibling distributions\nWe generate discrete probability distributions for sibling counts based on both Poisson and ZINB models, with the y-axis representing the number of siblings and the x-axis representing the probability of having that many siblings. The fertility mean is set to 2.5, and the ZINB model has a dispersion parameter of 4 and a zero-inflation probability of 0.05.\n\n\nCode\nlibrary(viridisLite)\n\nplot_pmf &lt;- function(pmf_df) {\n  cats = sort(unique(pmf_df$sib_counts))\n  n_cat &lt;- length(cats)\n  color_palette &lt;- viridis(n_cat, option = \"D\")\n  df &lt;- pmf_df %&gt;%\n    mutate(y = ifelse(Model == \"Poisson\", -prob, prob),\n           count_cat = factor(sib_counts, levels = cats))\n  ggplot(df, aes(x = count_cat, y = y, fill = count_cat, alpha = Model)) +\n    geom_col() +\n    geom_hline(yintercept = 0, color = \"black\", size = 0.5) +\n    coord_flip() +\n    scale_y_continuous(labels = function(x) abs(x)) +\n    scale_fill_manual(values = color_palette, name = \"Siblings Count\") +\n    scale_alpha_manual(values = c(\"Poisson\" = 0.7, \"ZINB\" = 1), guide = \"none\") +\n    labs(\n      title = \"PMF of Siblings Counts (Simulated from Poisson and ZINB Models)\",\n      x = \"Number of Siblings\",\n      y = \"Probability\",\n      caption = \"Poisson (left, negative y), ZINB (right, positive y).\"\n    ) +\n    theme_minimal(base_size = 13) +\n    theme(\n      plot.title = element_text(size = 14, hjust = 0.5),\n      axis.text.y = element_text(size = 10),\n      plot.caption = element_text(face = \"bold\", size = 10),\n      legend.position = \"right\",\n      panel.grid.major.y = element_blank(),\n      panel.grid.minor.y = element_blank()\n    )\n}\n\n\n\n\nCode\n# fertility parameters\nmean = 2.5\nsize = 4\npi0 = 0.05\nmax_sibs = 12\n\n# simulated data for fertility mean 2.5\nsimulated_data &lt;- bind_rows(\n  tibble(sib_counts = simulate_fert_sib(\"Poisson\", mean, Inf, 0)$sib_counts) %&gt;%\n    mutate(Model = \"Poisson\"),\n  tibble(sib_counts = simulate_fert_sib(\"ZINB\", mean/(1-pi0), size, pi0)$sib_counts) %&gt;%\n    mutate(Model = \"ZINB\")\n)\n\nsimulated_data$sib_counts &lt;- ifelse(simulated_data$sib_counts &gt; max_sibs, max_sibs, simulated_data$sib_counts)\n\npmf_data &lt;- simulated_data %&gt;%\n  count(Model, sib_counts, name = \"n_counts\") %&gt;%\n  group_by(Model) %&gt;%\n  mutate(prob = n_counts / sum(n_counts)) %&gt;%\n  ungroup()\n\n# write the pmf data to a csv file\nwrite.csv(pmf_data, file = file.path(\"./output/pmf_sibling_counts.csv\"), row.names = FALSE)\n\n\n\n\nCode\nplot_pmf(pmf_data)\nggsave(file = file.path(\"./output/pmf_sibling_counts.png\"), width = 8, height = 6, dpi = 500)\n\n\n\n\nCode\nsum(pmf_data$n_counts[pmf_data$Model == \"Poisson\"])\nsum(pmf_data$n_counts[pmf_data$Model == \"ZINB\"])\n\npmf_data$n_counts[pmf_data$Model == \"Poisson\"] / sum(pmf_data$n_counts[pmf_data$Model == \"Poisson\"])\npmf_data$n_counts[pmf_data$Model == \"ZINB\"] / sum(pmf_data$n_counts[pmf_data$Model == \"ZINB\"])"
+  },
+  {
+    "objectID": "family_size_findability.html",
+    "href": "family_size_findability.html",
+    "title": "Family size findability",
+    "section": "",
+    "text": "We aim to clarify the probability of finding at least one cousin in a database, given the family structure in the PODFRIDGE project. This probability depends on two key factors: the number of relatives—determined by the family size (number of children per family) distribution—and the database coverage, which is the proportion of individuals in the database relative to the total population.\nErlich’s earlier paper modeled the family size distribution using a Poisson distribution, a common approach in many genetic studies. However, this assumption doesn’t accurately capture real-world family sizes, which often show overdispersion and an excess of zeros (i.e., families with no children).\nIn this report, we simulate the family size distribution using a Zero-Inflated Negative Binomial (ZINB) distribution, which better reflects real-world data than the Poisson model. We then calculate the probability of finding at least one cousin in the database based on the simulated family sizes and different levels of database coverage."
+  },
+  {
+    "objectID": "family_size_findability.html#introduction",
+    "href": "family_size_findability.html#introduction",
+    "title": "Family size findability",
+    "section": "",
+    "text": "We aim to clarify the probability of finding at least one cousin in a database, given the family structure in the PODFRIDGE project. This probability depends on two key factors: the number of relatives—determined by the family size (number of children per family) distribution—and the database coverage, which is the proportion of individuals in the database relative to the total population.\nErlich’s earlier paper modeled the family size distribution using a Poisson distribution, a common approach in many genetic studies. However, this assumption doesn’t accurately capture real-world family sizes, which often show overdispersion and an excess of zeros (i.e., families with no children).\nIn this report, we simulate the family size distribution using a Zero-Inflated Negative Binomial (ZINB) distribution, which better reflects real-world data than the Poisson model. We then calculate the probability of finding at least one cousin in the database based on the simulated family sizes and different levels of database coverage."
+  },
+  {
+    "objectID": "family_size_findability.html#methods",
+    "href": "family_size_findability.html#methods",
+    "title": "Family size findability",
+    "section": "2. Methods",
+    "text": "2. Methods\n\n2.1. Zero-Inflated Negative Binomial (ZINB) Distribution\nBased on the empirical data from the US, we find that the distribution of family size is better modeled as a Zero-Inflated Negative Binomial (ZINB) distribution. The ZINB distribution is a more realistic family size distribution, as it accounts for the excess zeros (families with no children) and the overdispersion often observed in family size data.\nThe Zero-Inflated Negative Binomial (ZINB) distribution is a statistical model that combines a negative binomial distribution with an additional process that generates excess zeros. It is characterized by three parameters: the zero-inflated probability \\(p\\), the mean number \\(\\mu\\) and the size \\(s\\) of the negative binomial distribution, denoted by \\(\\text{ZINB}(p, s, \\mu) = p\\delta_0 + (1-p)\\text{NB}(s,\\mu)\\). The average family size is \\((1-p)\\mu\\). Based on empirical data, we set the parameters to \\(p=0.1, ~ s=3, ~ \\mu = 3\\).\n\n\n2.2. Calculating the Number of Relatives\nIn this report, we only consider the relatives whose generation difference between the individual and the relative is less than or equal to 1. Therefore, the first-degree relatives include parents, siblings, and children; the second-degree relatives include aunts, uncles, nephews, nieces, and half-siblings; and the third-degree relatives include first cousins. The number of relatives is calculated based on the family size distribution simulated by the ZINB distribution. For now, the number of half-siblings is set to 0.\nSpecifically, if one couple is known as the ancestor couple of the individual, this couple has at least one child, and the number of children is simulated from the ZINB distribution conditional on at least one child. For simplicity, we assume that \\(X\\) follows a ZINB distribution and \\(Y\\) follows a ZINB distribution conditional on at least one child minus one.\nThe number of first-degree relatives is given by \\(2+Y+X\\). The number of second-degree relatives is given by \\(4 + \\sum_{i=1}^2Y_i + \\sum_{i=1}^{Y}X_i\\). The number of third-degree relatives is given by \\(\\sum_{i=1}^{\\sum_{j=1}^2 Y_j} X_i\\).\n\n\n2.3 The Probability of Finding at Least One Cousin in the Database\nThe number of cousins is simulated from the ZINB distribution as above. The simulated data is denoted as \\(\\{r_k\\}_{k=1}^n\\), where \\(n\\) is the number of simulations. For each simulated number of cousins \\(r_k\\), we assume that the number of cousins found in the database follows a binomial distribution with parameters \\(r_k\\), the genetic match probability \\(p\\), and the coverage of the database \\(c\\), denoted as \\(\\text{Binomial}(r_k, cp)\\). The probability of finding at least one cousin in the database is therefore \\(1-(1-cp)^{r_k}\\). The expected probability across all simulations is given by \\(\\frac{1}{n}\\sum_{k=1}^n (1-(1-cp)^{r_k})\\)."
+  }
+]

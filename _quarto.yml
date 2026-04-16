@@ -1,0 +1,43 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: Kincounts
+  navbar:
+    left:
+      - text: Home
+        href: index.qmd
+      - text: Analyses
+        menu:
+          - text: Fertility and sibling relationship
+            href: analysis/fert_sibling.qmd
+          - text: Fertility modelling
+            href: analysis/fert_model.qmd
+          - text: How fertility parameters affect kin counts
+            href: analysis/fertility_parameters.qmd
+          - text: Family size and identification probability
+            href: analysis/family_size_findability.qmd
+      - text: About
+        href: about.qmd
+      - text: License
+        href: license.qmd
+    right:
+      - icon: github
+        text: Source code
+        href: https://github.com/lasisilab/kincounts
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+  message: false
+
+format:
+  html:
+    theme:
+      - cosmo
+    css: styles.css
+    toc: true
+    code-fold: true
+    number-sections: true
