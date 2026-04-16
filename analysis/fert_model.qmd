@@ -2,7 +2,6 @@
 title: "Fertility Modelling and Sibling Estimates"
 author: "Junhui He"
 date: today
-format: html
 ---
 
 ```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
@@ -17,14 +16,14 @@ library(knitr)    ## kable
 library(ggplot2)
 ```
 
-# 1 U.S. Census Data in Fertility
+# U.S. Census Data in Fertility
 
 We extract the fertility information for U.S. women aged 50‑59 in the 1990 Census. Women aged 50–59 in the 1990 U.S. Census were born between 1931 and 1940. Assuming a typical childbearing age range of 25–45, their children would have been born between approximately 1956 and 1985. Therefore, the fertility distributions and relative counts estimated from this cohort primarily reflect the family-building behaviors and social contexts of the mid-1950s through the mid-1980s. We filter to Black/African American and White American groups as these are of interest to our paper.
 
 ## Load the pre‑filtered IPUMS subset
 
 ```{r load-data}
-path         <- file.path("data")
+path         <- file.path("../data")
 prop_race_year <- file.path(path, "proportions_table_by_race_year.csv")
 data_filter    <- file.path(path, "data_filtered_recoded.csv")
 
@@ -66,7 +65,7 @@ sibs_long <- cohort %>%
 kable(head(sibs_long, n = 15), caption = "Corresponding sibling data calculated from fertility data")
 ```
 
-# 2 Family structure modelling
+# Family structure modelling
 
 Here we establish statistical models for the **fertility distribution** and **sibling distribution**. The fertility distribution describes the number of children per family, while the sibling distribution describes the number of siblings per person.
 
@@ -103,7 +102,7 @@ P(num_{sib}=k) & \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\thet
 \end{align*}$$ where $p = \frac{\theta}{\mu+\theta}$. Therefore, the sibling distribution is a **negative binomial distribution** with parameters **mean fertility** ($\frac{\mu(\theta+1)}{\theta}$), **dispersion/size** ($\theta+1$), denoted as $NB(\frac{\mu(\theta+1)}{\theta}, \theta+1)$. The variance is $\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}$.
 
 
-# 3 Model fitting
+# Model fitting
 
 ## Fit the Poisson and ZINB models
 
@@ -184,7 +183,7 @@ kable(mean_var, digits = 3, caption = "Mean and variance of fertility and siblin
 
 Based on the table of mean and variance, we can see that the fertility data exhibits **overdispersion (variance greater than mean)**, especially for **Black/African American**. The **Poisson Model** assumes equal mean and variance, which does not fit the data well. The **ZINB Model** accounts for overdispersion and zero-inflation, providing a better fit to the data. The ZINB model's mean and variance estimates for both fertility and sibling distributions align more closely with the observed data, particularly for the **Black/African American** group, where the Poisson model fails to capture the higher variance. Nevertheless, both models yield the same mean fertility counts, which is equal to the sample mean of fertility data.
 
-# 4 Simulations of fertility and sibling distributions
+# Simulations of fertility and sibling distributions
 
 In this section, we simulate the fertility and sibling counts based on the Poisson and ZINB distributions, respectively. We then compare the empirical mean and variance of the simulated sibling data with the theoretical values derived from Section 2.
 
@@ -346,12 +345,12 @@ pmf_data <- simulated_data %>%
   ungroup()
 
 # write the pmf data to a csv file
-write.csv(pmf_data, file = file.path("./output/pmf_sibling_counts.csv"), row.names = FALSE)
+write.csv(pmf_data, file = file.path("../output/pmf_sibling_counts.csv"), row.names = FALSE)
 ```
 
 ```{r plot-pmf-fig, fig.width = 8, fig.height = 6}
 plot_pmf(pmf_data)
-ggsave(file = file.path("./output/pmf_sibling_counts.png"), width = 8, height = 6, dpi = 500)
+ggsave(file = file.path("../output/pmf_sibling_counts.png"), width = 8, height = 6, dpi = 500)
 ```
 
 ```{r}

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Junhui He">
+<meta name="dcterms.date" content="2026-04-16">
 
-<title>License – Kincounts</title>
+<title>Relationship between Fertility Distribution and Sibling Distribution – Kincounts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +25,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,18 +71,47 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Kincounts</span>
     </a>
   </div>
@@ -91,7 +122,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -100,29 +131,29 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
-    <a class="dropdown-item" href="./analysis/fert_sibling.html">
+    <a class="dropdown-item" href="../analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/fert_model.html">
+    <a class="dropdown-item" href="../analysis/fert_model.html">
  <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/fertility_parameters.html">
+    <a class="dropdown-item" href="../analysis/fertility_parameters.html">
  <span class="dropdown-text">How fertility parameters affect kin counts</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/family_size_findability.html">
+    <a class="dropdown-item" href="../analysis/family_size_findability.html">
  <span class="dropdown-text">Family size and identification probability</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./license.html" aria-current="page"> 
+    <a class="nav-link" href="../license.html"> 
 <span class="menu-text">License</span></a>
   </li>  
 </ul>
@@ -143,20 +174,53 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#fertility-distribution" id="toc-fertility-distribution" class="nav-link active" data-scroll-target="#fertility-distribution"><span class="header-section-number">1</span> Fertility Distribution</a>
+  <ul class="collapse">
+  <li><a href="#poisson-distribution" id="toc-poisson-distribution" class="nav-link" data-scroll-target="#poisson-distribution"><span class="header-section-number">1.1</span> Poisson distribution</a></li>
+  <li><a href="#zero-inflated-negative-binomial-distribution" id="toc-zero-inflated-negative-binomial-distribution" class="nav-link" data-scroll-target="#zero-inflated-negative-binomial-distribution"><span class="header-section-number">1.2</span> Zero inflated negative binomial distribution</a></li>
+  </ul></li>
+  <li><a href="#sibling-distribution" id="toc-sibling-distribution" class="nav-link" data-scroll-target="#sibling-distribution"><span class="header-section-number">2</span> Sibling distribution</a>
+  <ul class="collapse">
+  <li><a href="#sibship-size-paradox" id="toc-sibship-size-paradox" class="nav-link" data-scroll-target="#sibship-size-paradox"><span class="header-section-number">2.1</span> Sibship size paradox</a></li>
+  <li><a href="#sibling-distribution-for-different-fertility-distributions" id="toc-sibling-distribution-for-different-fertility-distributions" class="nav-link" data-scroll-target="#sibling-distribution-for-different-fertility-distributions"><span class="header-section-number">2.2</span> Sibling distribution for different fertility distributions</a>
+  <ul class="collapse">
+  <li><a href="#fertility-distribution-poisson-distribution" id="toc-fertility-distribution-poisson-distribution" class="nav-link" data-scroll-target="#fertility-distribution-poisson-distribution"><span class="header-section-number">2.2.1</span> Fertility distribution: Poisson distribution</a></li>
+  <li><a href="#fertility-distribution-zero-inflated-negative-binomial-distribution" id="toc-fertility-distribution-zero-inflated-negative-binomial-distribution" class="nav-link" data-scroll-target="#fertility-distribution-zero-inflated-negative-binomial-distribution"><span class="header-section-number">2.2.2</span> Fertility distribution: Zero inflated negative binomial distribution</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">License</h1>
+<h1 class="title">Relationship between Fertility Distribution and Sibling Distribution</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Junhui He </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 16, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -166,16 +230,59 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="software-license" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="software-license"><span class="header-section-number">1</span> Software License</h2>
-<p>The code in this repository is licensed under the MIT License.</p>
-<p>See the <a href="https://github.com/lasisilab/kincounts/blob/main/LICENSE">LICENSE</a> file for the full license text.</p>
+<p>In this article, we develop a statistical framework for modelling the relationship between the fertility distribution and sibling distribution: Given a fertility distribution, we derive what the resulting sibling distribution would be in the next generation. Specifically, the fertility distribution describes the number of children per parent, while the sibling distribution describes the number of siblings per person in the next generation.</p>
+<section id="fertility-distribution" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Fertility Distribution</h1>
+<p>The number of children per parent in the population is modelled using a fertility distribution, which can be represented by various probability distributions. In this article, we focus on two commonly used distributions for modelling count data: Poisson distribution and zero inflated negative binomial distribution (ZINB).</p>
+<section id="poisson-distribution" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="poisson-distribution"><span class="header-section-number">1.1</span> Poisson distribution</h2>
+<p>The Poisson distribution is a popular model for count data, particularly when the mean and variance are equal. However, it may not be very suitable for fertility data, which often exhibit zero-inflation and overdispersion (variance greater than the mean). The Poisson distribution with mean fertility (<span class="math inline">\(\mu\)</span>) is defined as: for the number of children <span class="math inline">\(k \geq 0\)</span>, <span id="eq-poisson"><span class="math display">\[P(N_{child}=k)=e^{-\mu}\frac{\mu^k}{k!}, \tag{1}\]</span></span> denoted by <span class="math inline">\(\text{Poisson}(\mu)\)</span>. The mean and variance of <span class="math inline">\(\text{Poisson}(\mu)\)</span> are both <span class="math inline">\(\mu\)</span>.</p>
 </section>
-<section id="data-and-analysis" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="data-and-analysis"><span class="header-section-number">2</span> Data and Analysis</h2>
-<p>All data and analyses are provided for research and educational purposes.</p>
+<section id="zero-inflated-negative-binomial-distribution" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="zero-inflated-negative-binomial-distribution"><span class="header-section-number">1.2</span> Zero inflated negative binomial distribution</h2>
+<p>The zero inflated negative binomial distribution with parameters mean fertility (<span class="math inline">\(\mu\)</span>), dispersion/size (<span class="math inline">\(\theta\)</span>), and zero‑inflation probability (<span class="math inline">\(\pi_0\)</span>)—denoted as <span class="math inline">\(\text{ZINB}(\mu, \theta, \pi_0)\)</span>—is defined as: for the number of children <span class="math inline">\(k \geq 0\)</span>, <span id="eq-zinb"><span class="math display">\[P(N_{child}=k)=\begin{cases}
+\pi_0 + (1-\pi_0)p^{\theta} &amp; \text{if } k=0, \\
+(1-\pi_0)\binom{k+\theta-1}{k}(1-p)^k p ^{\theta} &amp; \text{if } k \geq 1,
+\end{cases} \tag{2}\]</span></span> where <span class="math inline">\(p = \frac{\theta}{\mu+\theta}\)</span> is denoted as the success probability. For the negative binomial distribution <span class="math inline">\(\text{NB}(\mu,\theta)\)</span>, the mean and variance are <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\mu + \frac{\mu^2}{\theta}\)</span>. Therefore, the mean and variance of <span class="math inline">\(\text{ZINB}(\mu, \theta, \pi_0)\)</span> are given by <span class="math inline">\(\mu(1-\pi_0)\)</span> and <span class="math inline">\(\mu(1-\pi_0) + \frac{\mu^2(1-\pi_0)}{\theta}+\mu^2\pi_0(1-\pi_0)\)</span>, respectively.</p>
+</section>
+</section>
+<section id="sibling-distribution" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Sibling distribution</h1>
+<p>The number of siblings per person in the next generation is modelled using a sibling distribution, which can be derived from the fertility distribution. The sibling distribution describes the probability of an individual having a certain number of siblings, which is directly related to the number of children their parents have.</p>
+<section id="sibship-size-paradox" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sibship-size-paradox"><span class="header-section-number">2.1</span> Sibship size paradox</h2>
+<p>A common mistake is that the sibling distribution should be the same as the fertility distribution minus one. However, this is not the case due to the sibship size paradox: individuals with more siblings are more likely to be sampled in the population, leading to a bias in the observed sibling distribution compared to the underlying fertility distribution.</p>
+<p>For example, if we have a population <span class="math inline">\(2N_0\)</span> where <span class="math inline">\(50\%\)</span> of parents have 0 children, <span class="math inline">\(25\%\)</span> of parents have 1 child, and <span class="math inline">\(25\%\)</span> of parents have 2 children, the fertility distribution is <span class="math inline">\(P(N_{child}=0)=0.5\)</span>, <span class="math inline">\(P(N_{child}=1)=0.25\)</span>, and <span class="math inline">\(P(N_{child}=2)=0.25\)</span>. Thus, in the next generation, the population size is <span class="math display">\[N_1 = 0.5N_0 \cdot 0 + 0.25N_0 \cdot 1 + 0.25N_0 \cdot 2 = 0.75N_0.\]</span> And <span class="math inline">\(0.25N_0 \cdot 1\)</span> individuals have 0 siblings, <span class="math inline">\(0.25N_0 \cdot 2\)</span> individuals have 1 sibling. Therefore, the sibling distribution is <span class="math display">\[P(N_{sib}=0)=\frac{0.25N_0}{0.75N_0}=\frac{1}{3},\quad P(N_{sib}=1)=\frac{0.25N_0 \cdot 2}{0.75N_0}=\frac{2}{3}.\]</span></p>
+<p>To conclude, most people come from large families even when most families are small, because the number of siblings is weighted by family size. Formally, the relationship between the fertility distribution and sibling distribution can be expressed as follows: Let <span class="math inline">\(N_{child}\)</span> be the random variable representing the number of children per parent, and <span class="math inline">\(N_{sib}\)</span> be the random variable representing the number of siblings per person in the next generation. Then, for any count <span class="math inline">\(k \geq 0\)</span>, the probability that an individual has <span class="math inline">\(k\)</span> siblings is proportional to the probability that their mother has <span class="math inline">\(k+1\)</span> children, multiplied by the number of ways the individual could be one of those children. Therefore, we have: <span id="eq-sibship"><span class="math display">\[P(N_{sib}=k) \propto (k+1)P(N_{child}=k+1). \tag{3}\]</span></span> This relationship holds for any fertility distribution, and the sibling distribution can be derived accordingly.</p>
+</section>
+<section id="sibling-distribution-for-different-fertility-distributions" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sibling-distribution-for-different-fertility-distributions"><span class="header-section-number">2.2</span> Sibling distribution for different fertility distributions</h2>
+<p>In this section, we derive the sibling distribution for the two fertility distributions discussed above: Poisson distribution and zero inflated negative binomial distribution, using the relationship established in the previous section.</p>
+<section id="fertility-distribution-poisson-distribution" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="fertility-distribution-poisson-distribution"><span class="header-section-number">2.2.1</span> Fertility distribution: Poisson distribution</h3>
+<p>If the fertility distribution is <span class="math inline">\(\text{Poisson}(\mu)\)</span>, then the sibling distribution is given by: for a count <span class="math inline">\(k \geq 0\)</span>, <span id="eq-sibship-poisson"><span class="math display">\[\begin{equation}
+\begin{split}
+P(N_{sib}=k) &amp; \propto (k+1)P(N_{child}=k+1) \\
+&amp; \propto (k+1)e^{-\mu}\frac{\mu^{k+1}}{(k+1)!} \\
+&amp; = e^{-\mu}\frac{\mu^{k+1}}{k!}\propto e^{-\mu}\frac{\mu^k}{k!}, \\
+\end{split}
+\end{equation}
+\tag{4}\]</span></span> which is also a Poisson distribution with mean <span class="math inline">\(\mu\)</span>.</p>
+</section>
+<section id="fertility-distribution-zero-inflated-negative-binomial-distribution" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="fertility-distribution-zero-inflated-negative-binomial-distribution"><span class="header-section-number">2.2.2</span> Fertility distribution: Zero inflated negative binomial distribution</h3>
+<p>If the fertility distribution is <span class="math inline">\(\text{ZINB}(\mu, \theta, \pi_0)\)</span>, then the sibling distribution is given by: for a count <span class="math inline">\(k \geq 0\)</span>, <span id="eq-sibship-zinb"><span class="math display">\[\begin{equation}
+\begin{split}
+P(N_{sib}=k) &amp; \propto (k+1)P(N_{child}=k+1) \\
+&amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\theta} \\
+&amp; \propto \frac{\theta(1-p)}{p} \frac{(k+\theta)!}{k!\theta!}(1-p)^k p^{\theta+1} \\
+&amp; \propto \binom{k+\theta}{k}(1-p)^k p^{\theta+1}, \\
+\end{split}
+\end{equation} \tag{5}\]</span></span> where <span class="math inline">\(p = \frac{\theta}{\mu+\theta}\)</span>. Therefore, the sibling distribution is a negative binomial distribution with parameters mean fertility (<span class="math inline">\(\frac{\mu(\theta+1)}{\theta}\)</span>), dispersion/size (<span class="math inline">\(\theta+1\)</span>), denoted as <span class="math inline">\(\text{NB}(\frac{\mu(\theta+1)}{\theta}, \theta+1)\)</span>. The variance is <span class="math inline">\(\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}\)</span>.</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

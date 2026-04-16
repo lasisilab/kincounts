@@ -37,9 +37,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9856bc758d1e138440b9cc0ca027063a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -98,6 +99,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -121,33 +123,33 @@ window.Quarto = {
     <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
-<span class="menu-text">About</span></a>
-  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-analyses" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Analyses</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
-    <a class="dropdown-item" href="./fert_sibling.html">
+    <a class="dropdown-item" href="./analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./fert_model.html">
- <span class="dropdown-text">Fertility modelling</span></a>
+    <a class="dropdown-item" href="./analysis/fert_model.html">
+ <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./fertility_parameters.html">
+    <a class="dropdown-item" href="./analysis/fertility_parameters.html">
  <span class="dropdown-text">How fertility parameters affect kin counts</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./family_size_findability.html">
+    <a class="dropdown-item" href="./analysis/family_size_findability.html">
  <span class="dropdown-text">Family size and identification probability</span></a>
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="./about.html" aria-current="page"> 
+<span class="menu-text">About</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="./license.html"> 
 <span class="menu-text">License</span></a>
@@ -193,14 +195,14 @@ window.Quarto = {
 </header>
 
 
-<section id="project-description" class="level2">
-<h2 class="anchored" data-anchor-id="project-description">Project Description</h2>
+<section id="project-description" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="project-description"><span class="header-section-number">1</span> Project Description</h2>
 <p>This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases.</p>
 </section>
-<section id="methods" class="level2">
-<h2 class="anchored" data-anchor-id="methods">Methods</h2>
-<section id="fertility-modeling" class="level3">
-<h3 class="anchored" data-anchor-id="fertility-modeling">Fertility Modeling</h3>
+<section id="methods" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="methods"><span class="header-section-number">2</span> Methods</h2>
+<section id="fertility-modeling" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="fertility-modeling"><span class="header-section-number">2.1</span> Fertility Modeling</h3>
 <p>We use a zero-inflated negative binomial (ZINB) distribution to model fertility patterns:</p>
 <p><span class="math display">\[P(X = k) = \begin{cases}
 \pi + (1 - \pi) \cdot NB(0; \mu, \theta) &amp; \text{if } k = 0 \\
@@ -208,17 +210,17 @@ window.Quarto = {
 \end{cases}\]</span></p>
 <p>where: - <span class="math inline">\(\pi\)</span> is the zero-inflation probability (excess childlessness) - <span class="math inline">\(\mu\)</span> is the mean of the negative binomial component - <span class="math inline">\(\theta\)</span> is the dispersion parameter</p>
 </section>
-<section id="sibling-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="sibling-distribution">Sibling Distribution</h3>
+<section id="sibling-distribution" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="sibling-distribution"><span class="header-section-number">2.2</span> Sibling Distribution</h3>
 <p>The sibling distribution is derived from the fertility distribution, using the relationship: <span class="math display">\[P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).\]</span></p>
 </section>
-<section id="genetic-match-probability" class="level3">
-<h3 class="anchored" data-anchor-id="genetic-match-probability">Genetic Match Probability</h3>
+<section id="genetic-match-probability" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="genetic-match-probability"><span class="header-section-number">2.3</span> Genetic Match Probability</h3>
 <p>The probability of a genetic match is modelled based on a binomial distribution <span class="math inline">\(\text{Binomial}(r, cp)\)</span>, where <span class="math inline">\(r\)</span> is the number of cousins, <span class="math inline">\(c\)</span> is the database coverage, and <span class="math inline">\(p\)</span> is the genetic match probability.</p>
 </section>
 </section>
-<section id="software" class="level2">
-<h2 class="anchored" data-anchor-id="software">Software</h2>
+<section id="software" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="software"><span class="header-section-number">3</span> Software</h2>
 <p>This project uses:</p>
 <ul>
 <li>R for statistical computing</li>
@@ -228,12 +230,12 @@ window.Quarto = {
 <li>ggplot2 for data visualization</li>
 </ul>
 </section>
-<section id="authors" class="level2">
-<h2 class="anchored" data-anchor-id="authors">Authors</h2>
+<section id="authors" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="authors"><span class="header-section-number">4</span> Authors</h2>
 <p>This research is conducted at the Lasisi Lab.</p>
 </section>
-<section id="contact" class="level2">
-<h2 class="anchored" data-anchor-id="contact">Contact</h2>
+<section id="contact" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="contact"><span class="header-section-number">5</span> Contact</h2>
 <p>For questions or collaborations, please visit our <a href="https://github.com/lasisilab/kincounts">GitHub repository</a>.</p>
 
 

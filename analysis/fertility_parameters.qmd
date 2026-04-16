@@ -2,24 +2,23 @@
 title: "How fertility parameters affect the family structure distribution"
 author: "Junhui He"
 date: today
-format: html
 ---
 
-# 1 Family structure model
+#  Family structure model
 
-## 1.1 Fertility distribution
+## Fertility distribution
 
 Here we establish a zero inflated negative binomial distribution for the number of children per family---**fertility distribution** with parameters: **mean fertility** ($\mu$), **dispersion/size** ($\theta$), and **zero‑inflation probability** ($\pi_0$), denoted as $ZINB(\mu, \theta, \pi_0)$. According to the definition of the negative binomial distribution, the mean and variance of $NB(\mu,\theta)$ is given by $\mu$ and $\mu + \frac{\mu^2}{\theta}$, respectively. Therefore, the mean and variance of $ZINB(\mu, \theta, \pi_0)$ is defined by $\mu(1-\pi_0)$ and $\mu(1-\pi_0) + \frac{\mu^2(1-\pi_0)}{\theta}+\mu^2\pi_0(1-\pi_0)$, respectively.
 
-## 1.2 Sibling distribution
+## Sibling distribution
 
 The **sibling distribution** is the distribution of the number of siblings per person, which can be derived from the fertility distribution. For any $k \geq 0$, the probability of having $k$ siblings is given by: $$P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).$$ This is because a person with $k$ siblings must have been born into a family with $k+1$ children, and there are $k+1$ ways to choose which child they are among those children. If the fertility distribution is $ZINB(\mu, \theta, \pi_0)$, then the sibling distribution is a negative binomial distribution with parameters **mean fertility** ($\frac{\mu(\theta+1)}{\theta}$), **dispersion/size** ($\theta+1$), denoted as $NB(\frac{\mu(\theta+1)}{\theta}, \theta+1)$. We note that the average number of siblings per person $\frac{\mu(\theta+1)}{\theta}$ is higher than the average number of children $\mu(1-\pi_0)$ minus one, called the “sibship size paradox”.
 
-## 1.3 Fertility and sibling parameters
+## Fertility and sibling parameters
 
 Based on the empirical data on U.S. women, a reasonable range of parameters for the fertility distribution is $$\mu \in [2, 6], ~ \theta \in [1, 10], ~ and ~ \pi_0 \in [0, 0.2].$$
 
-# 2 Effect of fertility parameters on relative counts
+# Effect of fertility parameters on relative counts
 
 We explore the effect of the fertility parameters on the family structure distribution, which is defined as the distribution of the number of relatives one individual has.
 
@@ -34,7 +33,7 @@ library(pscl)     ## zeroinfl
 library(knitr)    ## kable
 ```
 
-## 2.1 Simulate the relative counts for the focal individual
+## Simulate the relative counts for the focal individual
 
 ```{r simulate-relatives}
 simulate_relatives_zinb <- function(mu, size, pi0,
@@ -74,7 +73,7 @@ simulate_relatives_zinb <- function(mu, size, pi0,
 }
 ```
 
-## 2.2 Prepare parameter combinations
+## Prepare parameter combinations
 
 ```{r parameter-combinations}
 # Prepare fertility parameter tables
@@ -87,7 +86,7 @@ fert_params = as.data.frame(fert_params)[, c("pi0", "size", "mu")]
 n_sim = 10000  # Number of simulations per parameter combination
 ```
 
-## 2.3 Simulate relative counts for each parameter combination
+## Simulate relative counts for each parameter combination
 
 ```{r simulate-relative-counts}
 relative_counts = list()
@@ -102,7 +101,7 @@ for (i in seq_len(nrow(fert_params))) {
 }
 ```
 
-## 2.4 Summarize mean relative counts
+## Summarize mean relative counts
 
 ```{r mean-relative-counts}
 mean_relative_counts = t(sapply(relative_counts, colMeans))[, c("Siblings", "AuntsUncles", "Cousins", "TotalKin")]
@@ -115,7 +114,7 @@ kable(mean_relative_counts,
       caption = "Expected number of first-, second-, and third-degree relatives for a focal individual (simulated, by each fertility paramater combination)")
 ```
 
-## 2.5 Visualize the simulated relative distributions
+## Visualize the simulated relative distributions
 
 ```{r relative-distributions, fig.cap = "Simulated relative distributions under different fertility parameters"}
 library(ggplot2)
@@ -159,7 +158,7 @@ ggplot(relative_counts_long,
 
 Based on the simulated relative distributions, we observe the following patterns: the number of relatives increases with higher mean fertility ($\mu$), and decreases as the dispersion parameter ($\theta$) increases—--since greater dispersion corresponds to lower fertility variance. Similarly, the number of relatives declines as the zero-inflation probability ($\pi_0$) increases, though this effect is less pronounced. In general, the number of siblings is lower than that of aunts and uncles, which in turn is lower than the number of cousins—--consistent with the real family structure.
 
-## 2.6 Regression Model to analyze the effects of fertility parameters
+## Regression Model to analyze the effects of fertility parameters
 
 
 ```{r regression-model, results='asis'}

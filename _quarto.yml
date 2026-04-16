@@ -12,7 +12,7 @@ website:
         menu:
           - text: Fertility and sibling relationship
             href: analysis/fert_sibling.qmd
-          - text: Fertility modelling
+          - text: Fertility modelling and sibling estimation
             href: analysis/fert_model.qmd
           - text: How fertility parameters affect kin counts
             href: analysis/fertility_parameters.qmd

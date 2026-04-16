@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Junhui He">
+<meta name="dcterms.date" content="2026-04-16">
 
-<title>License – Kincounts</title>
+<title>Family size findability – Kincounts</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +25,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,18 +71,47 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Kincounts</span>
     </a>
   </div>
@@ -91,7 +122,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -100,29 +131,29 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
-    <a class="dropdown-item" href="./analysis/fert_sibling.html">
+    <a class="dropdown-item" href="../analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/fert_model.html">
+    <a class="dropdown-item" href="../analysis/fert_model.html">
  <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/fertility_parameters.html">
+    <a class="dropdown-item" href="../analysis/fertility_parameters.html">
  <span class="dropdown-text">How fertility parameters affect kin counts</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./analysis/family_size_findability.html">
+    <a class="dropdown-item" href="../analysis/family_size_findability.html">
  <span class="dropdown-text">Family size and identification probability</span></a>
   </li>  
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./license.html" aria-current="page"> 
+    <a class="nav-link" href="../license.html"> 
 <span class="menu-text">License</span></a>
   </li>  
 </ul>
@@ -143,20 +174,46 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">2</span> Methods</a>
+  <ul class="collapse">
+  <li><a href="#zero-inflated-negative-binomial-zinb-distribution" id="toc-zero-inflated-negative-binomial-zinb-distribution" class="nav-link" data-scroll-target="#zero-inflated-negative-binomial-zinb-distribution"><span class="header-section-number">2.1</span> Zero-Inflated Negative Binomial (ZINB) Distribution</a></li>
+  <li><a href="#calculating-the-number-of-relatives" id="toc-calculating-the-number-of-relatives" class="nav-link" data-scroll-target="#calculating-the-number-of-relatives"><span class="header-section-number">2.2</span> Calculating the Number of Relatives</a></li>
+  <li><a href="#the-probability-of-finding-at-least-one-cousin-in-the-database" id="toc-the-probability-of-finding-at-least-one-cousin-in-the-database" class="nav-link" data-scroll-target="#the-probability-of-finding-at-least-one-cousin-in-the-database"><span class="header-section-number">2.3</span> The Probability of Finding at Least One Cousin in the Database</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">License</h1>
+<h1 class="title">Family size findability</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Junhui He </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 16, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -166,16 +223,31 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="software-license" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="software-license"><span class="header-section-number">1</span> Software License</h2>
-<p>The code in this repository is licensed under the MIT License.</p>
-<p>See the <a href="https://github.com/lasisilab/kincounts/blob/main/LICENSE">LICENSE</a> file for the full license text.</p>
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>We aim to clarify the probability of finding at least one cousin in a database, given the family structure in the PODFRIDGE project. This probability depends on two key factors: the number of relatives—determined by the family size (number of children per family) distribution—and the database coverage, which is the proportion of individuals in the database relative to the total population.</p>
+<p>Erlich’s earlier paper modeled the family size distribution using a Poisson distribution, a common approach in many genetic studies. However, this assumption doesn’t accurately capture real-world family sizes, which often show overdispersion and an excess of zeros (i.e., families with no children).</p>
+<p>In this report, we simulate the family size distribution using a Zero-Inflated Negative Binomial (ZINB) distribution, which better reflects real-world data than the Poisson model. We then calculate the probability of finding at least one cousin in the database based on the simulated family sizes and different levels of database coverage.</p>
 </section>
-<section id="data-and-analysis" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="data-and-analysis"><span class="header-section-number">2</span> Data and Analysis</h2>
-<p>All data and analyses are provided for research and educational purposes.</p>
+<section id="methods" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="methods"><span class="header-section-number">2</span> Methods</h2>
+<section id="zero-inflated-negative-binomial-zinb-distribution" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="zero-inflated-negative-binomial-zinb-distribution"><span class="header-section-number">2.1</span> Zero-Inflated Negative Binomial (ZINB) Distribution</h3>
+<p>Based on the empirical data from the US, we find that the distribution of family size is better modeled as a Zero-Inflated Negative Binomial (ZINB) distribution. The ZINB distribution is a more realistic family size distribution, as it accounts for the excess zeros (families with no children) and the overdispersion often observed in family size data.</p>
+<p>The Zero-Inflated Negative Binomial (ZINB) distribution is a statistical model that combines a negative binomial distribution with an additional process that generates excess zeros. It is characterized by three parameters: the zero-inflated probability <span class="math inline">\(p\)</span>, the mean number <span class="math inline">\(\mu\)</span> and the size <span class="math inline">\(s\)</span> of the negative binomial distribution, denoted by <span class="math inline">\(\text{ZINB}(p, s, \mu) = p\delta_0 + (1-p)\text{NB}(s,\mu)\)</span>. The average family size is <span class="math inline">\((1-p)\mu\)</span>. Based on empirical data, we set the parameters to <span class="math inline">\(p=0.1, ~ s=3, ~ \mu = 3\)</span>.</p>
+</section>
+<section id="calculating-the-number-of-relatives" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="calculating-the-number-of-relatives"><span class="header-section-number">2.2</span> Calculating the Number of Relatives</h3>
+<p>In this report, we only consider the relatives whose generation difference between the individual and the relative is less than or equal to 1. Therefore, the first-degree relatives include parents, siblings, and children; the second-degree relatives include aunts, uncles, nephews, nieces, and half-siblings; and the third-degree relatives include first cousins. The number of relatives is calculated based on the family size distribution simulated by the ZINB distribution. For now, the number of half-siblings is set to 0.</p>
+<p>Specifically, if one couple is known as the ancestor couple of the individual, this couple has at least one child, and the number of children is simulated from the ZINB distribution conditional on at least one child. For simplicity, we assume that <span class="math inline">\(X\)</span> follows a ZINB distribution and <span class="math inline">\(Y\)</span> follows a ZINB distribution conditional on at least one child minus one.</p>
+<p>The number of first-degree relatives is given by <span class="math inline">\(2+Y+X\)</span>. The number of second-degree relatives is given by <span class="math inline">\(4 + \sum_{i=1}^2Y_i + \sum_{i=1}^{Y}X_i\)</span>. The number of third-degree relatives is given by <span class="math inline">\(\sum_{i=1}^{\sum_{j=1}^2 Y_j} X_i\)</span>.</p>
+</section>
+<section id="the-probability-of-finding-at-least-one-cousin-in-the-database" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="the-probability-of-finding-at-least-one-cousin-in-the-database"><span class="header-section-number">2.3</span> The Probability of Finding at Least One Cousin in the Database</h3>
+<p>The number of cousins is simulated from the ZINB distribution as above. The simulated data is denoted as <span class="math inline">\(\{r_k\}_{k=1}^n\)</span>, where <span class="math inline">\(n\)</span> is the number of simulations. For each simulated number of cousins <span class="math inline">\(r_k\)</span>, we assume that the number of cousins found in the database follows a binomial distribution with parameters <span class="math inline">\(r_k\)</span>, the genetic match probability <span class="math inline">\(p\)</span>, and the coverage of the database <span class="math inline">\(c\)</span>, denoted as <span class="math inline">\(\text{Binomial}(r_k, cp)\)</span>. The probability of finding at least one cousin in the database is therefore <span class="math inline">\(1-(1-cp)^{r_k}\)</span>. The expected probability across all simulations is given by <span class="math inline">\(\frac{1}{n}\sum_{k=1}^n (1-(1-cp)^{r_k})\)</span>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

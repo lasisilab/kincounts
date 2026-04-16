@@ -1,7 +1,7 @@
 ---
 title: "Relationship between Fertility Distribution and Sibling Distribution"
 author: "Junhui He"
-date: today()
+date: today
 ---
 
 In this article, we develop a statistical framework for modelling the relationship between the fertility distribution and sibling distribution: Given a fertility distribution, we derive what the resulting sibling distribution would be in the next generation. Specifically, the fertility distribution describes the number of children per parent, while the sibling distribution describes the number of siblings per person in the next generation.

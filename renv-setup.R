@@ -1,9 +1,28 @@
-# Install core R packages used by this Quarto workflow.
-required <- c("knitr", "rmarkdown", "ggplot2", "quarto", "reticulate")
-missing <- required[!(required %in% installed.packages()[, "Package"])]
+# Install R packages required by analysis/*.qmd.
+# This list is derived from explicit library()/pkg:: usage in analysis files.
+required <- c(
+  "dplyr",
+  "tidyr",
+  "readr",
+  "MASS",
+  "pscl",
+  "knitr",
+  "ggplot2",
+  "purrr",
+  "tibble",
+  "broom",
+  "viridisLite",
+  "quarto"
+)
+
+installed <- rownames(installed.packages())
+missing <- setdiff(required, installed)
 
 if (length(missing) > 0) {
-  install.packages(missing)
+  install.packages(missing, repos = "https://cloud.r-project.org")
+  cat("Installed:", paste(missing, collapse = ", "), "\n")
+} else {
+  cat("All required packages are already installed.\n")
 }
 
-cat("R package setup complete.\n")
+cat("Analysis package setup complete.\n")

@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Junhui He">
+<meta name="dcterms.date" content="2026-04-16">
+
+<title>How fertility parameters affect the family structure distribution – Kincounts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kincounts</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-analyses" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Analyses</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
+        <li>
+    <a class="dropdown-item" href="../analysis/fert_sibling.html">
+ <span class="dropdown-text">Fertility and sibling relationship</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/fert_model.html">
+ <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/fertility_parameters.html">
+ <span class="dropdown-text">How fertility parameters affect kin counts</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../analysis/family_size_findability.html">
+ <span class="dropdown-text">Family size and identification probability</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../license.html"> 
+<span class="menu-text">License</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/lasisilab/kincounts"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">Source code</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#family-structure-model" id="toc-family-structure-model" class="nav-link active" data-scroll-target="#family-structure-model"><span class="header-section-number">1</span> Family structure model</a>
+  <ul class="collapse">
+  <li><a href="#fertility-distribution" id="toc-fertility-distribution" class="nav-link" data-scroll-target="#fertility-distribution"><span class="header-section-number">1.1</span> Fertility distribution</a></li>
+  <li><a href="#sibling-distribution" id="toc-sibling-distribution" class="nav-link" data-scroll-target="#sibling-distribution"><span class="header-section-number">1.2</span> Sibling distribution</a></li>
+  <li><a href="#fertility-and-sibling-parameters" id="toc-fertility-and-sibling-parameters" class="nav-link" data-scroll-target="#fertility-and-sibling-parameters"><span class="header-section-number">1.3</span> Fertility and sibling parameters</a></li>
+  </ul></li>
+  <li><a href="#effect-of-fertility-parameters-on-relative-counts" id="toc-effect-of-fertility-parameters-on-relative-counts" class="nav-link" data-scroll-target="#effect-of-fertility-parameters-on-relative-counts"><span class="header-section-number">2</span> Effect of fertility parameters on relative counts</a>
+  <ul class="collapse">
+  <li><a href="#simulate-the-relative-counts-for-the-focal-individual" id="toc-simulate-the-relative-counts-for-the-focal-individual" class="nav-link" data-scroll-target="#simulate-the-relative-counts-for-the-focal-individual"><span class="header-section-number">2.1</span> Simulate the relative counts for the focal individual</a></li>
+  <li><a href="#prepare-parameter-combinations" id="toc-prepare-parameter-combinations" class="nav-link" data-scroll-target="#prepare-parameter-combinations"><span class="header-section-number">2.2</span> Prepare parameter combinations</a></li>
+  <li><a href="#simulate-relative-counts-for-each-parameter-combination" id="toc-simulate-relative-counts-for-each-parameter-combination" class="nav-link" data-scroll-target="#simulate-relative-counts-for-each-parameter-combination"><span class="header-section-number">2.3</span> Simulate relative counts for each parameter combination</a></li>
+  <li><a href="#summarize-mean-relative-counts" id="toc-summarize-mean-relative-counts" class="nav-link" data-scroll-target="#summarize-mean-relative-counts"><span class="header-section-number">2.4</span> Summarize mean relative counts</a></li>
+  <li><a href="#visualize-the-simulated-relative-distributions" id="toc-visualize-the-simulated-relative-distributions" class="nav-link" data-scroll-target="#visualize-the-simulated-relative-distributions"><span class="header-section-number">2.5</span> Visualize the simulated relative distributions</a></li>
+  <li><a href="#regression-model-to-analyze-the-effects-of-fertility-parameters" id="toc-regression-model-to-analyze-the-effects-of-fertility-parameters" class="nav-link" data-scroll-target="#regression-model-to-analyze-the-effects-of-fertility-parameters"><span class="header-section-number">2.6</span> Regression Model to analyze the effects of fertility parameters</a>
+  <ul class="collapse">
+  <li><a href="#focal-individual-model-for-siblings" id="toc-focal-individual-model-for-siblings" class="nav-link" data-scroll-target="#focal-individual-model-for-siblings"><span class="header-section-number">2.6.1</span> Focal-individual model for Siblings</a></li>
+  <li><a href="#focal-individual-model-for-auntsuncles" id="toc-focal-individual-model-for-auntsuncles" class="nav-link" data-scroll-target="#focal-individual-model-for-auntsuncles"><span class="header-section-number">2.6.2</span> Focal-individual model for AuntsUncles</a></li>
+  <li><a href="#focal-individual-model-for-cousins" id="toc-focal-individual-model-for-cousins" class="nav-link" data-scroll-target="#focal-individual-model-for-cousins"><span class="header-section-number">2.6.3</span> Focal-individual model for Cousins</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How fertility parameters affect the family structure distribution</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Junhui He </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 16, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="family-structure-model" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Family structure model</h1>
+<section id="fertility-distribution" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="fertility-distribution"><span class="header-section-number">1.1</span> Fertility distribution</h2>
+<p>Here we establish a zero inflated negative binomial distribution for the number of children per family—<strong>fertility distribution</strong> with parameters: <strong>mean fertility</strong> (<span class="math inline">\(\mu\)</span>), <strong>dispersion/size</strong> (<span class="math inline">\(\theta\)</span>), and <strong>zero‑inflation probability</strong> (<span class="math inline">\(\pi_0\)</span>), denoted as <span class="math inline">\(ZINB(\mu, \theta, \pi_0)\)</span>. According to the definition of the negative binomial distribution, the mean and variance of <span class="math inline">\(NB(\mu,\theta)\)</span> is given by <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\mu + \frac{\mu^2}{\theta}\)</span>, respectively. Therefore, the mean and variance of <span class="math inline">\(ZINB(\mu, \theta, \pi_0)\)</span> is defined by <span class="math inline">\(\mu(1-\pi_0)\)</span> and <span class="math inline">\(\mu(1-\pi_0) + \frac{\mu^2(1-\pi_0)}{\theta}+\mu^2\pi_0(1-\pi_0)\)</span>, respectively.</p>
+</section>
+<section id="sibling-distribution" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sibling-distribution"><span class="header-section-number">1.2</span> Sibling distribution</h2>
+<p>The <strong>sibling distribution</strong> is the distribution of the number of siblings per person, which can be derived from the fertility distribution. For any <span class="math inline">\(k \geq 0\)</span>, the probability of having <span class="math inline">\(k\)</span> siblings is given by: <span class="math display">\[P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).\]</span> This is because a person with <span class="math inline">\(k\)</span> siblings must have been born into a family with <span class="math inline">\(k+1\)</span> children, and there are <span class="math inline">\(k+1\)</span> ways to choose which child they are among those children. If the fertility distribution is <span class="math inline">\(ZINB(\mu, \theta, \pi_0)\)</span>, then the sibling distribution is a negative binomial distribution with parameters <strong>mean fertility</strong> (<span class="math inline">\(\frac{\mu(\theta+1)}{\theta}\)</span>), <strong>dispersion/size</strong> (<span class="math inline">\(\theta+1\)</span>), denoted as <span class="math inline">\(NB(\frac{\mu(\theta+1)}{\theta}, \theta+1)\)</span>. We note that the average number of siblings per person <span class="math inline">\(\frac{\mu(\theta+1)}{\theta}\)</span> is higher than the average number of children <span class="math inline">\(\mu(1-\pi_0)\)</span> minus one, called the “sibship size paradox”.</p>
+</section>
+<section id="fertility-and-sibling-parameters" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="fertility-and-sibling-parameters"><span class="header-section-number">1.3</span> Fertility and sibling parameters</h2>
+<p>Based on the empirical data on U.S. women, a reasonable range of parameters for the fertility distribution is <span class="math display">\[\mu \in [2, 6], ~ \theta \in [1, 10], ~ and ~ \pi_0 \in [0, 0.2].\]</span></p>
+</section>
+</section>
+<section id="effect-of-fertility-parameters-on-relative-counts" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Effect of fertility parameters on relative counts</h1>
+<p>We explore the effect of the fertility parameters on the family structure distribution, which is defined as the distribution of the number of relatives one individual has.</p>
+<section id="simulate-the-relative-counts-for-the-focal-individual" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="simulate-the-relative-counts-for-the-focal-individual"><span class="header-section-number">2.1</span> Simulate the relative counts for the focal individual</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>simulate_relatives_zinb <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, size, pi0,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">n_sim =</span> <span class="dv">10000</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">max_kids =</span> <span class="dv">20</span>) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  draw_fert <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(<span class="fu">runif</span>(n) <span class="sc">&lt;</span> pi0, <span class="dv">0</span>L,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">as.integer</span>(<span class="fu">pmin</span>(<span class="fu">rnbinom</span>(n, size, <span class="at">mu =</span> mu), max_kids)))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  draw_sibs <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(<span class="fu">pmin</span>(<span class="fu">rnbinom</span>(n, size <span class="sc">+</span> <span class="dv">1</span>, <span class="at">mu =</span> mu <span class="sc">*</span> (size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size), max_kids <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Siblings for the focal individual</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  siblings <span class="ot">&lt;-</span> <span class="fu">draw_sibs</span>(n_sim)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. Aunts &amp; uncles (no subtraction needed)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  aunts_maternal <span class="ot">&lt;-</span> <span class="fu">draw_sibs</span>(n_sim)   <span class="co"># mother’s siblings</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  aunts_paternal <span class="ot">&lt;-</span> <span class="fu">draw_sibs</span>(n_sim)   <span class="co"># father’s siblings</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  aunts_uncles   <span class="ot">&lt;-</span> aunts_maternal <span class="sc">+</span> aunts_paternal</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Cousins: for each aunt/uncle, simulate their fertility and sum</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  cousins <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_int</span>(aunts_uncles, <span class="cf">function</span>(n_au) {</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (n_au <span class="sc">==</span> <span class="dv">0</span>L) <span class="dv">0</span>L <span class="cf">else</span> <span class="fu">as.integer</span>(<span class="fu">sum</span>(<span class="fu">draw_fert</span>(n_au)))</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">Siblings    =</span> siblings,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">AuntsUncles =</span> aunts_uncles,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cousins     =</span> cousins,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Parents     =</span> <span class="dv">2</span>L,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Grandparents=</span> <span class="dv">4</span>L,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">TotalKin =</span> siblings <span class="sc">+</span> aunts_uncles <span class="sc">+</span> cousins <span class="sc">+</span> <span class="dv">2</span>L <span class="sc">+</span> <span class="dv">4</span>L</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="prepare-parameter-combinations" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="prepare-parameter-combinations"><span class="header-section-number">2.2</span> Prepare parameter combinations</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare fertility parameter tables</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fert_params <span class="ot">=</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">10</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pi0 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>fert_params <span class="ot">=</span> <span class="fu">as.data.frame</span>(fert_params)[, <span class="fu">c</span>(<span class="st">"pi0"</span>, <span class="st">"size"</span>, <span class="st">"mu"</span>)]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10000</span>  <span class="co"># Number of simulations per parameter combination</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="simulate-relative-counts-for-each-parameter-combination" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="simulate-relative-counts-for-each-parameter-combination"><span class="header-section-number">2.3</span> Simulate relative counts for each parameter combination</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>relative_counts <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(fert_params))) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">=</span> fert_params[i, ]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  relative_counts[[i]] <span class="ot">=</span> <span class="fu">simulate_relatives_zinb</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> params<span class="sc">$</span>mu,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> params<span class="sc">$</span>size,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0 =</span> params<span class="sc">$</span>pi0,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="summarize-mean-relative-counts" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="summarize-mean-relative-counts"><span class="header-section-number">2.4</span> Summarize mean relative counts</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mean_relative_counts <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">sapply</span>(relative_counts, colMeans))[, <span class="fu">c</span>(<span class="st">"Siblings"</span>, <span class="st">"AuntsUncles"</span>, <span class="st">"Cousins"</span>, <span class="st">"TotalKin"</span>)]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mean_relative_counts <span class="ot">=</span> <span class="fu">as.data.frame</span>(mean_relative_counts)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mean_relative_counts) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"mean_siblings"</span>, <span class="st">"mean_aunts_uncles"</span>, <span class="st">"mean_cousins"</span>, <span class="st">"mean_total"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>mean_relative_counts <span class="ot">=</span> <span class="fu">cbind</span>(fert_params, mean_relative_counts)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(mean_relative_counts, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">digits =</span> <span class="dv">2</span>, </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Expected number of first-, second-, and third-degree relatives for a focal individual (simulated, by each fertility paramater combination)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Expected number of first-, second-, and third-degree relatives for a focal individual (simulated, by each fertility paramater combination)</caption>
+<colgroup>
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 19%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">pi0</th>
+<th style="text-align: right;">size</th>
+<th style="text-align: right;">mu</th>
+<th style="text-align: right;">mean_siblings</th>
+<th style="text-align: right;">mean_aunts_uncles</th>
+<th style="text-align: right;">mean_cousins</th>
+<th style="text-align: right;">mean_total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.91</td>
+<td style="text-align: right;">11.88</td>
+<td style="text-align: right;">35.61</td>
+<td style="text-align: right;">59.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.69</td>
+<td style="text-align: right;">15.36</td>
+<td style="text-align: right;">60.91</td>
+<td style="text-align: right;">89.95</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">9.18</td>
+<td style="text-align: right;">18.34</td>
+<td style="text-align: right;">89.70</td>
+<td style="text-align: right;">123.22</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">10.42</td>
+<td style="text-align: right;">20.95</td>
+<td style="text-align: right;">119.80</td>
+<td style="text-align: right;">157.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.71</td>
+<td style="text-align: right;">7.44</td>
+<td style="text-align: right;">22.27</td>
+<td style="text-align: right;">39.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5.02</td>
+<td style="text-align: right;">9.93</td>
+<td style="text-align: right;">39.89</td>
+<td style="text-align: right;">60.84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6.23</td>
+<td style="text-align: right;">12.43</td>
+<td style="text-align: right;">62.15</td>
+<td style="text-align: right;">86.81</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7.54</td>
+<td style="text-align: right;">14.91</td>
+<td style="text-align: right;">89.92</td>
+<td style="text-align: right;">118.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.29</td>
+<td style="text-align: right;">6.62</td>
+<td style="text-align: right;">19.81</td>
+<td style="text-align: right;">35.71</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.41</td>
+<td style="text-align: right;">8.79</td>
+<td style="text-align: right;">35.17</td>
+<td style="text-align: right;">54.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5.53</td>
+<td style="text-align: right;">10.99</td>
+<td style="text-align: right;">55.07</td>
+<td style="text-align: right;">77.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6.55</td>
+<td style="text-align: right;">13.17</td>
+<td style="text-align: right;">78.86</td>
+<td style="text-align: right;">104.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.87</td>
+<td style="text-align: right;">11.83</td>
+<td style="text-align: right;">31.80</td>
+<td style="text-align: right;">55.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.68</td>
+<td style="text-align: right;">15.36</td>
+<td style="text-align: right;">54.74</td>
+<td style="text-align: right;">83.78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">9.08</td>
+<td style="text-align: right;">18.44</td>
+<td style="text-align: right;">80.85</td>
+<td style="text-align: right;">114.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">10.50</td>
+<td style="text-align: right;">20.94</td>
+<td style="text-align: right;">108.00</td>
+<td style="text-align: right;">145.44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">7.49</td>
+<td style="text-align: right;">20.12</td>
+<td style="text-align: right;">37.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5.01</td>
+<td style="text-align: right;">10.02</td>
+<td style="text-align: right;">36.02</td>
+<td style="text-align: right;">57.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6.23</td>
+<td style="text-align: right;">12.42</td>
+<td style="text-align: right;">55.77</td>
+<td style="text-align: right;">80.43</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7.46</td>
+<td style="text-align: right;">14.86</td>
+<td style="text-align: right;">80.21</td>
+<td style="text-align: right;">108.54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.29</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">17.83</td>
+<td style="text-align: right;">33.72</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.39</td>
+<td style="text-align: right;">8.89</td>
+<td style="text-align: right;">32.05</td>
+<td style="text-align: right;">51.32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5.49</td>
+<td style="text-align: right;">10.95</td>
+<td style="text-align: right;">49.21</td>
+<td style="text-align: right;">71.65</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">13.20</td>
+<td style="text-align: right;">71.43</td>
+<td style="text-align: right;">97.23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.82</td>
+<td style="text-align: right;">11.91</td>
+<td style="text-align: right;">28.56</td>
+<td style="text-align: right;">52.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.61</td>
+<td style="text-align: right;">15.27</td>
+<td style="text-align: right;">48.45</td>
+<td style="text-align: right;">77.32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">9.25</td>
+<td style="text-align: right;">18.40</td>
+<td style="text-align: right;">72.19</td>
+<td style="text-align: right;">105.84</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">10.51</td>
+<td style="text-align: right;">21.05</td>
+<td style="text-align: right;">96.38</td>
+<td style="text-align: right;">133.94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.76</td>
+<td style="text-align: right;">7.51</td>
+<td style="text-align: right;">18.14</td>
+<td style="text-align: right;">35.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">10.05</td>
+<td style="text-align: right;">32.06</td>
+<td style="text-align: right;">53.11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6.21</td>
+<td style="text-align: right;">12.43</td>
+<td style="text-align: right;">49.78</td>
+<td style="text-align: right;">74.43</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7.44</td>
+<td style="text-align: right;">14.98</td>
+<td style="text-align: right;">71.94</td>
+<td style="text-align: right;">100.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3.26</td>
+<td style="text-align: right;">6.64</td>
+<td style="text-align: right;">15.86</td>
+<td style="text-align: right;">31.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.45</td>
+<td style="text-align: right;">8.82</td>
+<td style="text-align: right;">28.33</td>
+<td style="text-align: right;">47.61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5.51</td>
+<td style="text-align: right;">10.95</td>
+<td style="text-align: right;">43.73</td>
+<td style="text-align: right;">66.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6.59</td>
+<td style="text-align: right;">13.16</td>
+<td style="text-align: right;">63.11</td>
+<td style="text-align: right;">88.86</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="visualize-the-simulated-relative-distributions" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="visualize-the-simulated-relative-distributions"><span class="header-section-number">2.5</span> Visualize the simulated relative distributions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all relative counts into a single data frame</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>relative_counts_df <span class="ot">=</span> <span class="fu">bind_rows</span>(relative_counts)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>relative_counts_df <span class="ot">=</span> relative_counts_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>mu, <span class="at">each =</span> n_sim),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>size, <span class="at">each =</span> n_sim),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0 =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>pi0, <span class="at">each =</span> n_sim)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivot to long format for plotting</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>relative_counts_long <span class="ot">=</span> relative_counts_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(Siblings, AuntsUncles, Cousins), </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"RelativeType"</span>, <span class="at">values_to =</span> <span class="st">"Count"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> <span class="fu">factor</span>(mu, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"5"</span>, <span class="st">"6"</span>)),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">RelativeType =</span> <span class="fu">factor</span>(RelativeType, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Siblings"</span>, <span class="st">"AuntsUncles"</span>, <span class="st">"Cousins"</span>)),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">factor</span>(size, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"theta = 1"</span>, <span class="st">"theta = 4"</span>, <span class="st">"theta = 10"</span>)),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0 =</span> <span class="fu">factor</span>(pi0, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"pi_0 = 0"</span>, <span class="st">"pi_0 = 0.1"</span>, <span class="st">"pi_0 = 0.2"</span>))</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the distributions</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(relative_counts_long,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> mu, <span class="at">y =</span> Count, <span class="at">fill =</span> RelativeType)) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="fl">0.7</span>, <span class="at">alpha =</span> .<span class="dv">8</span>, <span class="at">outlier.size =</span> .<span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="fl">1.4</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">group =</span> RelativeType),</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>               <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>),</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(pi0 <span class="sc">~</span> size) <span class="sc">+</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"D"</span>) <span class="sc">+</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title   =</span> <span class="st">"Simulated relative distributions under different fertility parameters"</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">x       =</span> <span class="st">"Mean fertility (mu)"</span>,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>       <span class="at">y       =</span> <span class="st">"Relative count"</span>,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill    =</span> <span class="st">"Relative type"</span>) <span class="sc">+</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">11</span>) <span class="sc">+</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="fertility_parameters_files/figure-html/relative-distributions-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Simulated relative distributions under different fertility parameters</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Based on the simulated relative distributions, we observe the following patterns: the number of relatives increases with higher mean fertility (<span class="math inline">\(\mu\)</span>), and decreases as the dispersion parameter (<span class="math inline">\(\theta\)</span>) increases—–since greater dispersion corresponds to lower fertility variance. Similarly, the number of relatives declines as the zero-inflation probability (<span class="math inline">\(\pi_0\)</span>) increases, though this effect is less pronounced. In general, the number of siblings is lower than that of aunts and uncles, which in turn is lower than the number of cousins—–consistent with the real family structure.</p>
+</section>
+<section id="regression-model-to-analyze-the-effects-of-fertility-parameters" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="regression-model-to-analyze-the-effects-of-fertility-parameters"><span class="header-section-number">2.6</span> Regression Model to analyze the effects of fertility parameters</h2>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare wide fertility parameter tables</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fert_params <span class="ot">=</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">10</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pi0 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fert_params <span class="ot">=</span> <span class="fu">as.data.frame</span>(fert_params)[, <span class="fu">c</span>(<span class="st">"pi0"</span>, <span class="st">"size"</span>, <span class="st">"mu"</span>)]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10000</span>  <span class="co"># Number of simulations per parameter combination</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate relative counts for each parameter combination</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>relative_counts <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(fert_params))) {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  params <span class="ot">=</span> fert_params[i, ]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  relative_counts[[i]] <span class="ot">=</span> <span class="fu">simulate_relatives_zinb</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> params<span class="sc">$</span>mu,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> params<span class="sc">$</span>size,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0 =</span> params<span class="sc">$</span>pi0,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_sim =</span> n_sim</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all relative counts into a single data frame</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>relative_counts_df <span class="ot">=</span> <span class="fu">bind_rows</span>(relative_counts)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>relative_counts_df <span class="ot">=</span> relative_counts_df <span class="sc">%&gt;%</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>mu, <span class="at">each =</span> n_sim),</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>size, <span class="at">each =</span> n_sim),</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0 =</span> <span class="fu">rep</span>(fert_params<span class="sc">$</span>pi0, <span class="at">each =</span> n_sim)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>relatives <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Siblings"</span>, <span class="st">"AuntsUncles"</span>, <span class="st">"Cousins"</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (rel <span class="cf">in</span> relatives) {</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n\n</span><span class="st">### Focal-individual model for"</span>, rel, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  form <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste0</span>(rel, <span class="st">" ~ mu + size + pi0"</span>))</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(form, <span class="at">data =</span> relative_counts_df)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  lm_tidy <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(lm_fit, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">kable</span>(</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    lm_tidy,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">digits =</span> <span class="dv">3</span>,</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="fu">paste</span>(</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Regression coefficients for"</span>, rel, </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>      <span class="st">"(focal-individual)"</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<section id="focal-individual-model-for-siblings" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="focal-individual-model-for-siblings"><span class="header-section-number">2.6.1</span> Focal-individual model for Siblings</h3>
+<table class="caption-top table">
+<caption>Regression coefficients for Siblings (focal-individual)</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.576</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">129.969</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.552</td>
+<td style="text-align: right;">1.599</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mu</td>
+<td style="text-align: right;">1.310</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">552.464</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.306</td>
+<td style="text-align: right;">1.315</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">size</td>
+<td style="text-align: right;">-0.291</td>
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">-277.344</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">-0.293</td>
+<td style="text-align: right;">-0.289</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pi0</td>
+<td style="text-align: right;">0.028</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: right;">0.583</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">-0.065</td>
+<td style="text-align: right;">0.121</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="focal-individual-model-for-auntsuncles" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="focal-individual-model-for-auntsuncles"><span class="header-section-number">2.6.2</span> Focal-individual model for AuntsUncles</h3>
+<table class="caption-top table">
+<caption>Regression coefficients for AuntsUncles (focal-individual)</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">3.106</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">178.414</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">3.072</td>
+<td style="text-align: right;">3.141</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mu</td>
+<td style="text-align: right;">2.632</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">772.667</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">2.625</td>
+<td style="text-align: right;">2.638</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">size</td>
+<td style="text-align: right;">-0.580</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">-385.299</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">-0.583</td>
+<td style="text-align: right;">-0.577</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pi0</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0.758</td>
+<td style="text-align: right;">0.449</td>
+<td style="text-align: right;">-0.082</td>
+<td style="text-align: right;">0.185</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="focal-individual-model-for-cousins" class="level3" data-number="2.6.3">
+<h3 data-number="2.6.3" class="anchored" data-anchor-id="focal-individual-model-for-cousins"><span class="header-section-number">2.6.3</span> Focal-individual model for Cousins</h3>
+<table class="caption-top table">
+<caption>Regression coefficients for Cousins (focal-individual)</caption>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">std.error</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-17.270</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">-203.686</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-17.436</td>
+<td style="text-align: right;">-17.104</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mu</td>
+<td style="text-align: right;">18.975</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">1144.041</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18.943</td>
+<td style="text-align: right;">19.008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">size</td>
+<td style="text-align: right;">-2.156</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">-294.102</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-2.170</td>
+<td style="text-align: right;">-2.141</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pi0</td>
+<td style="text-align: right;">-48.664</td>
+<td style="text-align: right;">0.332</td>
+<td style="text-align: right;">-146.701</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">-49.314</td>
+<td style="text-align: right;">-48.013</td>
+</tr>
+</tbody>
+</table>
+<p>We can conclude that the mean fertility (<span class="math inline">\(\mu\)</span>) has a positive effect on the number of relatives, while the dispersion parameter (<span class="math inline">\(\theta\)</span>) have a negative effects. The zero-inflation probability (<span class="math inline">\(\pi_0\)</span>) has a negative effect on the number of cousins, but the effect is not significant for siblings and aunts/uncles.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

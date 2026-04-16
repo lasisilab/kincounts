@@ -72,9 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9856bc758d1e138440b9cc0ca027063a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -104,6 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-light">
@@ -127,33 +129,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
   <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-analyses" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Analyses</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
-    <a class="dropdown-item" href="./fert_sibling.html">
+    <a class="dropdown-item" href="./analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./fert_model.html">
- <span class="dropdown-text">Fertility modelling</span></a>
+    <a class="dropdown-item" href="./analysis/fert_model.html">
+ <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./fertility_parameters.html">
+    <a class="dropdown-item" href="./analysis/fertility_parameters.html">
  <span class="dropdown-text">How fertility parameters affect kin counts</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./family_size_findability.html">
+    <a class="dropdown-item" href="./analysis/family_size_findability.html">
  <span class="dropdown-text">Family size and identification probability</span></a>
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="./license.html"> 
 <span class="menu-text">License</span></a>
@@ -199,23 +201,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="kincounts-long-range-familial-search" class="level1">
-<h1>Kincounts: Long Range Familial Search</h1>
+<section id="kincounts-long-range-familial-search" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Kincounts: Long Range Familial Search</h1>
 <p>Welcome to the kincounts research website.</p>
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<section id="overview" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.1</span> Overview</h2>
 <p>This project estimates the probability of identifying individuals through genetic databases by modeling extended family relationships. It simulates the distribution of distant relatives (cousins) based on fertility patterns and calculates the likelihood of finding genetic matches in a database.</p>
 </section>
-<section id="key-features" class="level2">
-<h2 class="anchored" data-anchor-id="key-features">Key Features</h2>
+<section id="key-features" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="key-features"><span class="header-section-number">1.2</span> Key Features</h2>
 <ul>
 <li><strong>Fertility Distribution Estimation</strong>: Fit zero-inflated negative binomial (ZINB) models to fertility count data</li>
 <li><strong>Relative Count Simulation</strong>: Generate simulated counts of relatives at various degrees</li>
 <li><strong>Identity Probability Calculation</strong>: Estimate the probability of finding genetic matches in databases</li>
 </ul>
 </section>
-<section id="interactive-application" class="level2">
-<h2 class="anchored" data-anchor-id="interactive-application">Interactive Application</h2>
+<section id="interactive-application" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="interactive-application"><span class="header-section-number">1.3</span> Interactive Application</h2>
 <p>We provide a Shiny web application for interactive exploration of the models. The app includes:</p>
 <ul>
 <li>Parameter estimation from uploaded fertility data</li>
@@ -224,12 +226,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Identity probability calculations based on population and database sizes</li>
 </ul>
 </section>
-<section id="methods" class="level2">
-<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<section id="methods" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="methods"><span class="header-section-number">1.4</span> Methods</h2>
 <p>The application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. Genetic match probabilities are calculated based on the expected length and number of shared DNA segments between cousins of varying degrees.</p>
 </section>
-<section id="repository-structure" class="level2">
-<h2 class="anchored" data-anchor-id="repository-structure">Repository Structure</h2>
+<section id="repository-structure" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="repository-structure"><span class="header-section-number">1.5</span> Repository Structure</h2>
 <ul>
 <li><code>analysis/</code>: R Markdown analysis files</li>
 <li><code>app/</code>: Shiny application code</li>
@@ -239,8 +241,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>output/</code>: Analysis outputs</li>
 </ul>
 </section>
-<section id="getting-started" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
+<section id="getting-started" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="getting-started"><span class="header-section-number">1.6</span> Getting Started</h2>
 <p>Explore the analyses using the navigation bar above, or run the Shiny application locally:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>shiny<span class="sc">::</span><span class="fu">runApp</span>(<span class="st">"app/app.R"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
