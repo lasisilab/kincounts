@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Junhui He">
-<meta name="dcterms.date" content="2026-04-16">
+<meta name="dcterms.date" content="2026-06-03">
 
 <title>Fertility Modelling and Sibling Estimates – Kincounts</title>
 <style>
@@ -171,7 +171,7 @@ window.Quarto = {
   </li>  
         <li>
     <a class="dropdown-item" href="../analysis/fert_model.html">
- <span class="dropdown-text">Fertility modelling and sibling estimation</span></a>
+ <span class="dropdown-text">Fertility modelling with US census data</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../analysis/fertility_parameters.html">
@@ -214,11 +214,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#u.s.-census-data-in-fertility" id="toc-u.s.-census-data-in-fertility" class="nav-link active" data-scroll-target="#u.s.-census-data-in-fertility"><span class="header-section-number">1</span> U.S. Census Data in Fertility</a>
+  <li><a href="#ipmus-fertility-data" id="toc-ipmus-fertility-data" class="nav-link active" data-scroll-target="#ipmus-fertility-data"><span class="header-section-number">1</span> IPMUS fertility data</a>
   <ul class="collapse">
-  <li><a href="#load-the-prefiltered-ipums-subset" id="toc-load-the-prefiltered-ipums-subset" class="nav-link" data-scroll-target="#load-the-prefiltered-ipums-subset"><span class="header-section-number">1.1</span> Load the pre‑filtered IPUMS subset</a></li>
-  <li><a href="#select-the-1990-age-5059-cohort" id="toc-select-the-1990-age-5059-cohort" class="nav-link" data-scroll-target="#select-the-1990-age-5059-cohort"><span class="header-section-number">1.2</span> Select the 1990, age 50‑59 cohort</a></li>
+  <li><a href="#load-the-ipums-subset" id="toc-load-the-ipums-subset" class="nav-link" data-scroll-target="#load-the-ipums-subset"><span class="header-section-number">1.1</span> Load the IPUMS subset</a></li>
+  <li><a href="#prepare-the-fertility-data-by-generations" id="toc-prepare-the-fertility-data-by-generations" class="nav-link" data-scroll-target="#prepare-the-fertility-data-by-generations"><span class="header-section-number">1.2</span> Prepare the fertility data by generations</a></li>
   <li><a href="#prepare-individual-level-sibling-counts" id="toc-prepare-individual-level-sibling-counts" class="nav-link" data-scroll-target="#prepare-individual-level-sibling-counts"><span class="header-section-number">1.3</span> Prepare individual-level sibling counts</a></li>
+  <li><a href="#visualise-the-fertility-and-sibling-distributions-across-census-years" id="toc-visualise-the-fertility-and-sibling-distributions-across-census-years" class="nav-link" data-scroll-target="#visualise-the-fertility-and-sibling-distributions-across-census-years"><span class="header-section-number">1.4</span> Visualise the fertility and sibling distributions across Census years</a></li>
   </ul></li>
   <li><a href="#family-structure-modelling" id="toc-family-structure-modelling" class="nav-link" data-scroll-target="#family-structure-modelling"><span class="header-section-number">2</span> Family structure modelling</a>
   <ul class="collapse">
@@ -270,7 +271,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 16, 2026</p>
+      <p class="date">June 3, 2026</p>
     </div>
   </div>
   
@@ -282,155 +283,196 @@ window.Quarto = {
 </header>
 
 
-<section id="u.s.-census-data-in-fertility" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> U.S. Census Data in Fertility</h1>
-<p>We extract the fertility information for U.S. women aged 50‑59 in the 1990 Census. Women aged 50–59 in the 1990 U.S. Census were born between 1931 and 1940. Assuming a typical childbearing age range of 25–45, their children would have been born between approximately 1956 and 1985. Therefore, the fertility distributions and relative counts estimated from this cohort primarily reflect the family-building behaviors and social contexts of the mid-1950s through the mid-1980s. We filter to Black/African American and White American groups as these are of interest to our paper.</p>
-<section id="load-the-prefiltered-ipums-subset" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="load-the-prefiltered-ipums-subset"><span class="header-section-number">1.1</span> Load the pre‑filtered IPUMS subset</h2>
+<section id="ipmus-fertility-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> IPMUS fertility data</h1>
+<p>We extract the fertility information for U.S. women from the Integrated Public Use Microdata Series (IPUMS) dataset.</p>
+<section id="load-the-ipums-subset" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="load-the-ipums-subset"><span class="header-section-number">1.1</span> Load the IPUMS subset</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path         <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"../data"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>prop_race_year <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path, <span class="st">"proportions_table_by_race_year.csv"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data_filter    <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path, <span class="st">"data_filtered_recoded.csv"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path         <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"data"</span>)) <span class="st">"data"</span> <span class="cf">else</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>output_path  <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"output"</span>)) <span class="st">"output"</span> <span class="cf">else</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"output"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file_path    <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path, <span class="st">"mother_data.csv"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## original script loads both; we only need mother_data for this step</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>mother_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(data_filter, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>mother_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(file_path, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p><code>mother_data</code> already contains:</p>
 <ul>
-<li><code>YEAR</code> – Census year (1960,1970,1980,1990)</li>
-<li><code>AGE</code> – respondent age</li>
-<li><code>RACE</code> – recoded as “White” or “Black/African American”</li>
-<li><code>chborn_num</code> – completed fertility (children ever born)</li>
+<li><code>Year</code> – Census year (1960,1970,1980,1990)</li>
+<li><code>Age</code> – respondent age</li>
+<li><code>Race</code> – self-identified race of the respondent.</li>
+<li><code>n_child</code> – the number of children ever born to each woman</li>
 </ul>
 </section>
-<section id="select-the-1990-age-5059-cohort" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="select-the-1990-age-5059-cohort"><span class="header-section-number">1.2</span> Select the 1990, age 50‑59 cohort</h2>
+<section id="prepare-the-fertility-data-by-generations" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="prepare-the-fertility-data-by-generations"><span class="header-section-number">1.2</span> Prepare the fertility data by generations</h2>
+<p>We focus on U.S. women aged 50-59, who are considered to have completed their fertility. The Census data include observations from 1960, 1970, 1980, and 1990. Women who were aged 50-59 in 1950 are observed as ages 60-69 in the 1960 Census. We therefore prepare fertility data for U.S. women aged 50-59 in 1950, 1960, 1970, 1980, and 1990, corresponding to the 1891-1900, 1901-1910, 1911-1920, 1921-1930, and 1931-1940 birth cohorts, respectively.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cohort <span class="ot">&lt;-</span> mother_data <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(YEAR <span class="sc">==</span> <span class="dv">1990</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>         AGE  <span class="sc">&gt;=</span> <span class="dv">50</span>, AGE <span class="sc">&lt;=</span> <span class="dv">59</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>         RACE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"White"</span>, <span class="st">"Black/African American"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">RACE =</span> <span class="fu">droplevels</span>(<span class="fu">factor</span>(RACE))) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">"YEAR"</span>, <span class="st">"AGE"</span>, <span class="st">"RACE"</span>, <span class="st">"chborn_num"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>cohort <span class="sc">%&gt;%</span> <span class="fu">count</span>(RACE, <span class="at">name =</span> <span class="st">"n_women"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
-  RACE                   n_women
-  &lt;fct&gt;                    &lt;int&gt;
-1 Black/African American   10945
-2 White                    96079</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(cohort, <span class="at">n =</span> <span class="dv">15</span>), <span class="at">caption =</span> <span class="st">"Fertility data for U.S. women aged 50‑59 in the 1990 Census."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  mother_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1960</span>, <span class="dv">1970</span>, <span class="dv">1980</span>, <span class="dv">1990</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>           Age <span class="sc">&gt;=</span> <span class="dv">50</span>, Age <span class="sc">&lt;=</span> <span class="dv">59</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  mother_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">1960</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>           Age <span class="sc">&gt;=</span> <span class="dv">60</span>, Age <span class="sc">&lt;=</span> <span class="dv">69</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">Year =</span> <span class="dv">1950</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">Age =</span> Age <span class="sc">-</span> <span class="dv">10</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">Race =</span> Race,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_child =</span> n_child</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(n_child)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Year, Age)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Year, <span class="at">name =</span> <span class="st">"n_women"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Prepared fertility data by census year and age."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Fertility data for U.S. women aged 50‑59 in the 1990 Census.</caption>
+<caption>Prepared fertility data by census year and age.</caption>
 <thead>
 <tr class="header">
-<th style="text-align: right;">YEAR</th>
-<th style="text-align: right;">AGE</th>
-<th style="text-align: left;">RACE</th>
-<th style="text-align: right;">chborn_num</th>
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">n_women</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">64760</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">86233</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">109482</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">122762</td>
+</tr>
+<tr class="odd">
 <td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">117583</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fertility_data, <span class="at">n =</span> <span class="dv">15</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Fertility data for U.S. women aged 50‑59 in the 1950, 1960, 1970, 1980, and 1990 Censuses."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Fertility data for U.S. women aged 50‑59 in the 1950, 1960, 1970, 1980, and 1990 Censuses.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: left;">Race</th>
+<th style="text-align: right;">n_child</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">3</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">52</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">59</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">4</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">58</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
 </tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">54</td>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">0</td>
 </tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">59</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-</tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">57</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: left;">Black/African American</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">55</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">Black/African American</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">3</td>
 </tr>
 </tbody>
 </table>
@@ -442,79 +484,63 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare individual-level sibling count</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sibs_long <span class="ot">&lt;-</span> cohort <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mother_id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(chborn_num <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">uncount</span>(chborn_num, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_sib =</span> chborn_num <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(sibs_long, <span class="at">n =</span> <span class="dv">15</span>), <span class="at">caption =</span> <span class="st">"Corresponding sibling data calculated from fertility data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare individual-level sibling count</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sib_data <span class="ot">&lt;-</span> fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mother_id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n_child <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">uncount</span>(n_child, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_sib =</span> n_child <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(sib_data, <span class="at">n =</span> <span class="dv">15</span>), <span class="at">caption =</span> <span class="st">"Corresponding sibling data calculated from fertility data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Corresponding sibling data calculated from fertility data</caption>
 <thead>
 <tr class="header">
-<th style="text-align: right;">YEAR</th>
-<th style="text-align: right;">AGE</th>
-<th style="text-align: left;">RACE</th>
-<th style="text-align: right;">chborn_num</th>
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: left;">Race</th>
+<th style="text-align: right;">n_child</th>
 <th style="text-align: right;">mother_id</th>
 <th style="text-align: right;">n_sib</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">52</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">52</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">52</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">2</td>
@@ -522,7 +548,7 @@ window.Quarto = {
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
 <td style="text-align: right;">2</td>
@@ -530,64 +556,207 @@ window.Quarto = {
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">59</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
 <td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">White</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
 </tr>
-<tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">59</td>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">6</td>
-<td style="text-align: right;">2</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">10</td>
 <td style="text-align: right;">6</td>
-<td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">55</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">7</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1990</td>
-<td style="text-align: right;">55</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: left;">White</td>
-<td style="text-align: right;">4</td>
 <td style="text-align: right;">7</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
 </tr>
 </tbody>
 </table>
 </div>
+</div>
+</section>
+<section id="visualise-the-fertility-and-sibling-distributions-across-census-years" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="visualise-the-fertility-and-sibling-distributions-across-census-years"><span class="header-section-number">1.4</span> Visualise the fertility and sibling distributions across Census years</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plot_census_pmf <span class="ot">&lt;-</span> <span class="cf">function</span>(fertility_df, sibling_df, <span class="at">max_count =</span> <span class="dv">12</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  pmf_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    fertility_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        Year,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">Distribution =</span> <span class="st">"Fertility"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">count =</span> <span class="fu">pmin</span>(n_child, max_count)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    sibling_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        Year,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">Distribution =</span> <span class="st">"Sibling"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">count =</span> <span class="fu">pmin</span>(n_sib, max_count)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(Year, Distribution, count, <span class="at">name =</span> <span class="st">"n_counts"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Year, Distribution) <span class="sc">%&gt;%</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prob =</span> n_counts <span class="sc">/</span> <span class="fu">sum</span>(n_counts)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  count_levels <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span>max_count</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  count_labels <span class="ot">&lt;-</span> <span class="fu">as.character</span>(count_levels)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  count_labels[<span class="fu">length</span>(count_labels)] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(max_count, <span class="st">"+"</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  pmf_df <span class="sc">%&gt;%</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">signed_prob =</span> <span class="fu">if_else</span>(Distribution <span class="sc">==</span> <span class="st">"Fertility"</span>, <span class="sc">-</span>prob, prob),</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">count_cat =</span> <span class="fu">factor</span>(count, <span class="at">levels =</span> count_levels, <span class="at">labels =</span> count_labels),</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">Year =</span> <span class="fu">factor</span>(Year)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> count_cat, <span class="at">y =</span> signed_prob, <span class="at">fill =</span> count_cat, <span class="at">alpha =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.82</span>) <span class="sc">+</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> Year, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">abs</span>(x)) <span class="sc">+</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="fu">length</span>(count_levels), <span class="at">option =</span> <span class="st">"D"</span>), <span class="at">name =</span> <span class="st">"Count"</span>) <span class="sc">+</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Fertility"</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">"Sibling"</span> <span class="ot">=</span> <span class="dv">1</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>      <span class="co">#title = "Probability mass functions (PMF) of fertility and sibling distributions across years",</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Count"</span>,</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Probability"</span>,</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># caption = "Left: Fertility distribution; Right: Sibling distribution"</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_census_pmf</span>(fertility_data, sib_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fert_model_files/figure-html/visualize-fertility-sibling-1.png" class="img-fluid figure-img" width="1056"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(output_path, <span class="st">"census_fertility_sibling_pmf.pdf"</span>), <span class="at">width =</span> <span class="dv">11</span>, <span class="at">height =</span> <span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mean_across_years <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">Distribution =</span> <span class="st">"Fertility"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">Mean =</span> <span class="fu">mean</span>(n_child),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  sib_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">Distribution =</span> <span class="st">"Sibling"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">Mean =</span> <span class="fu">mean</span>(n_sib),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>mean_across_years <span class="sc">%&gt;%</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Mean, <span class="at">color =</span> Distribution, <span class="at">group =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(mean_across_years<span class="sc">$</span>Year))) <span class="sc">+</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Fertility"</span> <span class="ot">=</span> <span class="st">"#0072B2"</span>, <span class="st">"Sibling"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>),</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># title = "Mean Fertility and Sibling Counts Across Census Years",</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean family size"</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fert_model_files/figure-html/plot-mean-across-years-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(output_path, <span class="st">"mean_fertility_sibling_across_years.pdf"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 </div>
 </section>
 </section>
@@ -632,28 +801,28 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit_fert <span class="ot">&lt;-</span> <span class="cf">function</span>(dat) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Poisson model</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  pois <span class="ot">&lt;-</span> <span class="fu">glm</span>(chborn_num <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> poisson, <span class="at">data =</span> dat)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Zero‑inflated negative binomial model</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  zinb <span class="ot">&lt;-</span> <span class="fu">zeroinfl</span>(chborn_num <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> <span class="dv">1</span>, <span class="at">data =</span> dat, <span class="at">dist =</span> <span class="st">"negbin"</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Poisson"</span>, <span class="st">"ZINB"</span>),</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu    =</span> <span class="fu">c</span>(<span class="fu">exp</span>(<span class="fu">coef</span>(pois)[<span class="dv">1</span>]),                    <span class="do">## log‑link → exp() gives mean</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">exp</span>(zinb<span class="sc">$</span>coefficients<span class="sc">$</span>count[<span class="dv">1</span>])),</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">size  =</span> <span class="fu">c</span>(<span class="cn">Inf</span>,                                   <span class="do">## dispersion θ; Inf = Poisson</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>              zinb<span class="sc">$</span>theta),</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0   =</span> <span class="fu">c</span>(<span class="dv">0</span>,                                      <span class="do">## zero‑inflation prob.</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">plogis</span>(zinb<span class="sc">$</span>coefficients<span class="sc">$</span>zero[<span class="dv">1</span>]))</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>param_fert <span class="ot">&lt;-</span> cohort <span class="sc">%&gt;%</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(RACE) <span class="sc">%&gt;%</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_modify</span>(<span class="sc">~</span> <span class="fu">fit_fert</span>(.x)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_fert <span class="ot">&lt;-</span> <span class="cf">function</span>(dat) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Poisson model</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  pois <span class="ot">&lt;-</span> <span class="fu">glm</span>(n_child <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> poisson, <span class="at">data =</span> dat)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Zero‑inflated negative binomial model</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  zinb <span class="ot">&lt;-</span> <span class="fu">zeroinfl</span>(n_child <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> <span class="dv">1</span>, <span class="at">data =</span> dat, <span class="at">dist =</span> <span class="st">"negbin"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Poisson"</span>, <span class="st">"ZINB"</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu    =</span> <span class="fu">c</span>(<span class="fu">exp</span>(<span class="fu">coef</span>(pois)[<span class="dv">1</span>]),                    <span class="do">## log‑link → exp() gives mean</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">exp</span>(zinb<span class="sc">$</span>coefficients<span class="sc">$</span>count[<span class="dv">1</span>])),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">size  =</span> <span class="fu">c</span>(<span class="cn">Inf</span>,                                   <span class="do">## dispersion θ; Inf = Poisson</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>              zinb<span class="sc">$</span>theta),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi0   =</span> <span class="fu">c</span>(<span class="dv">0</span>,                                      <span class="do">## zero‑inflation prob.</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>              <span class="fu">plogis</span>(zinb<span class="sc">$</span>coefficients<span class="sc">$</span>zero[<span class="dv">1</span>]))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>param_fert <span class="ot">&lt;-</span> fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_modify</span>(<span class="sc">~</span> <span class="fu">fit_fert</span>(.x)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -662,14 +831,14 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(param_fert, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Fertility‑model parameter estimates for women aged50‑59 (1990 Census)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(param_fert, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Fertility‑model parameter estimates for women aged 50‑59 (1950, 1960, 1970, 1980, 1990)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Fertility‑model parameter estimates for women aged50‑59 (1990 Census)</caption>
+<caption>Fertility‑model parameter estimates for women aged 50‑59 (1950, 1960, 1970, 1980, 1990)</caption>
 <thead>
 <tr class="header">
-<th style="text-align: left;">RACE</th>
+<th style="text-align: right;">Year</th>
 <th style="text-align: left;">Model</th>
 <th style="text-align: right;">mu</th>
 <th style="text-align: right;">size</th>
@@ -678,32 +847,74 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Black/African American</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">3.724</td>
+<td style="text-align: right;">2.818</td>
 <td style="text-align: right;">Inf</td>
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Black/African American</td>
+<td style="text-align: right;">1950</td>
 <td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">3.932</td>
-<td style="text-align: right;">4.289</td>
-<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">2.943</td>
+<td style="text-align: right;">2.372</td>
+<td style="text-align: right;">0.043</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">White</td>
+<td style="text-align: right;">1960</td>
 <td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">2.895</td>
+<td style="text-align: right;">2.429</td>
 <td style="text-align: right;">Inf</td>
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">White</td>
+<td style="text-align: right;">1960</td>
 <td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">3.079</td>
-<td style="text-align: right;">257357.535</td>
-<td style="text-align: right;">0.060</td>
+<td style="text-align: right;">2.458</td>
+<td style="text-align: right;">2.088</td>
+<td style="text-align: right;">0.012</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Poisson</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">ZINB</td>
+<td style="text-align: right;">2.530</td>
+<td style="text-align: right;">3.652</td>
+<td style="text-align: right;">0.066</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Poisson</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">ZINB</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">7.084</td>
+<td style="text-align: right;">0.062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">Poisson</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">ZINB</td>
+<td style="text-align: right;">3.213</td>
+<td style="text-align: right;">19.536</td>
+<td style="text-align: right;">0.056</td>
 </tr>
 </tbody>
 </table>
@@ -715,113 +926,215 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cal_mean_var <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"Poisson"</span>) {</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    mean_fert <span class="ot">=</span> mu</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    var_fert  <span class="ot">=</span> mu</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    mean_sib <span class="ot">=</span> mu</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    var_sib  <span class="ot">=</span> mu</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"ZINB"</span>) {</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    mean_fert <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    var_fert  <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0) <span class="sc">/</span> size) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> pi0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0))</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    mean_sib <span class="ot">=</span> mu <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    var_sib  <span class="ot">=</span> mu <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size) <span class="sc">/</span> size)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> model,</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Fertility =</span> mean_fert,</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Fertility =</span> var_fert,</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Sibling =</span> mean_sib,</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Sibling =</span> var_sib</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>mean_var_fitted <span class="ot">&lt;-</span> param_fert <span class="sc">%&gt;%</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do</span>(<span class="fu">cal_mean_var</span>(.<span class="sc">$</span>Model, .<span class="sc">$</span>mu, .<span class="sc">$</span>size, .<span class="sc">$</span>pi0)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>mean_var <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Race =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Black/African American"</span>, <span class="st">"White"</span>), <span class="at">each =</span> <span class="dv">3</span>),</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Data"</span>, <span class="st">"Poisson"</span>, <span class="st">"ZINB"</span>), <span class="dv">2</span>),</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Fertility =</span> <span class="fu">c</span>(<span class="fu">mean</span>(cohort<span class="sc">$</span>chborn_num[cohort<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"Black/African American"</span>]), mean_var_fitted<span class="sc">$</span>Mean_Fertility[<span class="dv">1</span>], mean_var_fitted<span class="sc">$</span>Mean_Fertility[<span class="dv">2</span>], <span class="fu">mean</span>(cohort<span class="sc">$</span>chborn_num[cohort<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"White"</span>]), mean_var_fitted<span class="sc">$</span>Mean_Fertility[<span class="dv">3</span>], mean_var_fitted<span class="sc">$</span>Mean_Fertility[<span class="dv">4</span>]),</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Fertility =</span> <span class="fu">c</span>(<span class="fu">var</span>(cohort<span class="sc">$</span>chborn_num[cohort<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"Black/African American"</span>]), mean_var_fitted<span class="sc">$</span>Variance_Fertility[<span class="dv">1</span>], mean_var_fitted<span class="sc">$</span>Variance_Fertility[<span class="dv">2</span>], <span class="fu">var</span>(cohort<span class="sc">$</span>chborn_num[cohort<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"White"</span>]), mean_var_fitted<span class="sc">$</span>Variance_Fertility[<span class="dv">3</span>], mean_var_fitted<span class="sc">$</span>Variance_Fertility[<span class="dv">4</span>]),</span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Sibling =</span> <span class="fu">c</span>(<span class="fu">mean</span>(sibs_long<span class="sc">$</span>n_sib[sibs_long<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"Black/African American"</span>]), mean_var_fitted<span class="sc">$</span>Mean_Sibling[<span class="dv">1</span>], mean_var_fitted<span class="sc">$</span>Mean_Sibling[<span class="dv">2</span>], <span class="fu">mean</span>(sibs_long<span class="sc">$</span>n_sib[sibs_long<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"White"</span>]), mean_var_fitted<span class="sc">$</span>Mean_Sibling[<span class="dv">3</span>], mean_var_fitted<span class="sc">$</span>Mean_Sibling[<span class="dv">4</span>]),</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Sibling =</span> <span class="fu">c</span>(<span class="fu">var</span>(sibs_long<span class="sc">$</span>n_sib[sibs_long<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"Black/African American"</span>]), mean_var_fitted<span class="sc">$</span>Variance_Sibling[<span class="dv">1</span>], mean_var_fitted<span class="sc">$</span>Variance_Sibling[<span class="dv">2</span>], <span class="fu">var</span>(sibs_long<span class="sc">$</span>n_sib[sibs_long<span class="sc">$</span>RACE <span class="sc">==</span> <span class="st">"White"</span>]), mean_var_fitted<span class="sc">$</span>Variance_Sibling[<span class="dv">3</span>], mean_var_fitted<span class="sc">$</span>Variance_Sibling[<span class="dv">4</span>])</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(mean_var, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and variance of fertility and sibling distributions from the fitted models and data."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cal_mean_var <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"Poisson"</span>) {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    mean_fert <span class="ot">=</span> mu</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    var_fert  <span class="ot">=</span> mu</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    mean_sib <span class="ot">=</span> mu</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    var_sib  <span class="ot">=</span> mu</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"ZINB"</span>) {</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    mean_fert <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    var_fert  <span class="ot">=</span> mu <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0) <span class="sc">/</span> size) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> pi0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi0))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    mean_sib <span class="ot">=</span> mu <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    var_sib  <span class="ot">=</span> mu <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size) <span class="sc">+</span> (mu<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> ((size <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> size) <span class="sc">/</span> size)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> model,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Fertility =</span> mean_fert,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Fertility =</span> var_fert,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Sibling =</span> mean_sib,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Sibling =</span> var_sib</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>mean_var_fitted <span class="ot">&lt;-</span> param_fert <span class="sc">%&gt;%</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowwise</span>(Year, Model) <span class="sc">%&gt;%</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="fu">cal_mean_var</span>(Model, mu, size, pi0)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>mean_var_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">distribution =</span> <span class="st">"fertility"</span>,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_data =</span> <span class="fu">mean</span>(n_child),</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">variance_data =</span> <span class="fu">var</span>(n_child),</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  sib_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">distribution =</span> <span class="st">"sibling"</span>,</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_data =</span> <span class="fu">mean</span>(n_sib),</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">variance_data =</span> <span class="fu">var</span>(n_sib),</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>mean_var_model <span class="ot">&lt;-</span> mean_var_fitted <span class="sc">%&gt;%</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    Year,</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">Model =</span> <span class="fu">tolower</span>(Model),</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_fertility =</span> Mean_Fertility,</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance_fertility =</span> Variance_Fertility,</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_sibling =</span> Mean_Sibling,</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance_sibling =</span> Variance_Sibling</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">c</span>(mean_fertility, variance_fertility, mean_sibling, variance_sibling),</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">".value"</span>, <span class="st">"distribution"</span>),</span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_pattern =</span> <span class="st">"(mean|variance)_(fertility|sibling)"</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> Model,</span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(mean, variance),</span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{Model}"</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>mean_var <span class="ot">&lt;-</span> mean_var_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(mean_var_model, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"distribution"</span>, <span class="st">"Year"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>    distribution,</span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>    Year,</span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a>    mean_data,</span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>    mean_poisson,</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>    mean_zinb,</span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>    variance_data,</span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a>    variance_poisson,</span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a>    variance_zinb</span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(distribution, Year)</span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(mean_var, <span class="fu">file.path</span>(output_path, <span class="st">"fertility_estimation.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(mean_var, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and variance of fertility and sibling distributions from the fitted models and data."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Mean and variance of fertility and sibling distributions from the fitted models and data.</caption>
 <colgroup>
-<col style="width: 24%">
-<col style="width: 8%">
-<col style="width: 15%">
-<col style="width: 20%">
 <col style="width: 13%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 14%">
 <col style="width: 17%">
+<col style="width: 14%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Race</th>
-<th style="text-align: left;">Model</th>
-<th style="text-align: right;">Mean_Fertility</th>
-<th style="text-align: right;">Variance_Fertility</th>
-<th style="text-align: right;">Mean_Sibling</th>
-<th style="text-align: right;">Variance_Sibling</th>
+<th style="text-align: left;">distribution</th>
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">mean_data</th>
+<th style="text-align: right;">mean_poisson</th>
+<th style="text-align: right;">mean_zinb</th>
+<th style="text-align: right;">variance_data</th>
+<th style="text-align: right;">variance_poisson</th>
+<th style="text-align: right;">variance_zinb</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Black/African American</td>
-<td style="text-align: left;">Data</td>
-<td style="text-align: right;">3.724</td>
-<td style="text-align: right;">7.742</td>
-<td style="text-align: right;">4.803</td>
-<td style="text-align: right;">7.971</td>
+<td style="text-align: left;">fertility</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">6.689</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">6.668</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Black/African American</td>
-<td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">3.724</td>
-<td style="text-align: right;">3.724</td>
-<td style="text-align: right;">3.724</td>
-<td style="text-align: right;">3.724</td>
+<td style="text-align: left;">fertility</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">5.513</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">5.359</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Black/African American</td>
-<td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">3.724</td>
-<td style="text-align: right;">7.911</td>
-<td style="text-align: right;">4.848</td>
-<td style="text-align: right;">9.293</td>
+<td style="text-align: left;">fertility</td>
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">4.611</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">4.394</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">White</td>
-<td style="text-align: left;">Data</td>
-<td style="text-align: right;">2.895</td>
-<td style="text-align: right;">3.352</td>
-<td style="text-align: right;">3.053</td>
-<td style="text-align: right;">3.648</td>
+<td style="text-align: left;">fertility</td>
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">4.764</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">4.599</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">White</td>
-<td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">2.895</td>
-<td style="text-align: right;">2.895</td>
-<td style="text-align: right;">2.895</td>
-<td style="text-align: right;">2.895</td>
+<td style="text-align: left;">fertility</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">4.154</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">4.076</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">White</td>
-<td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">2.895</td>
-<td style="text-align: right;">3.428</td>
-<td style="text-align: right;">3.079</td>
-<td style="text-align: right;">3.079</td>
+<td style="text-align: left;">sibling</td>
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">4.192</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">4.184</td>
+<td style="text-align: right;">8.891</td>
+<td style="text-align: right;">2.818</td>
+<td style="text-align: right;">9.376</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sibling</td>
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">3.699</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">3.635</td>
+<td style="text-align: right;">8.515</td>
+<td style="text-align: right;">2.429</td>
+<td style="text-align: right;">7.915</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sibling</td>
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">3.314</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">3.223</td>
+<td style="text-align: right;">7.093</td>
+<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">5.455</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sibling</td>
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">3.520</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">3.462</td>
+<td style="text-align: right;">6.307</td>
+<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">4.944</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sibling</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">3.403</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">3.377</td>
+<td style="text-align: right;">5.030</td>
+<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">3.933</td>
 </tr>
 </tbody>
 </table>
@@ -830,7 +1143,7 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 </section>
 <section id="model-evaluation" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="model-evaluation"><span class="header-section-number">3.4</span> Model evaluation</h2>
-<p>Based on the table of mean and variance, we can see that the fertility data exhibits <strong>overdispersion (variance greater than mean)</strong>, especially for <strong>Black/African American</strong>. The <strong>Poisson Model</strong> assumes equal mean and variance, which does not fit the data well. The <strong>ZINB Model</strong> accounts for overdispersion and zero-inflation, providing a better fit to the data. The ZINB model’s mean and variance estimates for both fertility and sibling distributions align more closely with the observed data, particularly for the <strong>Black/African American</strong> group, where the Poisson model fails to capture the higher variance. Nevertheless, both models yield the same mean fertility counts, which is equal to the sample mean of fertility data.</p>
+<p>Based on the table of mean and variance, we can see that the fertility data exhibits <strong>overdispersion (variance greater than mean)</strong>. The <strong>Poisson Model</strong> assumes equal mean and variance, which does not fit the data well. The <strong>ZINB Model</strong> accounts for overdispersion and zero-inflation, providing a better fit to the data. The ZINB model’s mean and variance estimates for both fertility and sibling distributions align more closely with the observed data.</p>
 </section>
 </section>
 <section id="simulations-of-fertility-and-sibling-distributions" class="level1" data-number="4">
@@ -841,29 +1154,29 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>simulate_fert_sib <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0, <span class="at">n_sim =</span> <span class="dv">20000</span>, <span class="at">max_kids =</span> <span class="dv">20</span>) {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"Poisson"</span>) {</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate fertility counts from Poisson distribution</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    fert_counts <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">rpois</span>(n_sim, <span class="at">lambda =</span> mu), max_kids)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"ZINB"</span>) {</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate fertility counts from ZINB distribution</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    fert_counts <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(n_sim) <span class="sc">&lt;</span> pi0, <span class="dv">0</span>, <span class="fu">pmin</span>(<span class="fu">rnbinom</span>(n_sim, size, <span class="at">mu =</span> mu), max_kids))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Simulate sibling counts based on fertility counts</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  fert_counts_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">fert_counts =</span> fert_counts)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  sib_counts_tibble <span class="ot">&lt;-</span> fert_counts_tibble <span class="sc">%&gt;%</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(fert_counts <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">uncount</span>(fert_counts, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sib_counts =</span> fert_counts <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  sib_counts <span class="ot">&lt;-</span> sib_counts_tibble<span class="sc">$</span>sib_counts</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> model,</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fert_counts =</span> fert_counts,</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">sib_counts =</span> sib_counts</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>simulate_fert_sib <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0, <span class="at">n_sim =</span> <span class="dv">20000</span>, <span class="at">max_kids =</span> <span class="dv">20</span>) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"Poisson"</span>) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate fertility counts from Poisson distribution</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    fert_counts <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">rpois</span>(n_sim, <span class="at">lambda =</span> mu), max_kids)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"ZINB"</span>) {</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate fertility counts from ZINB distribution</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    fert_counts <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(n_sim) <span class="sc">&lt;</span> pi0, <span class="dv">0</span>, <span class="fu">pmin</span>(<span class="fu">rnbinom</span>(n_sim, size, <span class="at">mu =</span> mu), max_kids))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Simulate sibling counts based on fertility counts</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  fert_counts_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">fert_counts =</span> fert_counts)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  sib_counts_tibble <span class="ot">&lt;-</span> fert_counts_tibble <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(fert_counts <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">uncount</span>(fert_counts, <span class="at">.remove =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sib_counts =</span> fert_counts <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  sib_counts <span class="ot">&lt;-</span> sib_counts_tibble<span class="sc">$</span>sib_counts</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> model,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fert_counts =</span> fert_counts,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">sib_counts =</span> sib_counts</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -874,42 +1187,42 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="fl">3.0</span>, <span class="fl">3.5</span>, <span class="fl">4.0</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>pi0 <span class="ot">=</span> <span class="fl">0.05</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>cal_mean_var_simulated <span class="ot">&lt;-</span> <span class="cf">function</span>(sim_data) {</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  sib_counts <span class="ot">&lt;-</span> sim_data<span class="sc">$</span>sib_counts</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  mean_sib <span class="ot">=</span> <span class="fu">mean</span>(sib_counts)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  var_sib <span class="ot">=</span> <span class="fu">var</span>(sib_counts)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Sibling =</span> mean_sib,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Sibling =</span> var_sib</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Poisson Model</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>simulated_poisson <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) {</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">simulate_fert_sib</span>(<span class="st">"Poisson"</span>, mu, <span class="cn">Inf</span>, <span class="dv">0</span>)</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>simulated_poisson_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(simulated_poisson, cal_mean_var_simulated) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">Value_Type =</span> <span class="st">"Simulated Poisson"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Fertility_Parameter, Value_Type, <span class="fu">everything</span>())</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>threo_possion_results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value_Type =</span> <span class="st">"Theoretical Poisson"</span>,</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Sibling =</span> means,</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Sibling =</span> means</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>poisson_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(simulated_poisson_results, threo_possion_results) <span class="sc">%&gt;%</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Fertility_Parameter) <span class="sc">%&gt;%</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Type =</span> <span class="fu">factor</span>(Value_Type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Theoretical Poisson"</span>, <span class="st">"Simulated Poisson"</span>)))</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(poisson_results, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and Variance of Sibling counts from simulations and theoretical values based on Poisson distribution."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="fl">3.0</span>, <span class="fl">3.5</span>, <span class="fl">4.0</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>pi0 <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>cal_mean_var_simulated <span class="ot">&lt;-</span> <span class="cf">function</span>(sim_data) {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  sib_counts <span class="ot">&lt;-</span> sim_data<span class="sc">$</span>sib_counts</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  mean_sib <span class="ot">=</span> <span class="fu">mean</span>(sib_counts)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  var_sib <span class="ot">=</span> <span class="fu">var</span>(sib_counts)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean_Sibling =</span> mean_sib,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance_Sibling =</span> var_sib</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Poisson Model</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>simulated_poisson <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) {</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">simulate_fert_sib</span>(<span class="st">"Poisson"</span>, mu, <span class="cn">Inf</span>, <span class="dv">0</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>simulated_poisson_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(simulated_poisson, cal_mean_var_simulated) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">Value_Type =</span> <span class="st">"Simulated Poisson"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Fertility_Parameter, Value_Type, <span class="fu">everything</span>())</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>threo_possion_results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value_Type =</span> <span class="st">"Theoretical Poisson"</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Sibling =</span> means,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Sibling =</span> means</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>poisson_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(simulated_poisson_results, threo_possion_results) <span class="sc">%&gt;%</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Fertility_Parameter) <span class="sc">%&gt;%</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Type =</span> <span class="fu">factor</span>(Value_Type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Theoretical Poisson"</span>, <span class="st">"Simulated Poisson"</span>)))</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(poisson_results, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and Variance of Sibling counts from simulations and theoretical values based on Poisson distribution."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -932,8 +1245,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">1.514</td>
 <td style="text-align: right;">1.509</td>
+<td style="text-align: right;">1.528</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -944,8 +1257,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">1.996</td>
-<td style="text-align: right;">1.982</td>
+<td style="text-align: right;">1.965</td>
+<td style="text-align: right;">1.957</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -956,8 +1269,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">2.496</td>
-<td style="text-align: right;">2.510</td>
+<td style="text-align: right;">2.515</td>
+<td style="text-align: right;">2.512</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -968,8 +1281,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">2.984</td>
-<td style="text-align: right;">2.925</td>
+<td style="text-align: right;">3.004</td>
+<td style="text-align: right;">2.974</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -980,8 +1293,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.503</td>
-<td style="text-align: right;">3.518</td>
+<td style="text-align: right;">3.474</td>
+<td style="text-align: right;">3.497</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -992,8 +1305,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">4.007</td>
-<td style="text-align: right;">3.960</td>
+<td style="text-align: right;">4.003</td>
+<td style="text-align: right;">3.971</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1006,26 +1319,26 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ZINB Model</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>simulated_zinb <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) {</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">simulate_fert_sib</span>(<span class="st">"ZINB"</span>, mu<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>simulated_zinb_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(simulated_zinb, cal_mean_var_simulated) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">Value_Type =</span> <span class="st">"Simulated ZINB"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Fertility_Parameter, Value_Type, <span class="fu">everything</span>())</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>mean_var_zinb <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">cal_mean_var</span>(<span class="st">"ZINB"</span>, mu<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>threo_zinb_results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value_Type =</span> <span class="st">"Theoretical ZINB"</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Sibling =</span> mean_var_zinb<span class="sc">$</span>Mean_Sibling,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Sibling =</span> mean_var_zinb<span class="sc">$</span>Variance_Sibling</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>zinb_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(simulated_zinb_results, threo_zinb_results) <span class="sc">%&gt;%</span></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Fertility_Parameter) <span class="sc">%&gt;%</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Type =</span> <span class="fu">factor</span>(Value_Type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Theoretical ZINB"</span>, <span class="st">"Simulated ZINB"</span>)))</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(zinb_results, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and Variance of Sibling counts from simulations and theoretical values based on ZINB distribution."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ZINB Model</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>simulated_zinb <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">simulate_fert_sib</span>(<span class="st">"ZINB"</span>, mu<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>simulated_zinb_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(simulated_zinb, cal_mean_var_simulated) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">Value_Type =</span> <span class="st">"Simulated ZINB"</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Fertility_Parameter, Value_Type, <span class="fu">everything</span>())</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>mean_var_zinb <span class="ot">&lt;-</span> <span class="fu">lapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">cal_mean_var</span>(<span class="st">"ZINB"</span>, mu<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>threo_zinb_results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Fertility_Parameter =</span> <span class="fu">sapply</span>(means, <span class="cf">function</span>(mu) <span class="fu">paste0</span>(<span class="st">"Fertility Mean = "</span>, mu)),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value_Type =</span> <span class="st">"Theoretical ZINB"</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Sibling =</span> mean_var_zinb<span class="sc">$</span>Mean_Sibling,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variance_Sibling =</span> mean_var_zinb<span class="sc">$</span>Variance_Sibling</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>zinb_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(simulated_zinb_results, threo_zinb_results) <span class="sc">%&gt;%</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Fertility_Parameter) <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Type =</span> <span class="fu">factor</span>(Value_Type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Theoretical ZINB"</span>, <span class="st">"Simulated ZINB"</span>)))</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(zinb_results, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Mean and Variance of Sibling counts from simulations and theoretical values based on ZINB distribution."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -1048,8 +1361,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">1.999</td>
-<td style="text-align: right;">2.807</td>
+<td style="text-align: right;">1.977</td>
+<td style="text-align: right;">2.859</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -1060,8 +1373,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">2.621</td>
-<td style="text-align: right;">3.876</td>
+<td style="text-align: right;">2.613</td>
+<td style="text-align: right;">3.802</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -1072,8 +1385,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.270</td>
-<td style="text-align: right;">5.432</td>
+<td style="text-align: right;">3.233</td>
+<td style="text-align: right;">5.265</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -1084,8 +1397,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.980</td>
-<td style="text-align: right;">7.235</td>
+<td style="text-align: right;">3.985</td>
+<td style="text-align: right;">7.372</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -1096,8 +1409,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">4.625</td>
-<td style="text-align: right;">9.204</td>
+<td style="text-align: right;">4.609</td>
+<td style="text-align: right;">8.743</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -1108,8 +1421,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">5.236</td>
-<td style="text-align: right;">10.297</td>
+<td style="text-align: right;">5.241</td>
+<td style="text-align: right;">10.480</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1128,73 +1441,73 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridisLite)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plot_pmf <span class="ot">&lt;-</span> <span class="cf">function</span>(pmf_df) {</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  cats <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(pmf_df<span class="sc">$</span>sib_counts))</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  n_cat <span class="ot">&lt;-</span> <span class="fu">length</span>(cats)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  color_palette <span class="ot">&lt;-</span> <span class="fu">viridis</span>(n_cat, <span class="at">option =</span> <span class="st">"D"</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> pmf_df <span class="sc">%&gt;%</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">ifelse</span>(Model <span class="sc">==</span> <span class="st">"Poisson"</span>, <span class="sc">-</span>prob, prob),</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">count_cat =</span> <span class="fu">factor</span>(sib_counts, <span class="at">levels =</span> cats))</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> count_cat, <span class="at">y =</span> y, <span class="at">fill =</span> count_cat, <span class="at">alpha =</span> Model)) <span class="sc">+</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">abs</span>(x)) <span class="sc">+</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> color_palette, <span class="at">name =</span> <span class="st">"Siblings Count"</span>) <span class="sc">+</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Poisson"</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">"ZINB"</span> <span class="ot">=</span> <span class="dv">1</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"PMF of Siblings Counts (Simulated from Poisson and ZINB Models)"</span>,</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Number of Siblings"</span>,</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Probability"</span>,</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Poisson (left, negative y), ZINB (right, positive y)."</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridisLite)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>plot_pmf <span class="ot">&lt;-</span> <span class="cf">function</span>(pmf_df) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  cats <span class="ot">=</span> <span class="fu">sort</span>(<span class="fu">unique</span>(pmf_df<span class="sc">$</span>sib_counts))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  n_cat <span class="ot">&lt;-</span> <span class="fu">length</span>(cats)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  color_palette <span class="ot">&lt;-</span> <span class="fu">viridis</span>(n_cat, <span class="at">option =</span> <span class="st">"D"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> pmf_df <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">y =</span> <span class="fu">ifelse</span>(Model <span class="sc">==</span> <span class="st">"Poisson"</span>, <span class="sc">-</span>prob, prob),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">count_cat =</span> <span class="fu">factor</span>(sib_counts, <span class="at">levels =</span> cats))</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> count_cat, <span class="at">y =</span> y, <span class="at">fill =</span> count_cat, <span class="at">alpha =</span> Model)) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">abs</span>(x)) <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> color_palette, <span class="at">name =</span> <span class="st">"Siblings Count"</span>) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Poisson"</span> <span class="ot">=</span> <span class="fl">0.7</span>, <span class="st">"ZINB"</span> <span class="ot">=</span> <span class="dv">1</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"PMF of Siblings Counts (Simulated from Poisson and ZINB Models)"</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Number of Siblings"</span>,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Probability"</span>,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">"Poisson (left, negative y), ZINB (right, positive y)."</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.major.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.minor.y =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fertility parameters</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>mean <span class="ot">=</span> <span class="fl">2.5</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>pi0 <span class="ot">=</span> <span class="fl">0.05</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>max_sibs <span class="ot">=</span> <span class="dv">12</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated data for fertility mean 2.5</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>simulated_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">sib_counts =</span> <span class="fu">simulate_fert_sib</span>(<span class="st">"Poisson"</span>, mean, <span class="cn">Inf</span>, <span class="dv">0</span>)<span class="sc">$</span>sib_counts) <span class="sc">%&gt;%</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Model =</span> <span class="st">"Poisson"</span>),</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">sib_counts =</span> <span class="fu">simulate_fert_sib</span>(<span class="st">"ZINB"</span>, mean<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)<span class="sc">$</span>sib_counts) <span class="sc">%&gt;%</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Model =</span> <span class="st">"ZINB"</span>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>simulated_data<span class="sc">$</span>sib_counts <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(simulated_data<span class="sc">$</span>sib_counts <span class="sc">&gt;</span> max_sibs, max_sibs, simulated_data<span class="sc">$</span>sib_counts)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>pmf_data <span class="ot">&lt;-</span> simulated_data <span class="sc">%&gt;%</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Model, sib_counts, <span class="at">name =</span> <span class="st">"n_counts"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Model) <span class="sc">%&gt;%</span></span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> n_counts <span class="sc">/</span> <span class="fu">sum</span>(n_counts)) <span class="sc">%&gt;%</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co"># write the pmf data to a csv file</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(pmf_data, <span class="at">file =</span> <span class="fu">file.path</span>(<span class="st">"../output/pmf_sibling_counts.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fertility parameters</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>mean <span class="ot">=</span> <span class="fl">2.5</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>size <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>pi0 <span class="ot">=</span> <span class="fl">0.05</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>max_sibs <span class="ot">=</span> <span class="dv">12</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated data for fertility mean 2.5</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>simulated_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">sib_counts =</span> <span class="fu">simulate_fert_sib</span>(<span class="st">"Poisson"</span>, mean, <span class="cn">Inf</span>, <span class="dv">0</span>)<span class="sc">$</span>sib_counts) <span class="sc">%&gt;%</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Model =</span> <span class="st">"Poisson"</span>),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">sib_counts =</span> <span class="fu">simulate_fert_sib</span>(<span class="st">"ZINB"</span>, mean<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pi0), size, pi0)<span class="sc">$</span>sib_counts) <span class="sc">%&gt;%</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Model =</span> <span class="st">"ZINB"</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>simulated_data<span class="sc">$</span>sib_counts <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(simulated_data<span class="sc">$</span>sib_counts <span class="sc">&gt;</span> max_sibs, max_sibs, simulated_data<span class="sc">$</span>sib_counts)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>pmf_data <span class="ot">&lt;-</span> simulated_data <span class="sc">%&gt;%</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Model, sib_counts, <span class="at">name =</span> <span class="st">"n_counts"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Model) <span class="sc">%&gt;%</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> n_counts <span class="sc">/</span> <span class="fu">sum</span>(n_counts)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co"># write the pmf data to a csv file</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(pmf_data, <span class="at">file =</span> <span class="fu">file.path</span>(output_path, <span class="st">"pmf_sibling_counts.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_pmf</span>(pmf_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_pmf</span>(pmf_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1205,41 +1518,41 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(<span class="st">"../output/pmf_sibling_counts.png"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">500</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">file =</span> <span class="fu">file.path</span>(output_path, <span class="st">"pmf_sibling_counts.png"</span>), <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">dpi =</span> <span class="dv">500</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 50272</code></pre>
+<pre><code>[1] 49866</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 49904</code></pre>
+<pre><code>[1] 49779</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.0809197963 0.2060789306 0.2499801082 0.2162635264 0.1359603756
- [6] 0.0682686187 0.0284054742 0.0101845958 0.0025063654 0.0009945894
-[11] 0.0004376194</code></pre>
+<pre><code> [1] 0.0821200818 0.2078771107 0.2573095897 0.2094413027 0.1386716400
+ [6] 0.0620863915 0.0276541130 0.0105883768 0.0034291902 0.0006016123
+[11] 0.0002205912</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.080714973 0.159546329 0.191527733 0.174655338 0.136562199 0.100032062
- [7] 0.063261462 0.039435717 0.023986053 0.013826547 0.009478198 0.003606925
-[13] 0.003366464</code></pre>
+<pre><code> [1] 0.080676591 0.160348741 0.187729766 0.173486812 0.139315776 0.099318990
+ [7] 0.065951506 0.040016875 0.022238293 0.015066594 0.007513208 0.003857048
+[13] 0.004479801</code></pre>
 </div>
 </div>
 

@@ -1,0 +1,30 @@
+We used publicly available data from the Integrated Public Use Microdata Series (IPUMS) for the U.S. Census years 1960, 1970, 1980, and 1990. The datasets include information on:
+
+Year: Census year of the survey.
+Age: Age of the respondent.
+Race: Self-identified race of the respondent.
+n_child: Number of children ever born to the respondent.
+Data citation: Steven Ruggles, Sarah Flood, Matthew Sobek, Daniel Backman, Annie Chen, Grace Cooper, Stephanie Richards, Renae Rogers, and Megan Schouweiler. IPUMS USA: Version 16.0 [dataset]. Minneapolis, MN: IPUMS, 2025. https://usa.ipums.org/usa/
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(knitr)
+
+path <- if (dir.exists("data")) "data" else file.path("..", "data")
+
+ipmus_data <- read_csv(file.path(path, "usa_00001.csv"), show_col_types = FALSE)
+head(ipmus_data, n = 15) %>%
+  kable(caption = "First 15 rows of the original IPUMS data (usa_00001.csv)")
+
+ipmus_data <- ipmus_data %>% filter(CHBORN > 0)
+ipmus_data$n_child <- ipmus_data$CHBORN - 1
+races <- c('White', 'Black/African American', 'American Indian or Alaska Native', 'Chinese', 'Japanese', 'Other Asian or Pacific Islander', 'Other race, nec', 'Two major races', 'Three or more major races')
+ipmus_data$Race <- races[ipmus_data$RACE]
+
+mother_data <- ipmus_data %>% dplyr::select(YEAR, AGE, Race, n_child) %>%
+  rename(Year = YEAR, Age = AGE)
+
+write.csv(mother_data, file.path(path, "mother_data.csv"), row.names = FALSE)
+```
