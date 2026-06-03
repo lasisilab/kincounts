@@ -356,7 +356,7 @@ In this section, we simulate the fertility and sibling counts based on the Poiss
 ## Simulate the fertility and sibling counts
 
 ```{r simulate-fert-sib}
-simulate_fert_sib <- function(model, mu, size, pi0, n_sim = 20000, max_kids = 20) {
+simulate_fert_sib <- function(model, mu, size, pi0, n_sim = 20000, max_kids = 12) {
   if (model == "Poisson") {
     # Simulate fertility counts from Poisson distribution
     fert_counts <- pmin(rpois(n_sim, lambda = mu), max_kids)

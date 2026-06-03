@@ -171,7 +171,7 @@ window.Quarto = {
   </li>  
         <li>
     <a class="dropdown-item" href="../analysis/fert_model.html">
- <span class="dropdown-text">Fertility modelling with US census data</span></a>
+ <span class="dropdown-text">Fertility modelling with IPUMS data</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../analysis/fertility_parameters.html">
@@ -1154,7 +1154,7 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>simulate_fert_sib <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0, <span class="at">n_sim =</span> <span class="dv">20000</span>, <span class="at">max_kids =</span> <span class="dv">20</span>) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>simulate_fert_sib <span class="ot">&lt;-</span> <span class="cf">function</span>(model, mu, size, pi0, <span class="at">n_sim =</span> <span class="dv">20000</span>, <span class="at">max_kids =</span> <span class="dv">12</span>) {</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (model <span class="sc">==</span> <span class="st">"Poisson"</span>) {</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Simulate fertility counts from Poisson distribution</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    fert_counts <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">rpois</span>(n_sim, <span class="at">lambda =</span> mu), max_kids)</span>
@@ -1245,8 +1245,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">1.509</td>
-<td style="text-align: right;">1.528</td>
+<td style="text-align: right;">1.498</td>
+<td style="text-align: right;">1.491</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -1257,8 +1257,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">1.965</td>
-<td style="text-align: right;">1.957</td>
+<td style="text-align: right;">2.020</td>
+<td style="text-align: right;">2.053</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -1270,7 +1270,7 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
 <td style="text-align: right;">2.515</td>
-<td style="text-align: right;">2.512</td>
+<td style="text-align: right;">2.532</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -1281,8 +1281,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.004</td>
-<td style="text-align: right;">2.974</td>
+<td style="text-align: right;">3.012</td>
+<td style="text-align: right;">2.966</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -1293,8 +1293,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.474</td>
-<td style="text-align: right;">3.497</td>
+<td style="text-align: right;">3.487</td>
+<td style="text-align: right;">3.457</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -1305,8 +1305,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">4.003</td>
-<td style="text-align: right;">3.971</td>
+<td style="text-align: right;">3.992</td>
+<td style="text-align: right;">4.012</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1361,8 +1361,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">1.977</td>
-<td style="text-align: right;">2.859</td>
+<td style="text-align: right;">1.972</td>
+<td style="text-align: right;">2.712</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -1373,8 +1373,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">2.613</td>
-<td style="text-align: right;">3.802</td>
+<td style="text-align: right;">2.617</td>
+<td style="text-align: right;">3.903</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -1385,8 +1385,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.233</td>
-<td style="text-align: right;">5.265</td>
+<td style="text-align: right;">3.278</td>
+<td style="text-align: right;">5.318</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -1397,8 +1397,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.985</td>
-<td style="text-align: right;">7.372</td>
+<td style="text-align: right;">3.929</td>
+<td style="text-align: right;">6.516</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -1409,8 +1409,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">4.609</td>
-<td style="text-align: right;">8.743</td>
+<td style="text-align: right;">4.445</td>
+<td style="text-align: right;">7.448</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -1421,8 +1421,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">5.241</td>
-<td style="text-align: right;">10.480</td>
+<td style="text-align: right;">5.065</td>
+<td style="text-align: right;">8.353</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1527,32 +1527,31 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 49866</code></pre>
+<pre><code>[1] 49953</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 49779</code></pre>
+<pre><code>[1] 49898</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.0821200818 0.2078771107 0.2573095897 0.2094413027 0.1386716400
- [6] 0.0620863915 0.0276541130 0.0105883768 0.0034291902 0.0006016123
-[11] 0.0002205912</code></pre>
+<pre><code> [1] 0.0828979240 0.2056332953 0.2568614498 0.2181250375 0.1323243849
+ [6] 0.0624587112 0.0270454227 0.0102496347 0.0037835565 0.0004003764
+[11] 0.0002202070</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.080676591 0.160348741 0.187729766 0.173486812 0.139315776 0.099318990
- [7] 0.065951506 0.040016875 0.022238293 0.015066594 0.007513208 0.003857048
-[13] 0.004479801</code></pre>
+<pre><code> [1] 0.079081326 0.157721752 0.189867329 0.173073069 0.141689046 0.100404826
+ [7] 0.064671931 0.040883402 0.025612249 0.010621668 0.007715740 0.008657662</code></pre>
 </div>
 </div>
 
