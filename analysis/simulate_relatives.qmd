@@ -1,0 +1,284 @@
+---
+title: "Simulate the number of relatives under different fertility and sibling models"
+author: "Junhui He"
+date: today
+---
+
+# Simulate the number of relatives
+
+We simulate the number of relatives for each individual using fertility and sibling distributions.
+
+```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_chunk$set(eval = TRUE, echo = TRUE, warning = FALSE, fig.width = 9, fig.height = 7)
+
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(MASS)     ## glm.nb
+library(pscl)     ## zeroinfl
+library(knitr)    ## kable
+
+output_path <- if (dir.exists("output")) "output" else file.path("..", "output")
+```
+
+## Simulate the relative counts for the focal individual
+
+```{r simulate-relatives}
+# The fertility distribution modeled as a zero-inflated negative binomial distribution.
+simulate_relatives_zinb <- function(mus, sizes, pis,
+                                    n_sim = 10000,
+                                    max_kids = 12) {
+  draw_fert <- function(n, mu, size, pi) {
+    ifelse(runif(n) < pi, 0L,
+           as.integer(pmin(rnbinom(n, size, mu = mu), max_kids)))
+  }
+  
+  draw_sibs <- function(n, mu, size) {
+    as.integer(pmin(rnbinom(n, size + 1, mu = mu * (size + 1) / size), max_kids - 1))
+  }
+  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  parents <- rep(2L, n_sim)
+  grandparents <- rep(4L, n_sim)
+
+  # 2. Siblings for the focal individual
+  siblings <- draw_sibs(n = n_sim, mu = mus[2], size = sizes[2])
+  
+  # 3. Children of the focal individual
+  children <- draw_fert(n = n_sim, mu = mus[1], size = sizes[1], pi = pis[1])
+
+  # 4. Aunts & uncles (no subtraction needed)
+  aunts_uncles <- purrr::map_int(parents, function(n_par) {
+    as.integer(sum(draw_sibs(n_par, mu = mus[3], size = sizes[3])))
+  })
+
+  # 5. Nieces & nephews: for each sibling, simulate their fertility and sum
+  nieces_nephews <- purrr::map_int(siblings, function(n_sib) {
+    if (n_sib == 0L) 0L else as.integer(sum(draw_fert(n_sib, mu = mus[1], size = sizes[1], pi = pis[1])))
+  })
+
+  # 6. Cousins: for each aunt/uncle, simulate their fertility and sum
+  cousins <- purrr::map_int(aunts_uncles, function(n_au) {
+    if (n_au == 0L) 0L else as.integer(sum(draw_fert(n_au, mu = mus[2], size = sizes[2], pi = pis[2])))
+  })
+
+  tibble::tibble(
+    Parents    = parents,
+    Grandparents = grandparents,
+    Siblings    = siblings,
+    Children    = children,
+    AuntUncles = aunts_uncles,
+    NieceNephews = nieces_nephews,
+    Cousins     = cousins
+  )
+}
+
+# The fertility distribution modeled as a Poisson distribution.
+simulate_relatives_poisson <- function(mus, 
+                                       n_sim = 10000,
+                                       max_kids = 12) {
+  draw_fert <- function(n, mu) {
+    as.integer(pmin(rpois(n, lambda = mu), max_kids))
+  }
+  
+  draw_sibs <- function(n, mu, size) {
+    as.integer(pmin(rpois(n, lambda = mu), max_kids - 1))
+  }
+  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  parents <- rep(2L, n_sim)
+  grandparents <- rep(4L, n_sim)
+
+  # 2. Siblings for the focal individual
+  siblings <- draw_sibs(n = n_sim, mu = mus[2])
+  
+  # 3. Children of the focal individual
+  children <- draw_fert(n = n_sim, mu = mus[1])
+
+  # 4. Aunts & uncles (no subtraction needed)
+  aunts_uncles <- purrr::map_int(parents, function(n_par) {
+    as.integer(sum(draw_sibs(n_par, mu = mus[3])))
+  })
+
+  # 5. Nieces & nephews: for each sibling, simulate their fertility and sum
+  nieces_nephews <- purrr::map_int(siblings, function(n_sib) {
+    if (n_sib == 0L) 0L else as.integer(sum(draw_fert(n_sib, mu = mus[1])))
+  })
+
+  # 6. Cousins: for each aunt/uncle, simulate their fertility and sum
+  cousins <- purrr::map_int(aunts_uncles, function(n_au) {
+    if (n_au == 0L) 0L else as.integer(sum(draw_fert(n_au, mu = mus[2])))
+  })
+
+  tibble::tibble(
+    Parents    = parents,
+    Grandparents = grandparents,
+    Siblings    = siblings,
+    Children    = children,
+    AuntUncles = aunts_uncles,
+    NieceNephews = nieces_nephews,
+    Cousins     = cousins
+  )
+}
+
+# The fertility distribution fixed at the mean size.
+simulate_relatives_fixed <- function(ferts, sibs) {
+  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  parents <- 2
+  grandparents <- 4
+
+  # 2. Siblings for the focal individual
+  siblings <- sibs[2]
+  
+  # 3. Children of the focal individual
+  children <- ferts[1]
+
+  # 4. Aunts & uncles (no subtraction needed)
+  aunts_uncles <- parents * sibs[3]
+
+  # 5. Nieces & nephews: for each sibling, simulate their fertility and sum
+  nieces_nephews <- siblings * ferts[1]
+
+  # 6. Cousins: for each aunt/uncle, simulate their fertility and sum
+  cousins <- aunts_uncles * ferts[2]
+
+  tibble::tibble(
+    Parents    = parents,
+    Grandparents = grandparents,
+    Siblings    = siblings,
+    Children    = children,
+    AuntUncles = aunts_uncles,
+    NieceNephews = nieces_nephews,
+    Cousins     = cousins
+  )
+}
+```
+
+## Fertility and sibling parameters based on the IPUMS data
+
+```{r ipums-parameters}
+mus_zinb <- c(3.213, 2.530, 2.943)
+sizes_zinb <- c(19.536, 3.652, 2.372)
+pis_zinb <- c(0.056, 0.066, 0.043)
+mus_poisson <- c(3.034, 2.363, 2.818)
+mean_ferts <- c(3.034, 2.363, 2.818)
+mean_sibs <- c(3.403, 3.314, 4.192)
+
+n_sim <- 100000
+```
+
+## Simulate relative counts for each fertility and sibling model
+
+```{r simulate-relative-counts}
+relative_counts = list()
+relative_counts[[1]] = simulate_relatives_fixed(
+  ferts = mean_ferts,
+  sibs = mean_sibs
+)
+relative_counts[[2]] = simulate_relatives_poisson(
+  mus = mus_poisson,
+  n_sim = n_sim
+)
+relative_counts[[3]] = simulate_relatives_zinb(
+  mus = mus_zinb,
+  sizes = sizes_zinb,
+  pis = pis_zinb,
+  n_sim = n_sim
+)
+```
+
+## Summarize mean and variance of relative counts
+
+```{r summarize-relative-counts}
+relative_model_names <- c("fixed", "poisson", "zinb")
+
+relative_summary <- Map(function(dat, model_name) {
+  tibble(
+    Relative = names(dat),
+    mean = as.numeric(colMeans(dat)),
+    variance = if (model_name == "fixed") {
+      rep(0, ncol(dat))
+    } else {
+      as.numeric(sapply(dat, var))
+    },
+    model = model_name
+  )
+}, relative_counts, relative_model_names) %>%
+  bind_rows()
+
+relative_summary_table <- relative_summary %>%
+  pivot_wider(
+    names_from = model,
+    values_from = c(mean, variance),
+    names_glue = "{.value}_{model}"
+  ) %>%
+  dplyr::select(
+    Relative,
+    mean_fixed,
+    mean_poisson,
+    mean_zinb,
+    variance_fixed,
+    variance_poisson,
+    variance_zinb
+  )
+
+write.csv(relative_summary_table, file.path(output_path, "relative_summary_table.csv"), row.names = FALSE)
+
+kable(
+  relative_summary_table,
+  digits = 3,
+  caption = "Mean and variance of relative counts by fertility and sibling model."
+)
+```
+
+## Visualize the relative count distributions for each model
+
+```{r visualize-relative-counts, fig.width = 10, fig.height = 4}
+relative_distribution <- bind_rows(
+  relative_counts[[2]] %>% mutate(Model = "Poisson"),
+  relative_counts[[3]] %>% mutate(Model = "ZINB")
+) %>%
+  pivot_longer(
+    cols = -Model,
+    names_to = "Relative",
+    values_to = "Count"
+  ) %>%
+  filter(!Relative %in% c("Parents", "Grandparents")) %>%
+  mutate(
+    Relative = recode(
+      Relative,
+      "Siblings" = "Siblings",
+      "Children" = "Children",
+      "AuntUncles" = "Aunts and uncles",
+      "NieceNephews" = "Nieces and nephews",
+      "Cousins" = "First cousins"
+    ),
+    Relative = factor(
+      Relative,
+      levels = c(
+        "Siblings", "Children", "Aunts and uncles",
+        "Nieces and nephews", "First cousins"
+      )
+    )
+  )
+
+ggplot(relative_distribution, aes(x = Model, y = Count, fill = Model)) +
+  geom_boxplot(width = 0.65, alpha = 0.85, outlier.size = 0.35) +
+  facet_wrap(~ Relative, scales = "free_y", nrow = 1) +
+  scale_fill_manual(values = c("Poisson" = "#0072B2", "ZINB" = "#D55E00")) +
+  labs(
+    # title = "Relative Count Distributions Under Poisson and ZINB Models",
+    x = NULL,
+    y = "Relative count",
+    fill = "Model"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 14, hjust = 0.5),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+ggsave(file = file.path(output_path, "relative_count_distributions.pdf"), width = 10, height = 4)
+```

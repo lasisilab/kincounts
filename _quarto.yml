@@ -14,8 +14,8 @@ website:
             href: analysis/fert_sibling.qmd
           - text: Fertility modelling with IPUMS data
             href: analysis/fert_model.qmd
-          - text: How fertility parameters affect kin counts
-            href: analysis/fertility_parameters.qmd
+          - text: Simulate the number of relatives
+            href: analysis/simulate_relatives.qmd
           - text: Family size and identification probability
             href: analysis/family_size_findability.qmd
       - text: About
