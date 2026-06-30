@@ -10,8 +10,8 @@ Expected regenerated outputs include:
 - direct-1950 versus proxy-1950 validation summaries;
 - simulator-ready `fertility_pmf_YYYY.csv` files, if still needed by the React app.
 
-To rebuild from a private IPUMS extract, place the extract and any companion metadata/syntax files in `data/raw/` and run:
+To rebuild from a private IPUMS extract, place the extract and its DDI/XML codebook in `data/raw/` and render the analysis site (the preprocessing now lives inline in `analysis/preprocess.qmd`; the earlier `code/preprocess_ipums.R` script is superseded):
 
 ```bash
-Rscript code/preprocess_ipums.R
+quarto render
 ```

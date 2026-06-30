@@ -209,6 +209,28 @@ body {
   line-height: 1.4;
 }
 
+/* Whole-distribution goodness-of-fit sub-block (fertility only) */
+.fmf-gof {
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed #e0e0e0;
+}
+.fmf-gof-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin-bottom: 0.4rem;
+}
+.fmf-gof-table { margin-bottom: 0.5rem; }
+.fmf-gof-table td { font-variant-numeric: tabular-nums; }
+.fmf-gof-note {
+  font-size: 0.74rem;
+  color: #888;
+  line-height: 1.45;
+}
+
 /* Preston consequences */
 .fmf-preston-formula {
   font-size: 0.82rem;
@@ -955,3 +977,293 @@ h2 ~ h2 {
   color: #333;
   margin-bottom: 0.2rem;
 }
+
+/* ── Simulator: generation-default sublabels ── */
+.control-sublabel {
+  font-size: 0.74rem;
+  color: #999;
+  line-height: 1.45;
+  margin: -0.2rem 0 0.3rem;
+}
+.gen-block-seed {
+  font-size: 0.68rem;
+  color: #4f86c6;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Computed goodness-of-fit: highlight the model the data favours ── */
+.fit-winner { background: #f0f9f3; }
+.fit-winner td:first-child { color: #276035 !important; }
+.fit-winner .fit-good { margin-left: 0.25rem; }
+
+/* ── Sibling section (next-generation framing) ── */
+.fmf-sibling-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.fmf-section-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c05621;
+  margin: 0;
+}
+.fmf-section-lead {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── Generation diagram (mothers → their children) ── */
+.gen-diagram {
+  background: #fafafa;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+}
+.gen-diagram-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.gen-diagram-node {
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-radius: 7px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+}
+.gen-diagram-node.mothers  { border-left: 4px solid #4f86c6; }
+.gen-diagram-node.children { border-left: 4px solid #e8704a; }
+.gen-diagram-tag {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+  font-weight: 700;
+}
+.gen-diagram-title { font-size: 0.92rem; font-weight: 700; color: #333; }
+.gen-diagram-sub   { font-size: 0.76rem; color: #888; line-height: 1.4; }
+.gen-diagram-metric {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #555;
+  margin-top: 0.15rem;
+}
+.gen-diagram-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+.gen-diagram-arrow-glyph { font-size: 1.6rem; color: #bbb; line-height: 1; }
+.gen-diagram-arrow-label { font-size: 0.66rem; color: #aaa; margin-top: 0.15rem; }
+.gen-diagram-formula {
+  font-size: 0.76rem;
+  color: #777;
+  line-height: 1.5;
+  margin: 0.7rem 0 0;
+}
+
+/* ── About this data (provenance) ── */
+.data-provenance {
+  background: #f8f9fa;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+}
+.data-provenance > summary {
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  list-style: none;
+}
+.data-provenance > summary::-webkit-details-marker { display: none; }
+.data-provenance-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+}
+.data-provenance-source { font-size: 0.8rem; color: #4f86c6; font-weight: 600; text-align: right; }
+.data-provenance-body { padding: 0.4rem 0 0.6rem; }
+.data-provenance-userflag {
+  font-size: 0.82rem;
+  color: #276035;
+  background: #f0f9f3;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  margin: 0 0 0.6rem;
+  line-height: 1.5;
+}
+.data-provenance-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+}
+.data-provenance-dl dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #aaa;
+  font-weight: 700;
+}
+.data-provenance-dl dd {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.45;
+}
+.data-provenance-caveat {
+  font-size: 0.78rem;
+  color: #888;
+  line-height: 1.5;
+  margin: 0.6rem 0 0;
+  font-style: italic;
+}
+.data-provenance-link { margin: 0.6rem 0 0; font-size: 0.82rem; }
+.data-provenance-link a { color: #4f86c6; text-decoration: none; font-weight: 600; }
+.data-provenance-link a:hover { text-decoration: underline; }
+
+/* ── Export buttons (CSV / PNG) ── */
+.chart-export { display: flex; gap: 0.4rem; }
+.chart-export button {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #555;
+  background: #f4f6f8;
+  border: 1px solid #dde2e7;
+  border-radius: 5px;
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+}
+.chart-export button:hover { background: #e9eef3; border-color: #c4ccd4; color: #333; }
+.chart-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.stats-export { justify-content: flex-end; margin-bottom: 0.4rem; }
+
+/* ── Dataset bar (active source + import toggle) ── */
+.dataset-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  background: #f4f6f8;
+  border: 1px solid #e3e7ec;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  margin: 0 0 1rem;
+}
+.dataset-bar-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #999;
+  font-weight: 700;
+}
+.dataset-bar-name { font-size: 0.9rem; font-weight: 700; color: #333; margin-right: auto; }
+.dataset-bar-btn, .dataset-bar-reset {
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  border: 1px solid #4f86c6;
+}
+.dataset-bar-btn { background: #4f86c6; color: #fff; }
+.dataset-bar-btn:hover { background: #3a6fa8; }
+.dataset-bar-reset { background: #fff; color: #4f86c6; }
+.dataset-bar-reset:hover { background: #eef5fd; }
+
+/* ── Import panel ── */
+.import-panel {
+  background: #fff;
+  border: 1px solid #d8dee5;
+  border-radius: 10px;
+  padding: 1.1rem 1.3rem 1.3rem;
+  margin: 0 0 1.25rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.import-header { display: flex; align-items: center; justify-content: space-between; }
+.import-header h3 { margin: 0; font-size: 1.1rem; color: #333; }
+.import-close {
+  background: none; border: none; font-size: 1.5rem; line-height: 1;
+  color: #aaa; cursor: pointer; padding: 0 0.25rem;
+}
+.import-close:hover { color: #555; }
+.import-intro { font-size: 0.85rem; color: #666; line-height: 1.55; margin: 0.4rem 0 0.9rem; }
+.import-steps {
+  list-style: decimal;
+  padding-left: 1.2rem;
+  margin: 0 0 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.import-steps li { font-size: 0.85rem; color: #555; }
+.import-hint { display: block; font-size: 0.76rem; color: #999; margin-top: 0.2rem; }
+.import-btn-secondary {
+  font-size: 0.8rem; font-weight: 600; color: #4f86c6;
+  background: #eef5fd; border: 1px solid #cfe0f5; border-radius: 6px;
+  padding: 0.35rem 0.7rem; cursor: pointer;
+}
+.import-btn-secondary:hover { background: #e0eefb; }
+.import-file-label {
+  display: inline-block;
+  font-size: 0.8rem; font-weight: 600; color: #4f86c6;
+  background: #eef5fd; border: 1px solid #cfe0f5; border-radius: 6px;
+  padding: 0.35rem 0.7rem; cursor: pointer;
+}
+.import-file-label input { display: none; }
+.import-name {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  font-size: 0.78rem; color: #888; font-weight: 600; margin-bottom: 0.6rem;
+}
+.import-name input {
+  font-size: 0.9rem; font-weight: 400; color: #333;
+  padding: 0.35rem 0.5rem; border: 1px solid #ddd; border-radius: 5px; max-width: 260px;
+}
+.import-textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  resize: vertical;
+}
+.import-textarea:focus { outline: none; border-color: #4f86c6; }
+.import-error {
+  font-size: 0.83rem; color: #c0392b; background: #fdf0ee;
+  border: 1px solid #f3c9c2; border-radius: 6px; padding: 0.5rem 0.7rem; margin: 0.7rem 0 0;
+}
+.import-warnings {
+  font-size: 0.8rem; color: #92600a; background: #fdf6e3;
+  border: 1px solid #f0e1b0; border-radius: 6px; padding: 0.5rem 0.7rem 0.5rem 1.6rem; margin: 0.7rem 0 0;
+}
+.import-actions { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.9rem; }
+.import-btn-primary {
+  font-size: 0.85rem; font-weight: 700; color: #fff;
+  background: #276035; border: none; border-radius: 6px;
+  padding: 0.5rem 0.9rem; cursor: pointer;
+}
+.import-btn-primary:hover { background: #1f4d2b; }
+.import-btn-primary:disabled { background: #b9c6bd; cursor: not-allowed; }

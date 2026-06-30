@@ -4,7 +4,6 @@ project:
   render:
     - "*.qmd"
     - "analysis/*.qmd"
-    - "!analysis/family_size_findability.qmd"
     - "!notes/"
 
 website:
@@ -15,12 +14,16 @@ website:
         href: index.qmd
       - text: Analyses
         menu:
+          - text: Preprocessing IPUMS data
+            href: analysis/preprocess.qmd
           - text: Fertility and sibling relationship
             href: analysis/fert_sibling.qmd
           - text: Fertility modelling with IPUMS data
             href: analysis/fert_model.qmd
           - text: Simulate the number of relatives
             href: analysis/simulate_relatives.qmd
+      - text: Simulator
+        href: https://kincounts.vercel.app/
       - text: About
         href: about.qmd
       - text: License

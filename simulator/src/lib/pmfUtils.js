@@ -1,4 +1,4 @@
-import { zinbPMF, nbPMF } from './distributions.js'
+import { zinbPMF } from './distributions.js'
 
 export const BUTTERFLY_MAX_K = 12  // counts 0–11, then 12+ bin
 

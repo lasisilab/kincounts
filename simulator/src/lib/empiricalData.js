@@ -20,6 +20,7 @@ export const KIN_DISPLAY_CAPS = {
 //   empSiblingMean, empSiblingVariance  — empirical (size-biased) sibling distribution
 //   zinbSiblingMean, zinbSiblingVariance — ZINB-induced sibling distribution
 //   mu, theta, pi0                    — ZINB parameters (overall mean = (1−pi0)*mu)
+//   sampleSize                        — unweighted n women (for chi-square / AIC)
 export const IPUMS_COHORTS = [
   {
     year: 1950, cohort: '1891–1900',
@@ -28,6 +29,7 @@ export const IPUMS_COHORTS = [
     empSiblingMean: 4.19175, empSiblingVariance: 8.89065,
     zinbSiblingMean: 4.18418, zinbSiblingVariance: 9.37581,
     mu: 2.943, theta: 2.372, pi0: 0.043,
+    sampleSize: 64760,
   },
   {
     year: 1960, cohort: '1901–1910',
@@ -36,6 +38,7 @@ export const IPUMS_COHORTS = [
     empSiblingMean: 3.69882, empSiblingVariance: 8.51465,
     zinbSiblingMean: 3.63543, zinbSiblingVariance: 7.91489,
     mu: 2.458, theta: 2.088, pi0: 0.012,
+    sampleSize: 86233,
   },
   {
     year: 1970, cohort: '1911–1920',
@@ -44,6 +47,7 @@ export const IPUMS_COHORTS = [
     empSiblingMean: 3.34383, empSiblingVariance: 7.05668,
     zinbSiblingMean: 3.25880, zinbSiblingVariance: 5.57870,
     mu: 2.547, theta: 3.578, pi0: 0.067,
+    sampleSize: 109678,
   },
   {
     year: 1980, cohort: '1921–1930',
@@ -52,6 +56,7 @@ export const IPUMS_COHORTS = [
     empSiblingMean: 3.53174, empSiblingVariance: 6.34570,
     zinbSiblingMean: 3.47320, zinbSiblingVariance: 4.99107,
     mu: 3.036, theta: 6.947, pi0: 0.060,
+    sampleSize: 613086,
   },
   {
     year: 1990, cohort: '1931–1940',
@@ -60,6 +65,7 @@ export const IPUMS_COHORTS = [
     empSiblingMean: 3.41201, empSiblingVariance: 5.02632,
     zinbSiblingMean: 3.38672, zinbSiblingVariance: 3.93837,
     mu: 3.224, theta: 19.792, pi0: 0.055,
+    sampleSize: 587159,
   },
 ]
 

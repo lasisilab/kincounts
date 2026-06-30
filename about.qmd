@@ -33,11 +33,10 @@ The sibling distribution is derived from the fertility distribution, using the r
 
 This project uses:
 
-- R for statistical computing
-- Shiny for interactive visualizations
-- workflowr for reproducible research
-- pscl for zero-inflated models
-- ggplot2 for data visualization
+- R for statistical computing, with `pscl` for zero-inflated models and `ggplot2` for visualization
+- Quarto for the methods and analysis website
+- React, Vite, and Recharts for the interactive [Kincounts simulator](https://kincounts.vercel.app/) (deployed on Vercel)
+- A legacy Shiny app, kept for local use
 
 ## Authors
 

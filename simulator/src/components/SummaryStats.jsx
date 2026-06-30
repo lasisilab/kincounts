@@ -1,4 +1,5 @@
 import { computeStats } from '../lib/statsUtils.js'
+import { downloadCSV } from '../lib/exportUtils.js'
 
 const KIN_LABELS = {
   children:      'Children',
@@ -17,7 +18,19 @@ export default function SummaryStats({ results, selectedKin }) {
   const active = Object.entries(selectedKin).filter(([, v]) => v).map(([k]) => k)
   if (active.length === 0) return null
 
+  function handleExport() {
+    const rows = active.map(key => {
+      const { mean, variance, pZero } = computeStats(results[key])
+      return { kinType: KIN_LABELS[key] ?? key, mean, variance, pZero }
+    })
+    downloadCSV('kin_summary_stats.csv', rows, ['kinType', 'mean', 'variance', 'pZero'])
+  }
+
   return (
+    <>
+    <div className="chart-export stats-export">
+      <button onClick={handleExport}>CSV</button>
+    </div>
     <table className="stats-table">
       <thead>
         <tr>
@@ -43,5 +56,6 @@ export default function SummaryStats({ results, selectedKin }) {
         })}
       </tbody>
     </table>
+    </>
   )
 }

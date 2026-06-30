@@ -1,9 +1,11 @@
+import { useRef } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import { arrayToPMF, mergePMFs } from '../lib/statsUtils.js'
 import { KIN_DISPLAY_CAPS } from '../lib/empiricalData.js'
+import { downloadCSV, downloadChartPng, svgFromRef } from '../lib/exportUtils.js'
 
 const KIN_LABELS = {
   children:      'Children',
@@ -24,6 +26,8 @@ const COLORS = {
 function pctFormatter(v) { return (v * 100).toFixed(1) + '%' }
 
 export default function ResultsChart({ results, selectedKin }) {
+  const ref = useRef(null)
+
   if (!results) {
     return (
       <div className="empty-chart">
@@ -51,9 +55,16 @@ export default function ResultsChart({ results, selectedKin }) {
 
   return (
     <>
-      <p className="chart-cap-note">
-        X-axis capped at empirical 99.9th-percentile maxima — tail mass folded into final bin.
-      </p>
+      <div className="chart-toolbar">
+        <p className="chart-cap-note">
+          X-axis capped at empirical 99.9th-percentile maxima — tail mass folded into final bin.
+        </p>
+        <div className="chart-export">
+          <button onClick={() => downloadCSV('kin_distributions.csv', data, ['count', ...active])}>CSV</button>
+          <button onClick={() => downloadChartPng(svgFromRef(ref), 'kin_distributions.png')}>PNG</button>
+        </div>
+      </div>
+      <div ref={ref}>
       <ResponsiveContainer width="100%" height={380}>
         <BarChart
           data={data}
@@ -87,6 +98,7 @@ export default function ResultsChart({ results, selectedKin }) {
           ))}
         </BarChart>
       </ResponsiveContainer>
+      </div>
     </>
   )
 }

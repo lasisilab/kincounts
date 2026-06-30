@@ -1,5 +1,3 @@
-import { IPUMS_COHORTS } from '../lib/empiricalData.js'
-
 function badge(predicted, empirical) {
   if (!empirical) return ''
   const abs = Math.abs((predicted - empirical) / empirical)
@@ -10,8 +8,8 @@ function badge(predicted, empirical) {
 
 function fmt(v) { return v.toFixed(3) }
 
-export default function CohortValidationTable() {
-  const rows = IPUMS_COHORTS.map(c => {
+export default function CohortValidationTable({ dataset }) {
+  const rows = dataset.cohorts.map(c => {
     const effectiveMean = (1 - c.pi0) * c.mu  // ZINB effective fertility mean
 
     // ── Fertility stats ──
@@ -45,8 +43,9 @@ export default function CohortValidationTable() {
         <div>
           <h3 className="validation-title">Fertility &amp; Sibling Distributions — Model vs Empirical</h3>
           <p className="validation-subtitle">
-            For each cohort, the ZINB and Poisson models share the same fertility mean.
-            Differences in sibling predictions come entirely from how each model handles variance.
+            Fertility columns describe the women observed at each census; sibling columns describe
+            their children (the size-biased next generation). The ZINB and Poisson models share the
+            same fertility mean, so differences come entirely from how each model handles variance.
             ZINB sibling distribution: NB(μ·(θ+1)/θ, θ+1) — π₀ vanishes from the size-biased transform.
           </p>
         </div>

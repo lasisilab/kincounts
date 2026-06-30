@@ -21,6 +21,13 @@ js_path <- file.path(root, "simulator", "src", "lib", "empiricalData.js")
 params <- read_csv(file.path(out_dir, "fertility_parameters.csv"), show_col_types = FALSE)
 estimation <- read_csv(file.path(out_dir, "fertility_estimation.csv"), show_col_types = FALSE)
 
+# Per-cohort sample sizes (unweighted) so the simulator can report real
+# goodness-of-fit statistics (Pearson chi-square, AIC) on the observed counts.
+sizes <- read_csv(
+  file.path(root, "data", "processed", "ipums_cohort_sample_sizes.csv"),
+  show_col_types = FALSE
+)
+
 # Cohort display labels are nominal descriptors (they do not drift with the data),
 # so they stay as a fixed lookup rather than being read from a CSV.
 cohort_labels <- c(
@@ -43,6 +50,8 @@ entries <- vapply(years, function(y) {
   z <- zinb[zinb$Year == y, ]
   label <- cohort_labels[[as.character(y)]]
   if (is.null(label)) stop("No cohort label defined for year ", y)
+  n_women <- sizes$n_women[match(y, sizes$Year)]
+  if (is.na(n_women)) stop("No sample size found for year ", y)
   sprintf(
     paste(
       "  {",
@@ -52,13 +61,15 @@ entries <- vapply(years, function(y) {
       "    empSiblingMean: %.5f, empSiblingVariance: %.5f,",
       "    zinbSiblingMean: %.5f, zinbSiblingVariance: %.5f,",
       "    mu: %.3f, theta: %.3f, pi0: %.3f,",
+      "    sampleSize: %d,",
       "  },",
       sep = "\n"
     ),
     y, label,
     f$mean_data, f$variance_data, f$variance_zinb,
     s$mean_data, s$variance_data, s$mean_zinb, s$variance_zinb,
-    z$mu, z$size, z$pi0
+    z$mu, z$size, z$pi0,
+    as.integer(n_women)
   )
 }, character(1))
 
@@ -85,6 +96,7 @@ header <- c(
   "//   empSiblingMean, empSiblingVariance  — empirical (size-biased) sibling distribution",
   "//   zinbSiblingMean, zinbSiblingVariance — ZINB-induced sibling distribution",
   "//   mu, theta, pi0                    — ZINB parameters (overall mean = (1−pi0)*mu)",
+  "//   sampleSize                        — unweighted n women (for chi-square / AIC)",
   "export const IPUMS_COHORTS = ["
 )
 

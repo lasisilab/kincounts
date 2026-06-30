@@ -1,56 +1,55 @@
-# Kin Counts Simulator
+# Kincounts Simulator
 
-An interactive browser tool accompanying the paper "Bridging fertility and sibling distributions." It visualizes the relationship between fertility and sibling distributions under different models, and simulates the full kinship network across three generations.
+An interactive browser tool accompanying the paper "Bridging fertility and sibling distributions." It shows how fertility distributions shape sibling and broader kin-count distributions, and lets you simulate the kinship network across three generations. Live: <https://kincounts.vercel.app/>.
 
-## Sections
+The app has two tabs, both part of **Kincounts**:
 
-### Fertility Fit
-- Displays empirical fertility and sibling distributions side by side for five IPUMS cohorts (1950–1990)
-- Overlays ZINB and Poisson model fits on both charts
-- Sibling distribution constructed via size-biasing: P(Y=k) = (k+1)·P(X=k+1)/E[X]
-- ZINB-fitted sibling distribution: NB(μ·(θ+1)/θ, θ+1) — zero-inflation π₀ vanishes
-- Stats panel reports mean and variance for empirical, ZINB, and Poisson across both distributions
-- Cohort validation table reproduces Table 2 from the paper across all five cohorts
+## Fertility Fit
 
-### Kinship Counts Simulator
-- Choose a fertility model: ZINB, Poisson, or Fixed
-- Set parameters independently for three generations: focal (1990), parent (1970), grandparent (1950)
-- Simulates 100,000 individuals and produces full marginal distributions for:
-  - Children, Siblings, Aunts & Uncles, Cousins, Nieces & Nephews
-- Summary statistics: mean, variance, and P(0) per kin type
-- Reproducible results via seeded RNG
+- Empirical fertility and sibling distributions side by side for the IPUMS cohorts (1950–1990), with ZINB and Poisson fits overlaid.
+- **Computed goodness-of-fit**: each model shows a discrepancy = total-variation distance to the empirical PMF (`½·Σ|model−data|`); the closer model is marked. Nothing is hardcoded — the data decides which model wins.
+- **Sibling framing**: a generation diagram makes explicit that the sibling distribution describes the *children* of the women observed at a census, not the women themselves. It is the size-biased transform P(Y=k) = (k+1)·P(X=k+1)/E[X]; the ZINB-induced sibling distribution is NB(μ·(θ+1)/θ, θ+1), in which π₀ vanishes.
+- **Historical trends** plotted by census year, with the mothers' birth cohort marked under each year, and the two generations (mothers' fertility vs. children's sibship) labeled distinctly.
+- **About this data** panel naming the source (IPUMS USA, CHBORN, women 50–59, 1891–1940 cohorts).
+- A cohort validation table comparing model vs. empirical moments.
 
-## Simulation Model
+## Simulator
 
-**ZINB** — fertility drawn from ZINB(μ, θ, π₀); sibling distribution is NB(μ·(θ+1)/θ, θ+1)
+- Choose a fertility model — ZINB, Poisson, or Fixed.
+- Per-generation parameters (focal / parent / grandparent), seeded from the active dataset's newest / middle / oldest cohorts.
+- Simulates marginal distributions for Children, Siblings, Aunts & Uncles, Cousins, Nieces & Nephews, with mean / variance / P(0) and a reproducible seeded RNG.
 
-**Poisson** — fertility and siblings drawn from Poisson(μ)
+## Use your own data
 
-**Fixed** — fertility and sibling counts set to independent empirical means per generation
+You can replace the IPUMS data with your own. Provide fertility as **raw counts** (women by number of children ever born, per year) via the "Use your own data" panel — upload a CSV or paste/type it, and download a pre-filled template to get the format right. The app computes the empirical distribution, fits Poisson and ZINB in-browser, and your data then drives both tabs. The fitted discrepancy is shown so you can judge fit quality.
+
+## Export
+
+Every chart has **CSV** (the plotted data) and **PNG** download buttons; the simulator also exports its distributions and summary statistics as CSV.
+
+## Simulation model
+
+**ZINB** — fertility ~ ZINB(μ, θ, π₀); sibling distribution NB(μ·(θ+1)/θ, θ+1).
+**Poisson** — fertility and siblings ~ Poisson(μ).
+**Fixed** — fertility and sibling counts set to their empirical means per generation.
 
 Aunts & uncles = sum of two independent sibling draws (maternal + paternal). Cousins = random sum over aunts/uncles, each drawing from parent-generation fertility.
 
-## Default Parameters
+## Data provenance (no drift)
 
-Defaults match fitted values from the paper (IPUMS USA, women aged 50–59):
+The IPUMS cohort parameters and PMFs are generated from the analysis outputs by `code/generate_empirical_data.R` (run from `code/build_site.R` after the Quarto render), so the simulator can never drift from the paper. Do not edit `src/lib/empiricalData.js` by hand.
 
-| Generation | Model | μ | θ | π₀ |
-|------------|-------|---|---|-----|
-| Focal (1990) | ZINB | 3.213 | 19.536 | 0.056 |
-| Parent (1970) | ZINB | 2.530 | 3.652 | 0.066 |
-| Grandparent (1950) | ZINB | 2.943 | 2.372 | 0.043 |
-
-## Tech Stack
+## Tech stack
 
 - [React 19](https://react.dev/) + [Vite](https://vite.dev/)
 - [Recharts](https://recharts.org/) for charts
 - [seedrandom](https://github.com/davidbau/seedrandom) for reproducible RNG
 
-## Getting Started
+## Getting started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open http://localhost:5173 in your browser.
+Then open http://localhost:5173. Production build: `npm run build` (outputs to `dist/`). Deployed on Vercel with the project Root Directory set to `simulator/`.

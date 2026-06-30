@@ -44,7 +44,7 @@ const GEN_NOTES = {
   grandparent: 'X₂ — used for aunts and uncles',
 }
 
-export default function GenerationParams({ genKey, model, params, onChange }) {
+export default function GenerationParams({ genKey, model, params, seed, onChange }) {
   const set = (key, val) => onChange({ ...params, [key]: val })
 
   return (
@@ -52,6 +52,11 @@ export default function GenerationParams({ genKey, model, params, onChange }) {
       <div className="gen-block-header">
         <span className="gen-block-title">{GEN_LABELS[genKey]}</span>
         <span className="gen-block-note">{GEN_NOTES[genKey]}</span>
+        {seed && (
+          <span className="gen-block-seed">
+            from {seed.year}{seed.cohort ? ` · b. ${seed.cohort}` : ''}
+          </span>
+        )}
       </div>
 
       {model === 'fixed' ? (

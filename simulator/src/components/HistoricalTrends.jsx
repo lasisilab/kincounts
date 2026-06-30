@@ -2,20 +2,18 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ReferenceDot,
 } from 'recharts'
-import { IPUMS_COHORTS } from '../lib/empiricalData.js'
 
-const data = IPUMS_COHORTS.map(c => ({
-  year: c.year,
-  'Fertility mean': c.empMean,
-  'Sibling mean': c.empSiblingMean,
-}))
+const FERT_KEY = 'Completed fertility (mothers)'
+const SIB_KEY  = 'Sibship size (their children)'
 
-function CustomTooltip({ active, payload, label }) {
+function CustomTooltip({ active, payload, label, cohortByYear }) {
   if (!active || !payload?.length) return null
-  const cohort = IPUMS_COHORTS.find(c => c.year === label)
+  const cohort = cohortByYear[label]
   return (
     <div className="trends-tooltip">
-      <p className="tooltip-year">{label} (born {cohort?.cohort})</p>
+      <p className="tooltip-year">
+        {label}{cohort?.cohort ? ` · mothers born ${cohort.cohort}` : ''}
+      </p>
       {payload.map(p => (
         <p key={p.name} style={{ color: p.color }}>
           {p.name}: {p.value.toFixed(3)}
@@ -30,38 +28,68 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
-export default function HistoricalTrends({ activeCohort }) {
+// Two-line x-axis tick: census year on top, the mothers' birth cohort below it,
+// so the chart shows at a glance which birth cohort each census represents.
+function CohortTick({ x, y, payload, cohortByYear }) {
+  const cohort = cohortByYear[payload.value]
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={14} textAnchor="middle" fontSize={12} fill="#333">
+        {payload.value}
+      </text>
+      {cohort?.cohort && (
+        <text x={0} y={0} dy={29} textAnchor="middle" fontSize={10} fill="#888">
+          b. {cohort.cohort}
+        </text>
+      )}
+    </g>
+  )
+}
+
+export default function HistoricalTrends({ dataset, activeCohort }) {
+  const cohorts = [...dataset.cohorts].sort((a, b) => a.year - b.year)
+  const cohortByYear = Object.fromEntries(cohorts.map(c => [c.year, c]))
+  const data = cohorts.map(c => ({
+    year: c.year,
+    [FERT_KEY]: c.empMean,
+    [SIB_KEY]:  c.empSiblingMean,
+  }))
+
   return (
     <div className="trends-panel">
-      <h2>Historical Cohort Trends (IPUMS Census)</h2>
+      <h2>Historical Cohort Trends — {dataset.label}</h2>
       <p className="trends-subtitle">
-        The sibling mean always exceeds the fertility mean by the overdispersion term σ²<sub>X</sub>/X̄ − 1.
-        The gap narrows as cohorts become less overdispersed.
+        Each census year is plotted against the mothers' birth cohort shown below it.
+        The two lines describe <strong>different generations</strong>: completed fertility is
+        measured on the women observed at that census; sibship size is what their children
+        experienced. The sibling line always sits above the fertility line by the
+        overdispersion term σ²<sub>X</sub>/X̄ − 1, and the gap narrows as cohorts become less overdispersed.
       </p>
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart
           data={data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+          margin={{ top: 10, right: 30, left: 0, bottom: 28 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis
             dataKey="year"
-            tick={{ fontSize: 12 }}
-            label={{ value: 'Census year', position: 'insideBottom', offset: -4, fontSize: 12 }}
+            height={48}
+            tick={<CohortTick cohortByYear={cohortByYear} />}
+            label={{ value: 'Census year (mothers’ birth cohort below)', position: 'insideBottom', offset: -2, fontSize: 12 }}
           />
           <YAxis
             domain={[1.5, 5]}
             tick={{ fontSize: 12 }}
             label={{ value: 'Mean count', angle: -90, position: 'insideLeft', offset: 10, fontSize: 12 }}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip cohortByYear={cohortByYear} />} />
           <Legend
             verticalAlign="top"
             wrapperStyle={{ fontSize: 12, paddingBottom: 6 }}
           />
           <Line
             type="monotone"
-            dataKey="Fertility mean"
+            dataKey={FERT_KEY}
             stroke="#4f86c6"
             strokeWidth={2.5}
             dot={{ r: 4 }}
@@ -69,7 +97,7 @@ export default function HistoricalTrends({ activeCohort }) {
           />
           <Line
             type="monotone"
-            dataKey="Sibling mean"
+            dataKey={SIB_KEY}
             stroke="#e8704a"
             strokeWidth={2.5}
             dot={{ r: 4 }}

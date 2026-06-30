@@ -1,32 +1,15 @@
-import { useState } from 'react'
-import FertilityModelFit   from './components/FertilityModelFit.jsx'
-import GenerationParams    from './components/GenerationParams.jsx'
-import KinTypeSelector     from './components/KinTypeSelector.jsx'
-import SimulationControls  from './components/SimulationControls.jsx'
-import ResultsChart        from './components/ResultsChart.jsx'
-import SummaryStats        from './components/SummaryStats.jsx'
-import HistoricalTrends    from './components/HistoricalTrends.jsx'
+import { useState, useMemo } from 'react'
+import FertilityModelFit     from './components/FertilityModelFit.jsx'
+import GenerationParams      from './components/GenerationParams.jsx'
+import KinTypeSelector       from './components/KinTypeSelector.jsx'
+import SimulationControls    from './components/SimulationControls.jsx'
+import ResultsChart          from './components/ResultsChart.jsx'
+import SummaryStats          from './components/SummaryStats.jsx'
+import HistoricalTrends      from './components/HistoricalTrends.jsx'
 import CohortValidationTable from './components/CohortValidationTable.jsx'
-import { simulateKin }     from './lib/kinSimulator.js'
-
-// Default params per model type
-const DEFAULTS = {
-  zinb: {
-    focal:       { mu: 3.213, theta: 19.536, pi0: 0.056 },  // 1990 cohort
-    parent:      { mu: 2.530, theta:  3.652, pi0: 0.066 },  // 1970 cohort
-    grandparent: { mu: 2.943, theta:  2.372, pi0: 0.043 },  // 1950 cohort
-  },
-  poisson: {
-    focal:       { mu: 3.034 },
-    parent:      { mu: 2.363 },
-    grandparent: { mu: 2.818 },
-  },
-  fixed: {
-    focal:       { fertMean: 3.034 },
-    parent:      { fertMean: 2.363, sibMean: 3.314 },
-    grandparent: { sibMean:  4.192 },
-  },
-}
+import DataImport         from './components/DataImport.jsx'
+import { simulateKin }       from './lib/kinSimulator.js'
+import { IPUMS_DATASET, defaultsFromDataset } from './lib/datasets.js'
 
 const DEFAULT_KIN = {
   children: true, siblings: true, auntsUncles: true,
@@ -35,9 +18,9 @@ const DEFAULT_KIN = {
 
 const TABS = [
   { id: 'fit', label: 'Fertility Fit',
-    desc: 'How well does each model capture the empirical fertility and sibling distributions?' },
-  { id: 'kin', label: 'Kin Counts',
-    desc: 'Simulate kin count distributions under a chosen fertility model across three generations.' },
+    desc: 'The empirical fertility and sibling distributions from the data, and how the ZINB, Poisson, and fixed-mean models capture them.' },
+  { id: 'sim', label: 'Simulator',
+    desc: 'Simulate kin-count distributions under a chosen fertility model across three generations.' },
 ]
 
 const MODEL_OPTIONS = [
@@ -46,21 +29,43 @@ const MODEL_OPTIONS = [
   { key: 'fixed',   label: 'Fixed',   desc: 'Fixed means — fertility and sibling sizes set to their empirical means' },
 ]
 
+function newestYear(dataset) {
+  return [...dataset.cohorts].sort((a, b) => a.year - b.year).at(-1).year
+}
+
 export default function App() {
+  // The ACTIVE dataset. Defaults to IPUMS; an imported dataset replaces it
+  // everywhere (Fertility Fit + Simulator) with no special-casing.
+  const [dataset,     setDataset]     = useState(IPUMS_DATASET)
+  const defaults = useMemo(() => defaultsFromDataset(dataset), [dataset])
+
+  const [importOpen,  setImportOpen]  = useState(false)
   const [activeTab,   setActiveTab]   = useState('fit')
   const [model,       setModel]       = useState('zinb')
-  const [genParams,   setGenParams]   = useState(DEFAULTS.zinb)
+  const [genParams,   setGenParams]   = useState(() => defaultsFromDataset(IPUMS_DATASET).byModel.zinb)
   const [selectedKin, setSelectedKin] = useState(DEFAULT_KIN)
   const [seed,        setSeed]        = useState(42)
   const [results,     setResults]     = useState(null)
   const [isRunning,   setIsRunning]   = useState(false)
   const [runInfo,     setRunInfo]     = useState(null)
   const [nSim,        setNSim]        = useState(100000)
-  const [selectedYear, setSelectedYear] = useState(1990)
+  const [selectedYear, setSelectedYear] = useState(() => newestYear(IPUMS_DATASET))
+
+  // Swap the active dataset (IPUMS or imported) and reset everything that
+  // depends on it: model defaults, selected year, and any prior simulation.
+  function applyDataset(ds) {
+    const d = defaultsFromDataset(ds)
+    setDataset(ds)
+    setModel('zinb')
+    setGenParams(d.byModel.zinb)
+    setSelectedYear(newestYear(ds))
+    setResults(null)
+    setImportOpen(false)
+  }
 
   function handleModelChange(m) {
     setModel(m)
-    setGenParams(DEFAULTS[m])
+    setGenParams(defaults.byModel[m])
     setResults(null)
   }
 
@@ -89,13 +94,14 @@ export default function App() {
   }
 
   const activeTabMeta = TABS.find(t => t.id === activeTab)
+  const activeCohort  = dataset.cohorts.find(c => c.year === selectedYear)
 
   return (
     <div className="app">
       <header className="app-header">
         <div className="app-header-text">
-          <h1>Kin Counts Simulator</h1>
-          <p>Bridging fertility and sibling distributions — interactive companion to the paper</p>
+          <h1>Kincounts</h1>
+          <p>Fertility and kin-count distributions — interactive companion to the paper</p>
         </div>
       </header>
 
@@ -112,22 +118,45 @@ export default function App() {
       </nav>
       <p className="tab-desc">{activeTabMeta.desc}</p>
 
+      <div className="dataset-bar">
+        <span className="dataset-bar-label">Data source</span>
+        <span className="dataset-bar-name">{dataset.label}</span>
+        <button className="dataset-bar-btn" onClick={() => setImportOpen(o => !o)}>
+          {importOpen ? 'Close importer' : 'Use your own data'}
+        </button>
+        {dataset.id !== 'ipums' && (
+          <button className="dataset-bar-reset" onClick={() => applyDataset(IPUMS_DATASET)}>
+            Reset to IPUMS
+          </button>
+        )}
+      </div>
+
+      {importOpen && (
+        <DataImport
+          baseDataset={IPUMS_DATASET}
+          onLoad={applyDataset}
+          onClose={() => setImportOpen(false)}
+        />
+      )}
+
       {/* ══ Fertility Fit ══ */}
       {activeTab === 'fit' && (
         <div className="tab-content">
-          <FertilityModelFit selectedYear={selectedYear} onYearChange={setSelectedYear} />
+          <FertilityModelFit
+            dataset={dataset}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+          />
+          <div className="kin-divider" />
+          <HistoricalTrends dataset={dataset} activeCohort={activeCohort} />
+          <div className="kin-divider" />
+          <CohortValidationTable dataset={dataset} />
         </div>
       )}
 
-      {/* ══ Kin Counts ══ */}
-      {activeTab === 'kin' && (
+      {/* ══ Simulator ══ */}
+      {activeTab === 'sim' && (
         <div className="tab-content">
-
-          <HistoricalTrends />
-          <div className="kin-divider" />
-          <CohortValidationTable />
-          <div className="kin-divider" />
-
           <div className="app-body">
             <aside className="controls-panel">
 
@@ -155,12 +184,16 @@ export default function App() {
               {/* Step 2: Per-generation parameters */}
               <div className="control-group">
                 <span className="control-label">Generation Parameters</span>
+                <p className="control-sublabel">
+                  Defaults seeded from {dataset.label}: focal = {defaults.seeds.focal.year}, parent = {defaults.seeds.parent.year}, grandparent = {defaults.seeds.grandparent.year}.
+                </p>
                 {['focal', 'parent', 'grandparent'].map(genKey => (
                   <GenerationParams
-                    key={`${model}-${genKey}`}
+                    key={`${dataset.id}-${model}-${genKey}`}
                     genKey={genKey}
                     model={model}
                     params={genParams[genKey]}
+                    seed={defaults.seeds[genKey]}
                     onChange={p => handleGenChange(genKey, p)}
                   />
                 ))}
