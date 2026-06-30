@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Junhui He">
-<meta name="dcterms.date" content="2026-06-03">
+<meta name="dcterms.date" content="2026-06-29">
 
 <title>Simulate the number of relatives under different fertility and sibling models – Kincounts</title>
 <style>
@@ -148,10 +148,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../analysis/simulate_relatives.html">
  <span class="dropdown-text">Simulate the number of relatives</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../analysis/family_size_findability.html">
- <span class="dropdown-text">Family size and identification probability</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -218,7 +214,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 3, 2026</p>
+      <p class="date">June 29, 2026</p>
     </div>
   </div>
   
@@ -372,14 +368,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mus_zinb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.213</span>, <span class="fl">2.530</span>, <span class="fl">2.943</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sizes_zinb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">19.536</span>, <span class="fl">3.652</span>, <span class="fl">2.372</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pis_zinb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.056</span>, <span class="fl">0.066</span>, <span class="fl">0.043</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mus_poisson <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.034</span>, <span class="fl">2.363</span>, <span class="fl">2.818</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>mean_ferts <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.034</span>, <span class="fl">2.363</span>, <span class="fl">2.818</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>mean_sibs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.403</span>, <span class="fl">3.314</span>, <span class="fl">4.192</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="dv">100000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the fitted parameters and empirical summaries written by fert_model.qmd</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># instead of hard-coding them, so this notebook stays in sync with the data.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fert_params <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(output_path, <span class="st">"fertility_parameters.csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fert_estimation <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">file.path</span>(output_path, <span class="st">"fertility_estimation.csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generations used below, in order: focal individual, parent, grandparent.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>gen_years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1990</span>, <span class="dv">1970</span>, <span class="dv">1950</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>zinb_params <span class="ot">&lt;-</span> fert_params <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Model <span class="sc">==</span> <span class="st">"ZINB"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pois_params <span class="ot">&lt;-</span> fert_params <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Model <span class="sc">==</span> <span class="st">"Poisson"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>sib_estimation <span class="ot">&lt;-</span> fert_estimation <span class="sc">%&gt;%</span> <span class="fu">filter</span>(distribution <span class="sc">==</span> <span class="st">"sibling"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>mus_zinb <span class="ot">&lt;-</span> zinb_params<span class="sc">$</span>mu[<span class="fu">match</span>(gen_years, zinb_params<span class="sc">$</span>Year)]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>sizes_zinb <span class="ot">&lt;-</span> zinb_params<span class="sc">$</span>size[<span class="fu">match</span>(gen_years, zinb_params<span class="sc">$</span>Year)]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>pis_zinb <span class="ot">&lt;-</span> zinb_params<span class="sc">$</span>pi0[<span class="fu">match</span>(gen_years, zinb_params<span class="sc">$</span>Year)]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>mus_poisson <span class="ot">&lt;-</span> pois_params<span class="sc">$</span>mu[<span class="fu">match</span>(gen_years, pois_params<span class="sc">$</span>Year)]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>mean_ferts <span class="ot">&lt;-</span> mus_poisson</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>mean_sibs <span class="ot">&lt;-</span> sib_estimation<span class="sc">$</span>mean_data[<span class="fu">match</span>(gen_years, sib_estimation<span class="sc">$</span>Year)]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="dv">100000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -495,48 +503,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Siblings</td>
-<td style="text-align: right;">3.314</td>
-<td style="text-align: right;">2.364</td>
-<td style="text-align: right;">3.217</td>
+<td style="text-align: right;">3.344</td>
+<td style="text-align: right;">2.367</td>
+<td style="text-align: right;">3.247</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">2.360</td>
-<td style="text-align: right;">5.325</td>
+<td style="text-align: right;">2.385</td>
+<td style="text-align: right;">5.436</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Children</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">3.037</td>
-<td style="text-align: right;">3.021</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">3.044</td>
+<td style="text-align: right;">3.050</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">3.052</td>
-<td style="text-align: right;">4.077</td>
+<td style="text-align: right;">3.031</td>
+<td style="text-align: right;">4.092</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">AuntUncles</td>
-<td style="text-align: right;">8.384</td>
-<td style="text-align: right;">5.648</td>
-<td style="text-align: right;">8.219</td>
+<td style="text-align: right;">8.383</td>
+<td style="text-align: right;">5.638</td>
+<td style="text-align: right;">8.224</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">5.656</td>
-<td style="text-align: right;">16.116</td>
+<td style="text-align: right;">5.626</td>
+<td style="text-align: right;">16.093</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">NieceNephews</td>
-<td style="text-align: right;">10.055</td>
-<td style="text-align: right;">7.164</td>
-<td style="text-align: right;">9.756</td>
+<td style="text-align: right;">10.187</td>
+<td style="text-align: right;">7.217</td>
+<td style="text-align: right;">9.860</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">28.926</td>
-<td style="text-align: right;">61.966</td>
+<td style="text-align: right;">29.446</td>
+<td style="text-align: right;">63.461</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Cousins</td>
-<td style="text-align: right;">19.811</td>
-<td style="text-align: right;">13.341</td>
-<td style="text-align: right;">19.400</td>
+<td style="text-align: right;">19.927</td>
+<td style="text-align: right;">13.402</td>
+<td style="text-align: right;">19.584</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">44.868</td>
-<td style="text-align: right;">125.759</td>
+<td style="text-align: right;">44.980</td>
+<td style="text-align: right;">127.107</td>
 </tr>
 </tbody>
 </table>

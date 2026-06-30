@@ -14,7 +14,7 @@ import {
 // component falls back to the ZINB theoretical PMF automatically.
 const empiricalRaw = import.meta.glob(
   '/src/data/fertility_pmf_*.csv',
-  { eager: true, as: 'raw' }
+  { eager: true, query: '?raw', import: 'default' }
 )
 
 function keyForYear(year) {

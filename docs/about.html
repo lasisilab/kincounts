@@ -140,10 +140,6 @@ window.Quarto = {
     <a class="dropdown-item" href="./analysis/simulate_relatives.html">
  <span class="dropdown-text">Simulate the number of relatives</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="./analysis/family_size_findability.html">
- <span class="dropdown-text">Family size and identification probability</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -197,7 +193,7 @@ window.Quarto = {
 
 <section id="project-description" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="project-description"><span class="header-section-number">1</span> Project Description</h2>
-<p>This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases.</p>
+<p>This project studies how fertility distributions shape sibling and broader kin-count distributions. Using statistical models of fertility and family structure, we estimate empirical fertility patterns, derive sibling distributions, and simulate relative counts across relationship categories.</p>
 </section>
 <section id="methods" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="methods"><span class="header-section-number">2</span> Methods</h2>
@@ -213,10 +209,6 @@ window.Quarto = {
 <section id="sibling-distribution" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="sibling-distribution"><span class="header-section-number">2.2</span> Sibling Distribution</h3>
 <p>The sibling distribution is derived from the fertility distribution, using the relationship: <span class="math display">\[P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).\]</span></p>
-</section>
-<section id="genetic-match-probability" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="genetic-match-probability"><span class="header-section-number">2.3</span> Genetic Match Probability</h3>
-<p>The probability of a genetic match is modelled based on a binomial distribution <span class="math inline">\(\text{Binomial}(r, cp)\)</span>, where <span class="math inline">\(r\)</span> is the number of cousins, <span class="math inline">\(c\)</span> is the database coverage, and <span class="math inline">\(p\)</span> is the genetic match probability.</p>
 </section>
 </section>
 <section id="software" class="level2" data-number="3">

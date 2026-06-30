@@ -6,5 +6,9 @@
 # macOS
 .DS_Store
 
-# Ignore massive data files
-/data/
+# Ignore restricted IPUMS microdata while allowing shareable processed summaries.
+/data/raw/*
+!/data/raw/README.md
+
+# Local planning notes
+/notes/

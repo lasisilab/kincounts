@@ -1,34 +1,25 @@
-// Per-kin-type display caps derived from the 1950 cohort (highest overdispersion):
-// mu=2.818, var=6.689, theta≈2.05. Caps are ~99.5–99.9th percentile of the
-// respective distributions under those empirical params. Counts beyond these
-// thresholds are essentially unobservable in real census data.
+// GENERATED FILE — do not edit by hand.
+// Produced by code/generate_empirical_data.R from the fertility output CSVs
+// (output/fertility_parameters.csv, output/fertility_estimation.csv). Re-run that
+// script, or code/build_site.R, after fert_model.qmd to refresh these values.
+//
+// Per-kin-type display caps derived from the 1950 cohort (highest overdispersion).
+// These are fixed ~99.5–99.9th-percentile display thresholds, not regenerated
+// from the CSVs; counts beyond them are essentially unobservable in census data.
 export const KIN_DISPLAY_CAPS = {
-  children:      12,   // fertility distribution of focal individual
-  siblings:      18,   // NB(4.19, 3.05), 99.9th pct ≈ 18
-  auntsUncles:   28,   // sum of 2 NB(4.19, 3.05), 99.9th pct ≈ 28
-  cousins:       50,   // compound(AU, ZINB fertility), 99.5th pct ≈ 50
-  niecesNephews: 45,   // compound(siblings, ZINB fertility), 99.5th pct ≈ 45
+  children:      12,
+  siblings:      18,
+  auntsUncles:   28,
+  cousins:       50,
+  niecesNephews: 45,
 }
 
-// IPUMS Census data — all values taken directly from the paper's GitHub repo:
-//   lasisilab/kincounts  (output/fertility_estimation.csv)
-//
-// empMean, empVariance           — empirical fertility distribution
-// zinbVariance                   — ZINB-fitted fertility variance
-// empSiblingMean, empSiblingVariance  — empirical sibling distribution, constructed
-//   by size-biased sampling: each mother with k+1 children contributes k+1 rows,
-//   each with n_sib = k (filter(n_child > 0) %>% uncount(n_child) %>% mutate(n_sib = n_child - 1))
-// zinbSiblingMean, zinbSiblingVariance — ZINB-induced sibling distribution NB(p, s+1)
-//   stored directly from repo CSV to avoid rounding errors from analytical recomputation
-//
-// mu, theta, pi0: ZINB parameters from zeroinfl(n_child ~ 1 | 1, dist = "negbin")
-//   mu  = NB component mean  (overall ZINB mean = (1−π₀)×μ)
-//   theta = NB size parameter
-//   pi0 = zero-inflation probability
-//   Hardcoded values from simulate_relatives.qmd:
-//     focal(1990): mu=3.213, theta=19.536, pi0=0.056
-//     parent(1970): mu=2.530, theta=3.652, pi0=0.066
-//     grandparent(1950): mu=2.943, theta=2.372, pi0=0.043
+// IPUMS Census cohorts. All numeric fields are generated from the output CSVs:
+//   empMean, empVariance              — empirical fertility mean and variance
+//   zinbVariance                      — ZINB-fitted fertility variance
+//   empSiblingMean, empSiblingVariance  — empirical (size-biased) sibling distribution
+//   zinbSiblingMean, zinbSiblingVariance — ZINB-induced sibling distribution
+//   mu, theta, pi0                    — ZINB parameters (overall mean = (1−pi0)*mu)
 export const IPUMS_COHORTS = [
   {
     year: 1950, cohort: '1891–1900',
@@ -41,33 +32,34 @@ export const IPUMS_COHORTS = [
   {
     year: 1960, cohort: '1901–1910',
     empMean: 2.42926, empVariance: 5.51341,
-    zinbVariance: 5.35936,
+    zinbVariance: 5.35937,
     empSiblingMean: 3.69882, empSiblingVariance: 8.51465,
     zinbSiblingMean: 3.63543, zinbSiblingVariance: 7.91489,
     mu: 2.458, theta: 2.088, pi0: 0.012,
   },
   {
     year: 1970, cohort: '1911–1920',
-    empMean: 2.36310, empVariance: 4.61134,
-    zinbVariance: 4.39412,
-    empSiblingMean: 3.31448, empSiblingVariance: 7.09273,
-    zinbSiblingMean: 3.22257, zinbSiblingVariance: 5.45518,
-    mu: 2.530, theta: 3.652, pi0: 0.066,
+    empMean: 2.37699, empVariance: 4.67520,
+    zinbVariance: 4.47304,
+    empSiblingMean: 3.34383, empSiblingVariance: 7.05668,
+    zinbSiblingMean: 3.25880, zinbSiblingVariance: 5.57870,
+    mu: 2.547, theta: 3.578, pi0: 0.067,
   },
   {
     year: 1980, cohort: '1921–1930',
-    empMean: 2.84623, empVariance: 4.76450,
-    zinbVariance: 4.59852,
-    empSiblingMean: 3.52018, empSiblingVariance: 6.30714,
-    zinbSiblingMean: 3.46188, zinbSiblingVariance: 4.94432,
-    mu: 3.034, theta: 7.084, pi0: 0.062,
+    empMean: 2.85487, empVariance: 4.78726,
+    zinbVariance: 4.62013,
+    empSiblingMean: 3.53174, empSiblingVariance: 6.34570,
+    zinbSiblingMean: 3.47320, zinbSiblingVariance: 4.99107,
+    mu: 3.036, theta: 6.947, pi0: 0.060,
   },
   {
     year: 1990, cohort: '1931–1940',
-    empMean: 3.03355, empVariance: 4.15440,
-    zinbVariance: 4.07644,
-    empSiblingMean: 3.40302, empSiblingVariance: 5.03024,
-    zinbSiblingMean: 3.37734, zinbSiblingVariance: 3.93278,
-    mu: 3.213, theta: 19.536, pi0: 0.056,
+    empMean: 3.04652, empVariance: 4.16000,
+    zinbVariance: 4.08293,
+    empSiblingMean: 3.41201, empSiblingVariance: 5.02632,
+    zinbSiblingMean: 3.38672, zinbSiblingVariance: 3.93837,
+    mu: 3.224, theta: 19.792, pi0: 0.055,
   },
 ]
+

@@ -7,7 +7,7 @@ format:
 
 ## Project Description
 
-This project investigates long-range familial search capabilities in genetic databases. Using statistical models of fertility and family structure, we estimate how likely it is to identify individuals through their distant relatives (cousins) who may be present in genetic databases.
+This project studies how fertility distributions shape sibling and broader kin-count distributions. Using statistical models of fertility and family structure, we estimate empirical fertility patterns, derive sibling distributions, and simulate relative counts across relationship categories.
 
 ## Methods
 
@@ -28,10 +28,6 @@ where:
 ### Sibling Distribution
 
 The sibling distribution is derived from the fertility distribution, using the relationship: $$P(num_{sib}=k) \propto (k+1)P(num_{child}=k+1).$$
-
-### Genetic Match Probability
-
-The probability of a genetic match is modelled based on a binomial distribution $\text{Binomial}(r, cp)$, where $r$ is the number of cousins, $c$ is the database coverage, and $p$ is the genetic match probability.
 
 ## Software
 

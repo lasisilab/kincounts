@@ -1,6 +1,11 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - "*.qmd"
+    - "analysis/*.qmd"
+    - "!analysis/family_size_findability.qmd"
+    - "!notes/"
 
 website:
   title: Kincounts
@@ -16,8 +21,6 @@ website:
             href: analysis/fert_model.qmd
           - text: Simulate the number of relatives
             href: analysis/simulate_relatives.qmd
-          - text: Family size and identification probability
-            href: analysis/family_size_findability.qmd
       - text: About
         href: about.qmd
       - text: License

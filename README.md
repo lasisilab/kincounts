@@ -1,19 +1,20 @@
 # Kincounts
 
-Kincounts is a research project for modeling how fertility distributions shape sibling and kin distributions, and for estimating findability in long-range familial search.
+Kincounts is a research project for modeling how fertility distributions shape sibling and broader kin-count distributions.
 
 This repository includes:
 
 - A Quarto website with methods, derivations, and analysis outputs
 - A Shiny app for interactive parameter estimation and simulation
-- Data and output folders with example and generated files
+- A data folder that keeps restricted raw IPUMS extracts separate from shareable processed summaries
+- Output folders with generated files
 
 ## Project layout
 
 - [_quarto.yml](_quarto.yml): Quarto website configuration
 - [analysis](analysis): analysis pages and supporting files
 - [app](app): Shiny app code
-- [data](data): input datasets
+- [data](data): raw and processed data; `data/raw/` is local-only, while `data/processed/` contains shareable aggregate summaries
 - [output](output): generated outputs from analyses/simulations
 - [docs](docs): rendered site output
 - [renv-setup.R](renv-setup.R): helper script to install analysis package dependencies
@@ -40,6 +41,16 @@ If you also plan to run the Shiny app, install app dependencies:
 ```r
 install.packages(c("shiny", "bslib", "DT"), repos = "https://cloud.r-project.org")
 ```
+
+## Data
+
+The raw IPUMS USA extract is not committed because IPUMS USA restricts redistribution of its data without permission. If you have IPUMS access, place the extract files in `data/raw/` and regenerate the processed summaries:
+
+```bash
+Rscript code/preprocess_ipums.R
+```
+
+The repository should include only aggregate processed files in `data/processed/` so the analyses can be reproduced without redistributing record-level IPUMS data.
 
 ## Build and preview the website
 

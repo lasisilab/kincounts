@@ -156,12 +156,24 @@ simulate_relatives_fixed <- function(ferts, sibs) {
 ## Fertility and sibling parameters based on the IPUMS data
 
 ```{r ipums-parameters}
-mus_zinb <- c(3.213, 2.530, 2.943)
-sizes_zinb <- c(19.536, 3.652, 2.372)
-pis_zinb <- c(0.056, 0.066, 0.043)
-mus_poisson <- c(3.034, 2.363, 2.818)
-mean_ferts <- c(3.034, 2.363, 2.818)
-mean_sibs <- c(3.403, 3.314, 4.192)
+# Read the fitted parameters and empirical summaries written by fert_model.qmd
+# instead of hard-coding them, so this notebook stays in sync with the data.
+fert_params <- read_csv(file.path(output_path, "fertility_parameters.csv"), show_col_types = FALSE)
+fert_estimation <- read_csv(file.path(output_path, "fertility_estimation.csv"), show_col_types = FALSE)
+
+# Generations used below, in order: focal individual, parent, grandparent.
+gen_years <- c(1990, 1970, 1950)
+
+zinb_params <- fert_params %>% filter(Model == "ZINB")
+pois_params <- fert_params %>% filter(Model == "Poisson")
+sib_estimation <- fert_estimation %>% filter(distribution == "sibling")
+
+mus_zinb <- zinb_params$mu[match(gen_years, zinb_params$Year)]
+sizes_zinb <- zinb_params$size[match(gen_years, zinb_params$Year)]
+pis_zinb <- zinb_params$pi0[match(gen_years, zinb_params$Year)]
+mus_poisson <- pois_params$mu[match(gen_years, pois_params$Year)]
+mean_ferts <- mus_poisson
+mean_sibs <- sib_estimation$mean_data[match(gen_years, sib_estimation$Year)]
 
 n_sim <- 100000
 ```

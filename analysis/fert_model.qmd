@@ -21,52 +21,44 @@ library(viridisLite)
 
 We extract the fertility information for U.S. women from the Integrated Public Use Microdata Series (IPUMS) dataset.
 
-## Load the IPUMS subset
+## Load the processed IPUMS fertility summaries
 
 ```{r load-data}
-path         <- if (dir.exists("data")) "data" else file.path("..", "data")
-output_path  <- if (dir.exists("output")) "output" else file.path("..", "output")
-file_path    <- file.path(path, "mother_data.csv")
+processed_path <- if (dir.exists("data")) {
+  file.path("data", "processed")
+} else {
+  file.path("..", "data", "processed")
+}
+output_path <- if (dir.exists("output")) "output" else file.path("..", "output")
 
-## original script loads both; we only need mother_data for this step
-mother_data <- read_csv(file_path, show_col_types = FALSE)
+fertility_counts <- read_csv(
+  file.path(processed_path, "ipums_fertility_counts_by_cohort.csv"),
+  show_col_types = FALSE
+)
+
+fertility_data <- fertility_counts %>%
+  tidyr::uncount(n_women) %>%
+  dplyr::select(Year, cohort, n_child)
 ```
 
-`mother_data` already contains:
+The processed fertility counts contain:
 
--   `Year` – Census year (1960,1970,1980,1990)
--   `Age` – respondent age
--   `Race` – self-identified race of the respondent.
--   `n_child` – the number of children ever born to each woman
+-   `Year` – cohort reference year (1950, 1960, 1970, 1980, 1990)
+-   `cohort` – birth cohort label
+-   `n_child` – children ever born, with `12` representing the `12+` top-coded category
+-   `n_women` – number of women in that cohort/count cell
 
 ## Prepare the fertility data by generations
 
 We focus on U.S. women aged 50-59, who are considered to have completed their fertility. The Census data include observations from 1960, 1970, 1980, and 1990. Women who were aged 50-59 in 1950 are observed as ages 60-69 in the 1960 Census. We therefore prepare fertility data for U.S. women aged 50-59 in 1950, 1960, 1970, 1980, and 1990, corresponding to the 1891-1900, 1901-1910, 1911-1920, 1921-1930, and 1931-1940 birth cohorts, respectively.
 
 ```{r prepare-fertility-data}
-fertility_data <- bind_rows(
-  mother_data %>%
-    filter(Year %in% c(1960, 1970, 1980, 1990),
-           Age >= 50, Age <= 59),
-  mother_data %>%
-    filter(Year == 1960,
-           Age >= 60, Age <= 69) %>%
-    transmute(
-      Year = 1950,
-      Age = Age - 10,
-      Race = Race,
-      n_child = n_child
-    )
-) %>%
-  filter(!is.na(n_child)) %>%
-  arrange(Year, Age)
-
 fertility_data %>%
   count(Year, name = "n_women") %>%
-  kable(caption = "Prepared fertility data by census year and age.")
+  kable(caption = "Prepared fertility data by cohort year.")
 
 head(fertility_data, n = 15) %>%
-  kable(caption = "Fertility data for U.S. women aged 50‑59 in the 1950, 1960, 1970, 1980, and 1990 Censuses.")
+  kable(caption = "Expanded fertility counts reconstructed from aggregate processed data for the 1950, 1960, 1970, 1980, and 1990 cohorts.")
 ```
 
 ## Prepare individual-level sibling counts
@@ -249,6 +241,10 @@ param_fert <- fertility_data %>%
   group_by(Year) %>%
   group_modify(~ fit_fert(.x)) %>%
   ungroup()
+
+# Write the fitted parameters so downstream notebooks read them instead of
+# hard-coding the values.
+write.csv(param_fert, file.path(output_path, "fertility_parameters.csv"), row.names = FALSE)
 ```
 
 ## Estimated fertility parameters

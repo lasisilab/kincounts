@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Junhui He">
-<meta name="dcterms.date" content="2026-06-03">
+<meta name="dcterms.date" content="2026-06-29">
 
 <title>Fertility Modelling and Sibling Estimates – Kincounts</title>
 <style>
@@ -177,10 +177,6 @@ window.Quarto = {
     <a class="dropdown-item" href="../analysis/simulate_relatives.html">
  <span class="dropdown-text">Simulate the number of relatives</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../analysis/family_size_findability.html">
- <span class="dropdown-text">Family size and identification probability</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -216,7 +212,7 @@ window.Quarto = {
   <ul>
   <li><a href="#ipmus-fertility-data" id="toc-ipmus-fertility-data" class="nav-link active" data-scroll-target="#ipmus-fertility-data"><span class="header-section-number">1</span> IPMUS fertility data</a>
   <ul class="collapse">
-  <li><a href="#load-the-ipums-subset" id="toc-load-the-ipums-subset" class="nav-link" data-scroll-target="#load-the-ipums-subset"><span class="header-section-number">1.1</span> Load the IPUMS subset</a></li>
+  <li><a href="#load-the-processed-ipums-fertility-summaries" id="toc-load-the-processed-ipums-fertility-summaries" class="nav-link" data-scroll-target="#load-the-processed-ipums-fertility-summaries"><span class="header-section-number">1.1</span> Load the processed IPUMS fertility summaries</a></li>
   <li><a href="#prepare-the-fertility-data-by-generations" id="toc-prepare-the-fertility-data-by-generations" class="nav-link" data-scroll-target="#prepare-the-fertility-data-by-generations"><span class="header-section-number">1.2</span> Prepare the fertility data by generations</a></li>
   <li><a href="#prepare-individual-level-sibling-counts" id="toc-prepare-individual-level-sibling-counts" class="nav-link" data-scroll-target="#prepare-individual-level-sibling-counts"><span class="header-section-number">1.3</span> Prepare individual-level sibling counts</a></li>
   <li><a href="#visualise-the-fertility-and-sibling-distributions-across-census-years" id="toc-visualise-the-fertility-and-sibling-distributions-across-census-years" class="nav-link" data-scroll-target="#visualise-the-fertility-and-sibling-distributions-across-census-years"><span class="header-section-number">1.4</span> Visualise the fertility and sibling distributions across Census years</a></li>
@@ -271,7 +267,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 3, 2026</p>
+      <p class="date">June 29, 2026</p>
     </div>
   </div>
   
@@ -286,25 +282,34 @@ window.Quarto = {
 <section id="ipmus-fertility-data" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> IPMUS fertility data</h1>
 <p>We extract the fertility information for U.S. women from the Integrated Public Use Microdata Series (IPUMS) dataset.</p>
-<section id="load-the-ipums-subset" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="load-the-ipums-subset"><span class="header-section-number">1.1</span> Load the IPUMS subset</h2>
+<section id="load-the-processed-ipums-fertility-summaries" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="load-the-processed-ipums-fertility-summaries"><span class="header-section-number">1.1</span> Load the processed IPUMS fertility summaries</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path         <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"data"</span>)) <span class="st">"data"</span> <span class="cf">else</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>output_path  <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"output"</span>)) <span class="st">"output"</span> <span class="cf">else</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"output"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file_path    <span class="ot">&lt;-</span> <span class="fu">file.path</span>(path, <span class="st">"mother_data.csv"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## original script loads both; we only need mother_data for this step</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>mother_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(file_path, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>processed_path <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"data"</span>)) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"data"</span>, <span class="st">"processed"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>output_path <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">dir.exists</span>(<span class="st">"output"</span>)) <span class="st">"output"</span> <span class="cf">else</span> <span class="fu">file.path</span>(<span class="st">".."</span>, <span class="st">"output"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>fertility_counts <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(processed_path, <span class="st">"ipums_fertility_counts_by_cohort.csv"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="ot">&lt;-</span> fertility_counts <span class="sc">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">uncount</span>(n_women) <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Year, cohort, n_child)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p><code>mother_data</code> already contains:</p>
+<p>The processed fertility counts contain:</p>
 <ul>
-<li><code>Year</code> – Census year (1960,1970,1980,1990)</li>
-<li><code>Age</code> – respondent age</li>
-<li><code>Race</code> – self-identified race of the respondent.</li>
-<li><code>n_child</code> – the number of children ever born to each woman</li>
+<li><code>Year</code> – cohort reference year (1950, 1960, 1970, 1980, 1990)</li>
+<li><code>cohort</code> – birth cohort label</li>
+<li><code>n_child</code> – children ever born, with <code>12</code> representing the <code>12+</code> top-coded category</li>
+<li><code>n_women</code> – number of women in that cohort/count cell</li>
 </ul>
 </section>
 <section id="prepare-the-fertility-data-by-generations" class="level2" data-number="1.2">
@@ -313,30 +318,13 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  mother_data <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1960</span>, <span class="dv">1970</span>, <span class="dv">1980</span>, <span class="dv">1990</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>           Age <span class="sc">&gt;=</span> <span class="dv">50</span>, Age <span class="sc">&lt;=</span> <span class="dv">59</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  mother_data <span class="sc">%&gt;%</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">1960</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>           Age <span class="sc">&gt;=</span> <span class="dv">60</span>, Age <span class="sc">&lt;=</span> <span class="dv">69</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">Year =</span> <span class="dv">1950</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">Age =</span> Age <span class="sc">-</span> <span class="dv">10</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">Race =</span> Race,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_child =</span> n_child</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(n_child)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Year, Age)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="sc">%&gt;%</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Year, <span class="at">name =</span> <span class="st">"n_women"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Prepared fertility data by census year and age."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fertility_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Year, <span class="at">name =</span> <span class="st">"n_women"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Prepared fertility data by cohort year."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Prepared fertility data by census year and age.</caption>
+<caption>Prepared fertility data by cohort year.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Year</th>
@@ -354,15 +342,15 @@ window.Quarto = {
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1970</td>
-<td style="text-align: right;">109482</td>
+<td style="text-align: right;">109678</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1980</td>
-<td style="text-align: right;">122762</td>
+<td style="text-align: right;">613086</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1990</td>
-<td style="text-align: right;">117583</td>
+<td style="text-align: right;">587159</td>
 </tr>
 </tbody>
 </table>
@@ -370,109 +358,93 @@ window.Quarto = {
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fertility_data, <span class="at">n =</span> <span class="dv">15</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Fertility data for U.S. women aged 50‑59 in the 1950, 1960, 1970, 1980, and 1990 Censuses."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Expanded fertility counts reconstructed from aggregate processed data for the 1950, 1960, 1970, 1980, and 1990 cohorts."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Fertility data for U.S. women aged 50‑59 in the 1950, 1960, 1970, 1980, and 1990 Censuses.</caption>
+<caption>Expanded fertility counts reconstructed from aggregate processed data for the 1950, 1960, 1970, 1980, and 1990 cohorts.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Year</th>
-<th style="text-align: right;">Age</th>
-<th style="text-align: left;">Race</th>
+<th style="text-align: left;">cohort</th>
 <th style="text-align: right;">n_child</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
+<td style="text-align: left;">1890-1900</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">Black/African American</td>
+<td style="text-align: left;">1890-1900</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
+<td style="text-align: left;">1890-1900</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">7</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">Black/African American</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
+<td style="text-align: left;">1890-1900</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
@@ -499,8 +471,7 @@ window.Quarto = {
 <thead>
 <tr class="header">
 <th style="text-align: right;">Year</th>
-<th style="text-align: right;">Age</th>
-<th style="text-align: left;">Race</th>
+<th style="text-align: left;">cohort</th>
 <th style="text-align: right;">n_child</th>
 <th style="text-align: right;">mother_id</th>
 <th style="text-align: right;">n_sib</th>
@@ -509,123 +480,108 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
+<td style="text-align: left;">1890-1900</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">9</td>
+<td style="text-align: right;">11906</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11907</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11908</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11909</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1950</td>
-<td style="text-align: right;">50</td>
-<td style="text-align: left;">White</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11910</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11911</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11912</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11913</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11914</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11915</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11916</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11917</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11918</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11919</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">1890-1900</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11920</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
@@ -822,7 +778,11 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>param_fert <span class="ot">&lt;-</span> fertility_data <span class="sc">%&gt;%</span></span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_modify</span>(<span class="sc">~</span> <span class="fu">fit_fert</span>(.x)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the fitted parameters so downstream notebooks read them instead of</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># hard-coding the values.</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(param_fert, <span class="fu">file.path</span>(output_path, <span class="st">"fertility_parameters.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -877,44 +837,44 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: right;">1970</td>
 <td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">2.363</td>
+<td style="text-align: right;">2.377</td>
 <td style="text-align: right;">Inf</td>
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1970</td>
 <td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">2.530</td>
-<td style="text-align: right;">3.652</td>
-<td style="text-align: right;">0.066</td>
+<td style="text-align: right;">2.547</td>
+<td style="text-align: right;">3.578</td>
+<td style="text-align: right;">0.067</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1980</td>
 <td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">2.846</td>
+<td style="text-align: right;">2.855</td>
 <td style="text-align: right;">Inf</td>
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1980</td>
 <td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">7.084</td>
-<td style="text-align: right;">0.062</td>
+<td style="text-align: right;">3.036</td>
+<td style="text-align: right;">6.947</td>
+<td style="text-align: right;">0.060</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1990</td>
 <td style="text-align: left;">Poisson</td>
-<td style="text-align: right;">3.034</td>
+<td style="text-align: right;">3.047</td>
 <td style="text-align: right;">Inf</td>
 <td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1990</td>
 <td style="text-align: left;">ZINB</td>
-<td style="text-align: right;">3.213</td>
-<td style="text-align: right;">19.536</td>
-<td style="text-align: right;">0.056</td>
+<td style="text-align: right;">3.224</td>
+<td style="text-align: right;">19.792</td>
+<td style="text-align: right;">0.055</td>
 </tr>
 </tbody>
 </table>
@@ -1059,32 +1019,32 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">fertility</td>
 <td style="text-align: right;">1970</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">4.611</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">4.394</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">4.675</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">4.473</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">fertility</td>
 <td style="text-align: right;">1980</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">4.764</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">4.599</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">4.787</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">4.620</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">fertility</td>
 <td style="text-align: right;">1990</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">4.154</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">4.076</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">4.160</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">4.083</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">sibling</td>
@@ -1109,32 +1069,32 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="even">
 <td style="text-align: left;">sibling</td>
 <td style="text-align: right;">1970</td>
-<td style="text-align: right;">3.314</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">3.223</td>
-<td style="text-align: right;">7.093</td>
-<td style="text-align: right;">2.363</td>
-<td style="text-align: right;">5.455</td>
+<td style="text-align: right;">3.344</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">3.259</td>
+<td style="text-align: right;">7.057</td>
+<td style="text-align: right;">2.377</td>
+<td style="text-align: right;">5.579</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sibling</td>
 <td style="text-align: right;">1980</td>
-<td style="text-align: right;">3.520</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">3.462</td>
-<td style="text-align: right;">6.307</td>
-<td style="text-align: right;">2.846</td>
-<td style="text-align: right;">4.944</td>
+<td style="text-align: right;">3.532</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">3.473</td>
+<td style="text-align: right;">6.346</td>
+<td style="text-align: right;">2.855</td>
+<td style="text-align: right;">4.991</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">sibling</td>
 <td style="text-align: right;">1990</td>
-<td style="text-align: right;">3.403</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">3.377</td>
-<td style="text-align: right;">5.030</td>
-<td style="text-align: right;">3.034</td>
-<td style="text-align: right;">3.933</td>
+<td style="text-align: right;">3.412</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">3.387</td>
+<td style="text-align: right;">5.026</td>
+<td style="text-align: right;">3.047</td>
+<td style="text-align: right;">3.938</td>
 </tr>
 </tbody>
 </table>
@@ -1245,8 +1205,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">1.498</td>
-<td style="text-align: right;">1.491</td>
+<td style="text-align: right;">1.505</td>
+<td style="text-align: right;">1.521</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -1257,8 +1217,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">2.020</td>
-<td style="text-align: right;">2.053</td>
+<td style="text-align: right;">1.995</td>
+<td style="text-align: right;">1.993</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -1269,8 +1229,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">2.515</td>
-<td style="text-align: right;">2.532</td>
+<td style="text-align: right;">2.486</td>
+<td style="text-align: right;">2.423</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -1281,8 +1241,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.012</td>
-<td style="text-align: right;">2.966</td>
+<td style="text-align: right;">3.005</td>
+<td style="text-align: right;">2.957</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -1293,8 +1253,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.487</td>
-<td style="text-align: right;">3.457</td>
+<td style="text-align: right;">3.488</td>
+<td style="text-align: right;">3.443</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -1305,8 +1265,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated Poisson</td>
-<td style="text-align: right;">3.992</td>
-<td style="text-align: right;">4.012</td>
+<td style="text-align: right;">3.975</td>
+<td style="text-align: right;">3.936</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1361,8 +1321,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">1.972</td>
-<td style="text-align: right;">2.712</td>
+<td style="text-align: right;">1.979</td>
+<td style="text-align: right;">2.687</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 1.5</td>
@@ -1373,8 +1333,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">2.617</td>
-<td style="text-align: right;">3.903</td>
+<td style="text-align: right;">2.610</td>
+<td style="text-align: right;">3.909</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2</td>
@@ -1385,8 +1345,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.278</td>
-<td style="text-align: right;">5.318</td>
+<td style="text-align: right;">3.309</td>
+<td style="text-align: right;">5.568</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 2.5</td>
@@ -1397,8 +1357,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">3.929</td>
-<td style="text-align: right;">6.516</td>
+<td style="text-align: right;">3.966</td>
+<td style="text-align: right;">6.742</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3</td>
@@ -1409,8 +1369,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">4.445</td>
-<td style="text-align: right;">7.448</td>
+<td style="text-align: right;">4.548</td>
+<td style="text-align: right;">7.598</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 3.5</td>
@@ -1421,8 +1381,8 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <tr class="odd">
 <td style="text-align: left;">Fertility Mean = 4</td>
 <td style="text-align: left;">Simulated ZINB</td>
-<td style="text-align: right;">5.065</td>
-<td style="text-align: right;">8.353</td>
+<td style="text-align: right;">5.074</td>
+<td style="text-align: right;">8.481</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Fertility Mean = 4</td>
@@ -1527,31 +1487,30 @@ P(num_{sib}=k) &amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 49953</code></pre>
+<pre><code>[1] 50034</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 49898</code></pre>
+<pre><code>[1] 50204</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"Poisson"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.0828979240 0.2056332953 0.2568614498 0.2181250375 0.1323243849
- [6] 0.0624587112 0.0270454227 0.0102496347 0.0037835565 0.0004003764
-[11] 0.0002202070</code></pre>
+<pre><code> [1] 0.0828436663 0.2061797977 0.2549466363 0.2159331654 0.1333093496
+ [6] 0.0645161290 0.0302194508 0.0091138026 0.0023384099 0.0005995923</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>] <span class="sc">/</span> <span class="fu">sum</span>(pmf_data<span class="sc">$</span>n_counts[pmf_data<span class="sc">$</span>Model <span class="sc">==</span> <span class="st">"ZINB"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 0.079081326 0.157721752 0.189867329 0.173073069 0.141689046 0.100404826
- [7] 0.064671931 0.040883402 0.025612249 0.010621668 0.007715740 0.008657662</code></pre>
+<pre><code> [1] 0.080790375 0.159549040 0.184825910 0.171938491 0.135945343 0.097641622
+ [7] 0.068600112 0.040634212 0.027428093 0.017528484 0.007230500 0.007887818</code></pre>
 </div>
 </div>
 

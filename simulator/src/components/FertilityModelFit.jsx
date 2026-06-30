@@ -13,7 +13,7 @@ import { poissonPMF, zinbPMF, nbPMF } from '../lib/distributions.js'
 
 const empiricalRaw = import.meta.glob(
   '/src/data/fertility_pmf_*.csv',
-  { eager: true, as: 'raw' }
+  { eager: true, query: '?raw', import: 'default' }
 )
 
 function pct(v) { return (Math.abs(v) * 100).toFixed(1) + '%' }

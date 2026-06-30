@@ -17,12 +17,12 @@ library(tidyr)        # Data reshaping
 library(viridisLite)  # Color palettes
 library(ggplot2)      # Data visualization
 
-# Load utility functions for fertility estimation, simulation, and probability calculations
+# Load utility functions for fertility estimation and relative-count simulation
 source("utils.R")
 
 # Define UI for application (Tabset with Tab Nav)
 ui <- page_fluid(
-    "Long range familial search",
+    "Kincounts",
 
     # Tab panels for different sections of the application
     navset_tab(
@@ -30,44 +30,37 @@ ui <- page_fluid(
       nav_panel(
         title = "Introduction",
         card(
-          card_header("Long Range Familial Search: Estimating Identity Probabilities"),
+          card_header("Kincounts: Fertility and Kin-Count Simulation"),
           card_body(
             h3("Overview"),
-            p("This application helps estimate the probability of identifying individuals through genetic databases. 
-              It estimates the fertility and sibling parameters based on fertility count data, 
-              simulates the distribution of distant relatives (cousins),
-              and calculates the likelihood of finding genetic matches in a database."),
+            p("This application estimates fertility and sibling parameters from fertility count data, 
+              then simulates relative-count distributions under a zero-inflated negative binomial model."),
             
             h3("How It Works"),
             tags$ol(
               tags$li(strong("Fertility Distribution:"), " Upload fertility count data to estimate parameters for the 
                       zero-inflated negative binomial distribution that models fertility and sibling patterns."),
               tags$li(strong("Simulation:"), " Generate simulated relative counts based on fertility parameters, 
-                      including first, second, and third cousins."),
-              tags$li(strong("Identity Probability:"), " Calculate the probability of finding at least one genetic match 
-                      in a database of a given size.")
+                      including first, second, and third cousins.")
             ),
             
             h3("Getting Started"),
             p("Navigate through the tabs to:"),
             tags$ul(
               tags$li(strong("Fertility distribution:"), " Estimate fertility parameters from your data"),
-              tags$li(strong("Simulation:"), " Adjust parameters and simulate relative counts"),
-              tags$li(strong("Identity probability:"), " Upload simulated data and calculate match probabilities")
+              tags$li(strong("Simulation:"), " Adjust parameters and simulate relative counts")
             ),
             
             h3("Key Parameters"),
             tags$ul(
               tags$li(strong("Pi (π):"), " Zero-inflation probability - the excess proportion of individuals with no children"),
               tags$li(strong("Size:"), " Negative binomial dispersion parameter"),
-              tags$li(strong("Mu (μ):"), " Negative binomial mean parameter"),
-              tags$li(strong("Population size:"), " Total population being considered"),
-              tags$li(strong("Database size:"), " Number of individuals in the genetic database")
+              tags$li(strong("Mu (μ):"), " Negative binomial mean parameter")
             ),
             
             h3("Methods"),
-            p("The application uses a zero-inflated negative binomial (ZINB) model to capture fertility distributions. 
-              Genetic match probabilities are calculated for cousins of varying degrees.")
+            p("The application uses a zero-inflated negative binomial (ZINB) model to capture fertility distributions 
+              and simulate relative-count distributions.")
           )
         )
       ),
@@ -121,25 +114,6 @@ ui <- page_fluid(
             h4("PMF for children, and siblings"),
             plotOutput("pmf_plot_children"),
             plotOutput("pmf_plot_siblings")
-          )
-        )
-      ),
-
-      # Identity probability tab: calculate match probabilities given population and database sizes
-      nav_panel(
-        title = "Identity probability",
-        sidebarLayout(
-          sidebarPanel(
-            # Upload simulated relative counts from the Simulation tab
-            fileInput("relative_counts", "Upload simulated relative count data (CSV)", accept = ".csv"),
-            # Population and database parameters
-            numericInput("pop_size", "Population size", value = 3e8, min = 0),
-            numericInput("db_size", "Database size", value = 1e7, min = 0)
-          ),
-          mainPanel(
-            # Display probability of finding at least one match for each cousin degree
-            h4("Estimated probability of finding at least one cousin:"),
-            verbatimTextOutput("id_prob")
           )
         )
       )
@@ -271,28 +245,6 @@ server <- function(input, output) {
   output$pmf_plot_siblings <- renderPlot({
     rel_counts <- relative_counts()
     plot_pmf(rel_counts, count_var = "num_siblings", category_label = "Siblings")
-  })
-
-  # ========== Identity Probability Tab ==========
-  # Calculate probability of finding at least one cousin match in the database
-  output$id_prob <- renderText({
-    req(input$relative_counts)  # Require file upload
-    relative_counts <- read.csv(input$relative_counts$datapath)
-    # Validate that required cousin count columns exist
-    validate(need(all(c("num_first_cousins", "num_second_cousins", "num_third_cousins") %in% colnames(relative_counts)),
-                  "The uploaded CSV must contain columns named 'num_first_cousins', 'num_second_cousins', and 'num_third_cousins'."))
-    # Get population and database parameters
-    pop_size <- input$pop_size
-    db_size <- input$db_size
-
-    # Calculate identity probabilities for each cousin degree
-    id_prob <- identity_probability(relative_counts, pop_size, db_size)
-    id_prob <- round(id_prob, digits = 4)
-
-    # Format output as text
-    paste0("first cousin: ", id_prob["first_cousin"],
-           "\nsecond cousin: ", id_prob["second_cousin"],
-           "\nthird cousin: ", id_prob["third_cousin"])
   })
 
 }

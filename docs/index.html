@@ -146,10 +146,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./analysis/simulate_relatives.html">
  <span class="dropdown-text">Simulate the number of relatives</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="./analysis/family_size_findability.html">
- <span class="dropdown-text">Family size and identification probability</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -201,19 +197,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="kincounts-long-range-familial-search" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Kincounts: Long Range Familial Search</h1>
+<section id="kincounts" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Kincounts</h1>
 <p>Welcome to the kincounts research website.</p>
 <section id="overview" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.1</span> Overview</h2>
-<p>This project estimates the probability of identifying individuals through genetic databases by modeling extended family relationships. It simulates the distribution of distant relatives (cousins) based on fertility patterns and calculates the likelihood of finding genetic matches in a database.</p>
+<p>This project models how fertility distributions shape sibling and broader kin-count distributions. It estimates fertility patterns from IPUMS data, derives sibling distributions, and simulates relative counts under alternative fertility models.</p>
 </section>
 <section id="key-features" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="key-features"><span class="header-section-number">1.2</span> Key Features</h2>
 <ul>
 <li><strong>Fertility Distribution Estimation</strong>: Fit zero-inflated negative binomial (ZINB) models to fertility count data</li>
 <li><strong>Relative Count Simulation</strong>: Generate simulated counts of relatives at various degrees</li>
-<li><strong>Identity Probability Calculation</strong>: Estimate the probability of finding genetic matches in databases</li>
 </ul>
 </section>
 <section id="interactive-application" class="level2" data-number="1.3">
@@ -223,12 +218,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Parameter estimation from uploaded fertility data</li>
 <li>Customizable simulations with adjustable parameters</li>
 <li>Visualization of relative count distributions</li>
-<li>Identity probability calculations based on population and database sizes</li>
 </ul>
 </section>
 <section id="methods" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="methods"><span class="header-section-number">1.4</span> Methods</h2>
-<p>The application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. Genetic match probabilities are calculated based on the expected length and number of shared DNA segments between cousins of varying degrees.</p>
+<p>The application uses a zero-inflated negative binomial (ZINB) model to capture fertility patterns, including childlessness. The analyses use those fertility models to derive sibling distributions and simulate counts of relatives across relationship categories.</p>
 </section>
 <section id="repository-structure" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="repository-structure"><span class="header-section-number">1.5</span> Repository Structure</h2>
