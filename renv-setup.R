@@ -1,6 +1,10 @@
-# Install R packages required by analysis/*.qmd.
-# This list is derived from explicit library()/pkg:: usage in analysis files.
+# Install R packages required by the analysis notebooks, helper scripts,
+# and optional legacy Shiny app.
+#
+# This list is derived from explicit library()/pkg:: usage in analysis/*.qmd,
+# code/*.R, and app/*.R files.
 required <- c(
+  "ipumsr",
   "dplyr",
   "tidyr",
   "readr",
@@ -8,11 +12,18 @@ required <- c(
   "pscl",
   "knitr",
   "ggplot2",
+  "MetBrewer",
+  "scales",
   "purrr",
   "tibble",
   "broom",
   "viridisLite",
-  "quarto"
+  "quarto",
+  "shiny",
+  "bslib",
+  "DT",
+  "rlang",
+  "here"
 )
 
 installed <- rownames(installed.packages())

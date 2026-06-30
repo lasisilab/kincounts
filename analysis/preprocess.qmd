@@ -28,8 +28,8 @@ present the resulting figures and tables.
 
 The source data are an IPUMS USA extract (a fixed-width `*.dat.gz` plus its `*.xml` DDI
 codebook) covering the 1950, 1960, 1970, 1980, and 1990 U.S. Census samples. The
-variables used are `YEAR`, `SAMPLE`, `PERWT`, `SEX`, `AGE`, `BIRTHYR`, `MARST`, `GQ`,
-and `CHBORN`. The sample-line weight `SLWT`, the allocation flag `QCHBORN`, and the
+variables used are `YEAR`, `PERWT`, `SEX`, `AGE`, `BIRTHYR`, `MARST`, `GQ`, and
+`CHBORN`. The sample-line weight `SLWT`, the allocation flag `QCHBORN`, and the
 nativity/birthplace variables `NATIVITY`/`BPL` were not requested; their absence is
 discussed in the limitations.
 
@@ -46,10 +46,10 @@ notebook locally. Only the aggregate CSVs in `data/processed/` should be committ
 
 ## Data processing
 
-The code below locates the extract, reads it through its DDI codebook, and builds the
-aggregates presented in the following sections. It runs only when the raw extract is
-present and the cached outputs are out of date; otherwise the committed CSVs are loaded
-directly.
+By default, the code below loads the committed aggregate CSVs in `data/processed/`
+without looking for or opening the restricted raw IPUMS files. To rebuild those
+aggregates from a local raw extract, set `KINCOUNTS_REBUILD_IPUMS=true` for the render;
+only that explicit flag triggers raw parsing.
 
 ```{r setup-data-access}
 # Packages for IPUMS parsing, data manipulation, CSV I/O, tables, and figures.
@@ -59,60 +59,35 @@ library(tidyr)
 library(readr)
 library(knitr)
 library(ggplot2)
+library(viridisLite)
 
 theme_set(theme_minimal(base_size = 12))
 
+coverage_palette <- setNames(
+  viridis(3, option = "D", begin = 0.12, end = 0.88),
+  c("Ever-married, 1-in-6 sample line", "Ever-married women", "All women")
+)
+universe_palette <- setNames(
+  viridis(2, option = "D", begin = 0.2, end = 0.85),
+  c("All women", "Ever-married")
+)
+validation_palette <- setNames(
+  viridis(2, option = "D", begin = 0.2, end = 0.85),
+  c("Direct 1950", "Proxy (1960)")
+)
+main_series_color <- viridis(1, option = "D", begin = 0.55, end = 0.55)
+
 # Resolve paths whether rendered from the project root or the analysis directory.
 project_root <- if (dir.exists("data")) "." else ".."
-raw_dir <- file.path(project_root, "data", "raw")
+raw_dir <- Sys.getenv("KINCOUNTS_RAW_DIR", file.path(project_root, "data", "raw"))
 processed_dir <- file.path(project_root, "data", "processed")
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Locate the extract by extension (not a hardcoded name), one data/DDI pair only.
-one_file <- function(pattern, label) {
-  files <- Sys.glob(file.path(raw_dir, pattern))
-  if (length(files) != 1) {
-    stop(
-      "Expected exactly one ", label, " in ", raw_dir, "; found ",
-      length(files), ".",
-      call. = FALSE
-    )
-  }
-  files
-}
+processing_version <- "common_universe_v5"
 
-dat_gz_file <- one_file("*.dat.gz", "gzipped IPUMS .dat file")
-ddi_file <- one_file("*.xml", "IPUMS DDI/XML codebook")
-
-# The DDI supplies the fixed-width layout and the value labels used below.
-ddi <- read_ipums_ddi(ddi_file)
-
-# Variables parsed from the restricted person-level data.
+# Variables parsed from the restricted person-level data when rebuilding.
 analysis_vars <- c("YEAR", "PERWT", "SEX", "AGE", "BIRTHYR", "MARST", "GQ", "CHBORN")
 ddi_display_vars <- analysis_vars
-
-ddi_vars <- ipums_var_info(ddi)
-missing_vars <- setdiff(ddi_display_vars, ddi_vars$var_name)
-if (length(missing_vars) > 0) {
-  stop(
-    "The DDI is missing required variables: ",
-    paste(missing_vars, collapse = ", "),
-    call. = FALSE
-  )
-}
-
-# Check that ipumsr can parse a few records using the DDI layout.
-parse_check <- read_ipums_micro(
-  ddi,
-  vars = analysis_vars,
-  n_max = 5,
-  data_file = dat_gz_file,
-  verbose = FALSE
-)
-stopifnot(nrow(parse_check) == 5)
-rm(parse_check)
-
-processing_version <- "common_universe_v5"
 
 # Every aggregate file this notebook writes or expects to load.
 output_inventory <- bind_rows(
@@ -178,22 +153,110 @@ output_inventory <- bind_rows(
 
 processed_files <- output_inventory$file
 processed_paths <- file.path(processed_dir, processed_files)
-source_mtime <- max(file.info(c(dat_gz_file, ddi_file))$mtime)
+
 force_rebuild <- tolower(Sys.getenv("KINCOUNTS_REBUILD_IPUMS", "false")) %in%
   c("true", "1", "yes")
 
-# Rebuild if requested, if outputs are missing/stale, or if the processing
-# version no longer matches the saved metadata.
+dat_gz_file <- NA_character_
+ddi_file <- NA_character_
+has_raw_extract <- FALSE
+if (force_rebuild) {
+  dat_gz_files <- Sys.glob(file.path(raw_dir, "*.dat.gz"))
+  ddi_files <- Sys.glob(file.path(raw_dir, "*.xml"))
+  has_raw_extract <- length(dat_gz_files) == 1 && length(ddi_files) == 1
+  if (!has_raw_extract) {
+    stop(
+      "KINCOUNTS_REBUILD_IPUMS=true requires exactly one .dat.gz and one .xml file in ",
+      raw_dir,
+      call. = FALSE
+    )
+  }
+  dat_gz_file <- dat_gz_files
+  ddi_file <- ddi_files
+}
+
+# Normal renders use the committed aggregate files. Rebuilding from the restricted
+# person-level extract happens only when explicitly requested.
 metadata_path <- file.path(processed_dir, "ipums_preprocess_metadata.csv")
 metadata_current <- file.exists(metadata_path) &&
   identical(
     read_csv(metadata_path, show_col_types = FALSE)$processing_version[[1]],
     processing_version
   )
-processed_current <- all(file.exists(processed_paths)) &&
-  min(file.info(processed_paths)$mtime) >= source_mtime &&
-  metadata_current
-rebuild_processed <- force_rebuild || !processed_current
+processed_complete <- all(file.exists(processed_paths)) && metadata_current
+processed_current <- processed_complete
+
+if (!force_rebuild && !processed_complete) {
+  stop(
+    "The processed CSV cache is incomplete or was built with an older processing version. ",
+    "Use the committed data/processed files, or add the raw extract and render with ",
+    "KINCOUNTS_REBUILD_IPUMS=true to rebuild.",
+    call. = FALSE
+  )
+}
+
+rebuild_processed <- force_rebuild
+
+if (rebuild_processed) {
+  # The DDI supplies the fixed-width layout and the value labels used below.
+  ddi <- read_ipums_ddi(ddi_file)
+
+  ddi_vars <- ipums_var_info(ddi)
+  missing_vars <- setdiff(ddi_display_vars, ddi_vars$var_name)
+  if (length(missing_vars) > 0) {
+    stop(
+      "The DDI is missing required variables: ",
+      paste(missing_vars, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  # Check that ipumsr can parse a few records using the DDI layout.
+  parse_check <- read_ipums_micro(
+    ddi,
+    vars = analysis_vars,
+    n_max = 5,
+    data_file = dat_gz_file,
+    verbose = FALSE
+  )
+  stopifnot(nrow(parse_check) == 5)
+  rm(parse_check)
+
+  # DDI variable positions (rendered in the appendix).
+  ddi_variables <- ddi_vars %>%
+    filter(var_name %in% ddi_display_vars) %>%
+    arrange(match(var_name, ddi_display_vars)) %>%
+    select(var_name, var_label, start, end, imp_decim)
+
+  # DDI value labels that drive the coding rules (rendered in the coding section).
+  value_labels <- bind_rows(lapply(c("SEX", "CHBORN", "MARST"), function(var) {
+    labels <- ddi_vars$val_labels[[match(var, ddi_vars$var_name)]]
+    mutate(labels, var_name = var, .before = 1)
+  }))
+} else {
+  ddi_variables <- tibble(
+    var_name = ddi_display_vars,
+    var_label = "Raw DDI unavailable in processed-only render",
+    start = NA_integer_,
+    end = NA_integer_,
+    imp_decim = NA_integer_
+  )
+  value_labels <- tibble(
+    var_name = c("SEX", "SEX", "CHBORN", "CHBORN", "CHBORN", "CHBORN", "MARST", "MARST", "MARST"),
+    val = c("1", "2", "0", "1", "13", "97-99", "1-5", "6", "9"),
+    lbl = c(
+      "Male",
+      "Female",
+      "N/A (not in universe)",
+      "No children",
+      "12 children; 12+ in 1960-1990",
+      "Unknown, illegible, or missing",
+      "Ever-married",
+      "Never-married",
+      "Blank/missing"
+    )
+  )
+}
 
 # Local filenames and cache state (rendered in the appendix).
 file_summary <- tibble(
@@ -201,29 +264,19 @@ file_summary <- tibble(
     "compressed_data_file",
     "ddi_codebook",
     "compressed_size_mib",
+    "raw_extract_used",
     "processed_outputs_current",
     "rebuild_from_raw"
   ),
   value = c(
-    basename(dat_gz_file),
-    basename(ddi_file),
-    round(file.info(dat_gz_file)$size / 1024^2, 1),
+    if (has_raw_extract) basename(dat_gz_file) else NA_character_,
+    if (has_raw_extract) basename(ddi_file) else NA_character_,
+    if (has_raw_extract) round(file.info(dat_gz_file)$size / 1024^2, 1) else NA_real_,
+    has_raw_extract,
     processed_current,
     rebuild_processed
   )
 )
-
-# DDI variable positions (rendered in the appendix).
-ddi_variables <- ddi_vars %>%
-  filter(var_name %in% ddi_display_vars) %>%
-  arrange(match(var_name, ddi_display_vars)) %>%
-  select(var_name, var_label, start, end, imp_decim)
-
-# DDI value labels that drive the coding rules (rendered in the coding section).
-value_labels <- bind_rows(lapply(c("SEX", "CHBORN", "MARST"), function(var) {
-  labels <- ddi_vars$val_labels[[match(var, ddi_vars$var_name)]]
-  mutate(labels, var_name = var, .before = 1)
-}))
 ```
 
 ```{r build-or-load-aggregates}
@@ -627,7 +680,6 @@ censuses are at 100% (all women). This is why the 1950 cohort is taken from a **
 sample*).
 
 ```{r fig-coverage}
-#| label: fig-coverage
 #| fig-cap: "Of the women in each census/age group, the share who were asked the children-ever-born question (i.e., were in the variable's universe). Colour indicates whom each census asked: in 1950 only ever-married women on the 1-in-6 sample line (~30%); in 1960 only ever-married women (~92%); from 1970 all women (~100%). The low 1950 coverage is why the 1950 cohort is taken from the 1960 proxy."
 #| fig-width: 8.5
 #| fig-height: 3.8
@@ -650,11 +702,7 @@ chborn_universe %>%
   coord_flip(clip = "off") +
   scale_y_continuous(labels = scales::label_percent(), limits = c(0, 1.1),
                      expand = expansion(mult = c(0, 0))) +
-  scale_fill_manual(values = c(
-    "Ever-married, 1-in-6 sample line" = "#D55E00",
-    "Ever-married women" = "#E69F00",
-    "All women" = "#0072B2"
-  )) +
+  scale_fill_manual(values = coverage_palette) +
   labs(x = NULL, y = "Share of women in the age group who were asked CHBORN",
        fill = "Who the census asked",
        title = "Who was asked the children-ever-born question")
@@ -693,7 +741,6 @@ The **1950 cohort uses the 1960 proxy** (the 1890–1900 birth cohort observed a
 women. Direct-1950 is computed and reported only as a validation check.
 
 ```{r tbl-composition}
-#| label: tbl-composition
 age_cohort_validation %>%
   select(series, cohort_source, source_year, Year, cohort, age_min, age_max, n_records) %>%
   kable(caption = "Cohort composition: age range and derived birth-year span for each age-defined cohort slice (no records are dropped by age).")
@@ -709,7 +756,6 @@ share one top category: the 1960–1990 samples top-code at `12+` (code `13`), w
 resolves higher (to `25+`, code `26`).
 
 ```{r tbl-coding}
-#| label: tbl-coding
 value_labels %>%
   filter(var_name %in% c("SEX", "CHBORN", "MARST")) %>%
   kable(caption = "DDI value labels for the variables that drive the coding rules.")
@@ -754,7 +800,6 @@ Before 1970 the two coincide by construction (never-married women were not in th
 universe), so the contrast is informative only for 1970 onward.
 
 ```{r fig-trajectory}
-#| label: fig-trajectory
 #| fig-cap: "Mean children ever born for each decade birth cohort, followed across censuses, under the two universes. The series coincide in 1960 (only ever-married women were asked) and separate from 1970 onward (all women asked); the gap between the series is the universe effect, while the drift along each line reflects mortality selection and decade differences from observing a cohort at older ages."
 #| fig-width: 9
 #| fig-height: 6
@@ -764,14 +809,13 @@ band_summary %>%
   geom_line(linewidth = 0.8) +
   geom_point(size = 2) +
   facet_wrap(~ birth_band) +
-  scale_color_manual(values = c("All women" = "#D55E00", "Ever-married" = "#0072B2")) +
+  scale_color_manual(values = universe_palette) +
   scale_x_continuous(breaks = c(1960, 1970, 1980, 1990)) +
   labs(x = "Census year", y = "Mean children ever born",
        title = "Same birth cohorts under all-women vs ever-married universes")
 ```
 
 ```{r fig-early-pmf}
-#| label: fig-early-pmf
 #| fig-cap: "Children-ever-born PMFs for the two early cohorts in the first census where all women were asked (1970). Ever-married (the only universe available for these cohorts at completed fertility in 1960) vs all women. Including never-married women adds mass at zero and lowers the mean."
 #| fig-width: 9
 #| fig-height: 4.5
@@ -781,14 +825,13 @@ band_pmf %>%
   ggplot(aes(n_child, probability, fill = Universe)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.75) +
   facet_wrap(~ birth_band) +
-  scale_fill_manual(values = c("All women" = "#D55E00", "Ever-married" = "#0072B2")) +
+  scale_fill_manual(values = universe_palette) +
   scale_x_continuous(breaks = 0:12) +
   labs(x = "Children ever born (12 = 12+)", y = "Probability",
        title = "All-women vs ever-married PMFs, early cohorts, 1970")
 ```
 
 ```{r fig-shift}
-#| label: fig-shift
 #| fig-cap: "The universe effect: how much the mean falls when the universe is widened from ever-married to all women, by cohort and census (1970+ only, where the two universes differ)."
 #| fig-width: 8
 #| fig-height: 4.5
@@ -797,6 +840,12 @@ universe_contrast %>%
   ggplot(aes(factor(universe_year), mean_shift, fill = birth_band)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.75) +
   geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_fill_manual(
+    values = setNames(
+      viridis(length(unique(universe_contrast$birth_band)), option = "D", begin = 0.12, end = 0.88),
+      sort(unique(universe_contrast$birth_band))
+    )
+  ) +
   labs(x = "Census year", y = "Mean shift (all women − ever-married)",
        fill = "Birth cohort",
        title = "Effect of widening the universe to all women")
@@ -805,7 +854,6 @@ universe_contrast %>%
 The contrast and decomposition tables accompany the figures:
 
 ```{r tbl-universe}
-#| label: tbl-universe
 universe_contrast %>%
   filter(universe_year >= 1970) %>%
   transmute(
@@ -857,15 +905,14 @@ reported unweighted, the form those downstream steps require; `PERWT`-weighted v
 are written alongside as a sensitivity.
 
 ```{r fig-main-means}
-#| label: fig-main-means
 #| fig-cap: "Mean children ever born by main-series cohort (women 50-59; 1950 is the 1960 proxy). The dip for the 1901-1920 cohorts and the rise for the baby-boom mothers are demographically expected."
 #| fig-width: 7
 #| fig-height: 4
 cohort_means %>%
   filter(series == "main") %>%
   ggplot(aes(Year, mean_children)) +
-  geom_line(linewidth = 0.8, color = "#0072B2") +
-  geom_point(size = 2.5, color = "#0072B2") +
+  geom_line(linewidth = 0.8, color = main_series_color) +
+  geom_point(size = 2.5, color = main_series_color) +
   geom_text(aes(label = round(mean_children, 2)), vjust = -0.9, size = 3.3) +
   scale_x_continuous(breaks = c(1950, 1960, 1970, 1980, 1990)) +
   labs(x = "Cohort (census year)", y = "Mean children ever born",
@@ -873,13 +920,12 @@ cohort_means %>%
 ```
 
 ```{r fig-main-pmf}
-#| label: fig-main-pmf
 #| fig-cap: "Fertility distributions (children ever born, 12 = 12+) for each main-series cohort."
 #| fig-width: 9
 #| fig-height: 6
 fertility_pmf %>%
   ggplot(aes(children, probability)) +
-  geom_col(fill = "#0072B2", width = 0.8) +
+  geom_col(fill = main_series_color, width = 0.8) +
   facet_wrap(~ Year) +
   scale_x_continuous(breaks = 0:12) +
   labs(x = "Children ever born (12 = 12+)", y = "Probability",
@@ -887,7 +933,6 @@ fertility_pmf %>%
 ```
 
 ```{r tbl-main}
-#| label: tbl-main
 cohort_sample_sizes %>%
   kable(digits = 0, caption = "Main-series cohort sample sizes (unweighted and PERWT-weighted).")
 
@@ -908,7 +953,6 @@ and tail differences above 12 are affected by the top-code asymmetry noted in th
 section.)
 
 ```{r fig-validation}
-#| label: fig-validation
 #| fig-cap: "Children-ever-born PMFs (unweighted): direct 1950 (women 50-59 in 1950) vs the 1960 proxy (women 60-69 in 1960). Near-identical shapes corroborate using the proxy."
 #| fig-width: 8
 #| fig-height: 4.5
@@ -918,14 +962,13 @@ validation_1950_pmf %>%
                          proxy_1950 = "Proxy (1960)")) %>%
   ggplot(aes(n_child, probability, fill = Source)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.75) +
-  scale_fill_manual(values = c("Direct 1950" = "#D55E00", "Proxy (1960)" = "#0072B2")) +
+  scale_fill_manual(values = validation_palette) +
   scale_x_continuous(breaks = 0:12) +
   labs(x = "Children ever born (12 = 12+)", y = "Probability",
        title = "1950 cohort: direct vs proxy")
 ```
 
 ```{r tbl-validation}
-#| label: tbl-validation
 validation_1950_summary %>%
   kable(digits = 3, caption = "Direct 1950 vs proxy 1950 summary. Unweighted means agree closely; the weighted direct-1950 number is approximate (no SLWT).")
 ```
@@ -947,13 +990,12 @@ validation_1950_summary %>%
 
 ## Appendix: reproducibility and outputs
 
-This page is cache-aware: it rebuilds the aggregates from the raw extract only when the
-extract is present and the processing version or file timestamps indicate the cached
-outputs are out of date, and otherwise loads the committed CSVs. Set
-`KINCOUNTS_REBUILD_IPUMS=true` to force a rebuild.
+This page is processed-data-first: a normal render loads the committed aggregate CSVs
+from `data/processed/` and does not look for or open restricted raw IPUMS files. Set
+`KINCOUNTS_REBUILD_IPUMS=true` to explicitly rebuild the aggregates from a local raw
+extract.
 
 ```{r tbl-appendix}
-#| label: tbl-appendix
 kable(file_summary, caption = "Local restricted IPUMS files and cache state for this render.")
 kable(ddi_variables, caption = "Parsed variables and their fixed-width positions in the DDI.")
 kable(

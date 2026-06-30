@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Junhui He">
-<meta name="dcterms.date" content="2026-06-29">
+<meta name="dcterms.date" content="2026-06-30">
 
 <title>Relationship between Fertility Distribution and Sibling Distribution – Kincounts</title>
 <style>
@@ -131,6 +131,10 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
+    <a class="dropdown-item" href="../analysis/preprocess.html">
+ <span class="dropdown-text">Preprocessing IPUMS data</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
@@ -144,6 +148,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://kincounts.vercel.app/"> 
+<span class="menu-text">Simulator</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
@@ -182,8 +190,8 @@ window.Quarto = {
   </ul></li>
   <li><a href="#sibling-distribution" id="toc-sibling-distribution" class="nav-link" data-scroll-target="#sibling-distribution"><span class="header-section-number">2</span> Sibling distribution</a>
   <ul class="collapse">
-  <li><a href="#sibship-size-paradox" id="toc-sibship-size-paradox" class="nav-link" data-scroll-target="#sibship-size-paradox"><span class="header-section-number">2.1</span> Sibship size paradox</a></li>
-  <li><a href="#sibling-distribution-for-different-fertility-distributions" id="toc-sibling-distribution-for-different-fertility-distributions" class="nav-link" data-scroll-target="#sibling-distribution-for-different-fertility-distributions"><span class="header-section-number">2.2</span> Sibling distribution for different fertility distributions</a>
+  <li><a href="#deterministic-fertility-to-sibling-transform" id="toc-deterministic-fertility-to-sibling-transform" class="nav-link" data-scroll-target="#deterministic-fertility-to-sibling-transform"><span class="header-section-number">2.1</span> Deterministic fertility-to-sibling transform</a></li>
+  <li><a href="#sibling-distribution-for-poisson-and-zinb-fertility-models" id="toc-sibling-distribution-for-poisson-and-zinb-fertility-models" class="nav-link" data-scroll-target="#sibling-distribution-for-poisson-and-zinb-fertility-models"><span class="header-section-number">2.2</span> Sibling distribution for Poisson and ZINB fertility models</a>
   <ul class="collapse">
   <li><a href="#fertility-distribution-poisson-distribution" id="toc-fertility-distribution-poisson-distribution" class="nav-link" data-scroll-target="#fertility-distribution-poisson-distribution"><span class="header-section-number">2.2.1</span> Fertility distribution: Poisson distribution</a></li>
   <li><a href="#fertility-distribution-zero-inflated-negative-binomial-distribution" id="toc-fertility-distribution-zero-inflated-negative-binomial-distribution" class="nav-link" data-scroll-target="#fertility-distribution-zero-inflated-negative-binomial-distribution"><span class="header-section-number">2.2.2</span> Fertility distribution: Zero inflated negative binomial distribution</a></li>
@@ -214,7 +222,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 29, 2026</p>
+      <p class="date">June 30, 2026</p>
     </div>
   </div>
   
@@ -226,7 +234,7 @@ window.Quarto = {
 </header>
 
 
-<p>In this article, we develop a statistical framework for modelling the relationship between the fertility distribution and sibling distribution: Given a fertility distribution, we derive what the resulting sibling distribution would be in the next generation. Specifically, the fertility distribution describes the number of children per woman, while the sibling distribution describes the number of siblings per person in the next generation.</p>
+<p>This note gives the formal relationship between a fertility distribution and the sibling distribution it implies in the next generation. The fertility distribution describes the number of children per woman; the sibling distribution describes the number of siblings per person. Once the fertility distribution is specified, the sibling distribution is a deterministic size-biased transform of that fertility distribution.</p>
 <section id="fertility-distribution" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Fertility Distribution</h1>
 <p>The number of children per woman in the population is modelled using a fertility distribution, which can be represented by various probability distributions. In this article, we focus on two commonly used distributions for modelling count data: Poisson distribution and zero inflated negative binomial distribution (ZINB).</p>
@@ -244,38 +252,36 @@ window.Quarto = {
 </section>
 <section id="sibling-distribution" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Sibling distribution</h1>
-<p>The number of siblings per person in the next generation is modelled using a sibling distribution, which can be derived from the fertility distribution. The sibling distribution describes the probability of an individual having a certain number of siblings, which is directly related to the number of children their mothers have.</p>
-<section id="sibship-size-paradox" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="sibship-size-paradox"><span class="header-section-number">2.1</span> Sibship size paradox</h2>
-<p>A common mistake is that the sibling distribution should be the same as the fertility distribution minus one. However, this is not the case due to the sibship size paradox: individuals with more siblings are more likely to be sampled in the population, leading to a bias in the observed sibling distribution compared to the underlying fertility distribution.</p>
-<p>For example, if we have a population of <span class="math inline">\(N_0\)</span> women where <span class="math inline">\(50\%\)</span> of women have 0 children, <span class="math inline">\(25\%\)</span> of women have 1 child, and <span class="math inline">\(25\%\)</span> of women have 2 children, the fertility distribution is <span class="math inline">\(P(N_{child}=0)=0.5\)</span>, <span class="math inline">\(P(N_{child}=1)=0.25\)</span>, and <span class="math inline">\(P(N_{child}=2)=0.25\)</span>. Thus, in the next generation, the population size is <span class="math display">\[N_1 = 0.5N_0 \cdot 0 + 0.25N_0 \cdot 1 + 0.25N_0 \cdot 2 = 0.75N_0.\]</span> And <span class="math inline">\(0.25N_0 \cdot 1\)</span> individuals have 0 siblings, <span class="math inline">\(0.25N_0 \cdot 2\)</span> individuals have 1 sibling. Therefore, the sibling distribution is <span class="math display">\[P(N_{sib}=0)=\frac{0.25N_0}{0.75N_0}=\frac{1}{3},\quad P(N_{sib}=1)=\frac{0.25N_0 \cdot 2}{0.75N_0}=\frac{2}{3}.\]</span></p>
-<p>To conclude, most people come from large families even when most families are small. This apparent paradox occurs because individuals with more siblings are sampled with an importance weight proportional to their family size.</p>
-<p>Formally, the relationship between the fertility distribution and sibling distribution can be expressed as follows: Let <span class="math inline">\(N_{child}\)</span> be the random variable representing the number of children per woman, and <span class="math inline">\(N_{sib}\)</span> be the random variable representing the number of siblings per person in the next generation. Then, for any count <span class="math inline">\(k \geq 0\)</span>, the probability that an individual has <span class="math inline">\(k\)</span> siblings is proportional to the probability that their mother has <span class="math inline">\(k+1\)</span> children, multiplied by the number of ways the individual could be one of those children. Therefore, we have: <span id="eq-sibship"><span class="math display">\[P(N_{sib}=k) \propto (k+1)P(N_{child}=k+1). \tag{3}\]</span></span> This relationship holds for any fertility distribution, and the sibling distribution can be derived accordingly.</p>
+<p>The number of siblings per person in the next generation is described by a sibling distribution. This distribution is derived directly from the fertility distribution because children are sampled from births, not from mothers. Mothers with more children contribute more individuals to the next generation, so their fertility counts receive weight proportional to family size.</p>
+<section id="deterministic-fertility-to-sibling-transform" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="deterministic-fertility-to-sibling-transform"><span class="header-section-number">2.1</span> Deterministic fertility-to-sibling transform</h2>
+<p>Let <span class="math inline">\(N_{child}\)</span> be the random variable for the number of children per woman, with probability mass function <span class="math inline">\(p_j = P(N_{child}=j)\)</span> and mean <span class="math inline">\(\mu_F = E[N_{child}]\)</span>. Let <span class="math inline">\(N_{sib}\)</span> be the number of siblings for a person in the next generation. A person with <span class="math inline">\(k\)</span> siblings must come from a mother with <span class="math inline">\(k+1\)</span> children, and that family contributes <span class="math inline">\(k+1\)</span> children to the population. Therefore, for any count <span class="math inline">\(k \geq 0\)</span>,</p>
+<p><span id="eq-sibship"><span class="math display">\[P(N_{sib}=k) = \frac{(k+1)P(N_{child}=k+1)}{E[N_{child}]} = \frac{(k+1)p_{k+1}}{\mu_F}. \tag{3}\]</span></span></p>
+<p>This is a deterministic transform: no additional stochastic model is needed to obtain the sibling distribution once the fertility PMF is known. More distant kin counts can be built from the same fertility and sibling relationships, but this note focuses only on the direct fertility-to-sibling derivation.</p>
 </section>
-<section id="sibling-distribution-for-different-fertility-distributions" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="sibling-distribution-for-different-fertility-distributions"><span class="header-section-number">2.2</span> Sibling distribution for different fertility distributions</h2>
+<section id="sibling-distribution-for-poisson-and-zinb-fertility-models" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sibling-distribution-for-poisson-and-zinb-fertility-models"><span class="header-section-number">2.2</span> Sibling distribution for Poisson and ZINB fertility models</h2>
 <p>In this section, we derive the sibling distribution for the two fertility distributions discussed above: Poisson distribution and zero inflated negative binomial distribution, using the relationship established in the previous section.</p>
 <section id="fertility-distribution-poisson-distribution" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="fertility-distribution-poisson-distribution"><span class="header-section-number">2.2.1</span> Fertility distribution: Poisson distribution</h3>
 <p>If the fertility distribution is <span class="math inline">\(\text{Poisson}(\mu)\)</span>, then the sibling distribution is given by: for a count <span class="math inline">\(k \geq 0\)</span>, <span id="eq-sibship-poisson"><span class="math display">\[\begin{equation}
 \begin{split}
-P(N_{sib}=k) &amp; \propto (k+1)P(N_{child}=k+1) \\
-&amp; \propto (k+1)e^{-\mu}\frac{\mu^{k+1}}{(k+1)!} \\
-&amp; = e^{-\mu}\frac{\mu^{k+1}}{k!}\propto e^{-\mu}\frac{\mu^k}{k!}, \\
+P(N_{sib}=k) &amp; = \frac{(k+1)P(N_{child}=k+1)}{\mu} \\
+&amp; = \frac{(k+1)e^{-\mu}\frac{\mu^{k+1}}{(k+1)!}}{\mu} \\
+&amp; = e^{-\mu}\frac{\mu^k}{k!}, \\
 \end{split}
 \end{equation}
 \tag{4}\]</span></span> which is also a Poisson distribution with mean <span class="math inline">\(\mu\)</span>.</p>
 </section>
 <section id="fertility-distribution-zero-inflated-negative-binomial-distribution" class="level3" data-number="2.2.2">
 <h3 data-number="2.2.2" class="anchored" data-anchor-id="fertility-distribution-zero-inflated-negative-binomial-distribution"><span class="header-section-number">2.2.2</span> Fertility distribution: Zero inflated negative binomial distribution</h3>
-<p>If the fertility distribution is <span class="math inline">\(\text{ZINB}(\mu, \theta, \pi_0)\)</span>, then the sibling distribution is given by: for a count <span class="math inline">\(k \geq 0\)</span>, <span id="eq-sibship-zinb"><span class="math display">\[\begin{equation}
+<p>If the fertility distribution is <span class="math inline">\(\text{ZINB}(\mu, \theta, \pi_0)\)</span>, then <span class="math inline">\(E[N_{child}] = \mu(1-\pi_0)\)</span>. The sibling distribution is given by: for a count <span class="math inline">\(k \geq 0\)</span>, <span id="eq-sibship-zinb"><span class="math display">\[\begin{equation}
 \begin{split}
-P(N_{sib}=k) &amp; \propto (k+1)P(N_{child}=k+1) \\
-&amp; \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\theta} \\
-&amp; \propto \frac{\theta(1-p)}{p} \frac{(k+\theta)!}{k!\theta!}(1-p)^k p^{\theta+1} \\
-&amp; \propto \binom{k+\theta}{k}(1-p)^k p^{\theta+1}, \\
+P(N_{sib}=k) &amp; = \frac{(k+1)P(N_{child}=k+1)}{\mu(1-\pi_0)} \\
+&amp; = \frac{(1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\theta}}{\mu(1-\pi_0)} \\
+&amp; = \binom{k+\theta}{k}(1-p)^k p^{\theta+1}, \\
 \end{split}
-\end{equation} \tag{5}\]</span></span> where <span class="math inline">\(p = \frac{\theta}{\mu+\theta}\)</span>. Therefore, the sibling distribution is a negative binomial distribution with parameters mean fertility (<span class="math inline">\(\frac{\mu(\theta+1)}{\theta}\)</span>), dispersion/size (<span class="math inline">\(\theta+1\)</span>), denoted as <span class="math inline">\(\text{NB}(\frac{\mu(\theta+1)}{\theta}, \theta+1)\)</span>. The variance is <span class="math inline">\(\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}\)</span>.</p>
+\end{equation} \tag{5}\]</span></span> where <span class="math inline">\(p = \frac{\theta}{\mu+\theta}\)</span>. The zero-inflation term cancels because childless women do not contribute sampled children to the next generation. Therefore, the sibling distribution is a negative binomial distribution with parameters mean <span class="math inline">\(\frac{\mu(\theta+1)}{\theta}\)</span> and dispersion/size <span class="math inline">\(\theta+1\)</span>, denoted as <span class="math inline">\(\text{NB}(\frac{\mu(\theta+1)}{\theta}, \theta+1)\)</span>. The variance is <span class="math inline">\(\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}\)</span>.</p>
 
 
 </section>

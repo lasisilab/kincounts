@@ -15,6 +15,11 @@ library(pscl)     ## zeroinfl
 library(knitr)    ## kable
 library(ggplot2)
 library(viridisLite)
+
+fertility_sibling_palette <- setNames(
+  viridis(2, option = "D", begin = 0.2, end = 0.85),
+  c("Fertility", "Sibling")
+)
 ```
 
 # IPMUS fertility data
@@ -53,25 +58,64 @@ The processed fertility counts contain:
 We focus on U.S. women aged 50-59, who are considered to have completed their fertility. The Census data include observations from 1960, 1970, 1980, and 1990. Women who were aged 50-59 in 1950 are observed as ages 60-69 in the 1960 Census. We therefore prepare fertility data for U.S. women aged 50-59 in 1950, 1960, 1970, 1980, and 1990, corresponding to the 1891-1900, 1901-1910, 1911-1920, 1921-1930, and 1931-1940 birth cohorts, respectively.
 
 ```{r prepare-fertility-data}
-fertility_data %>%
-  count(Year, name = "n_women") %>%
-  kable(caption = "Prepared fertility data by cohort year.")
+fertility_summary <- fertility_counts %>%
+  group_by(Year, cohort) %>%
+  summarise(
+    mean_children = weighted.mean(n_child, n_women),
+    variance_children = {
+      m <- weighted.mean(n_child, n_women)
+      sum(n_women * (n_child - m)^2) / (sum(n_women) - 1)
+    },
+    share_childless = sum(n_women[n_child == 0]) / sum(n_women),
+    share_12_plus = sum(n_women[n_child == 12]) / sum(n_women),
+    n_women = sum(n_women),
+    .groups = "drop"
+  ) %>%
+  dplyr::select(Year, cohort, n_women, mean_children, variance_children, share_childless, share_12_plus)
 
-head(fertility_data, n = 15) %>%
-  kable(caption = "Expanded fertility counts reconstructed from aggregate processed data for the 1950, 1960, 1970, 1980, and 1990 cohorts.")
+kable(
+  fertility_summary,
+  digits = 3,
+  caption = "Aggregate fertility summary by cohort year."
+)
 ```
 
 ## Prepare individual-level sibling counts
 
 ```{r prepare-sibling-counts}
-# Prepare individual-level sibling count
+# Prepare individual-level sibling counts in memory for the existing model code.
 sib_data <- fertility_data %>%
-  mutate(mother_id = row_number()) %>%
   filter(n_child > 0) %>%
   tidyr::uncount(n_child, .remove = FALSE) %>%
   mutate(n_sib = n_child - 1)
 
-kable(head(sib_data, n = 15), caption = "Corresponding sibling data calculated from fertility data")
+sibling_summary <- fertility_counts %>%
+  filter(n_child > 0) %>%
+  transmute(
+    Year,
+    cohort,
+    n_sib = n_child - 1,
+    n_children = n_child * n_women
+  ) %>%
+  group_by(Year, cohort) %>%
+  summarise(
+    mean_siblings = weighted.mean(n_sib, n_children),
+    variance_siblings = {
+      m <- weighted.mean(n_sib, n_children)
+      sum(n_children * (n_sib - m)^2) / (sum(n_children) - 1)
+    },
+    share_only_children = sum(n_children[n_sib == 0]) / sum(n_children),
+    share_11_plus_siblings = sum(n_children[n_sib >= 11]) / sum(n_children),
+    n_children = sum(n_children),
+    .groups = "drop"
+  ) %>%
+  dplyr::select(Year, cohort, n_children, mean_siblings, variance_siblings, share_only_children, share_11_plus_siblings)
+
+kable(
+  sibling_summary,
+  digits = 3,
+  caption = "Aggregate sibling summary implied by the fertility counts."
+)
 ```
 
 ## Visualise the fertility and sibling distributions across Census years
@@ -160,7 +204,7 @@ mean_across_years %>%
   geom_point(size = 2.5) +
   scale_x_continuous(breaks = sort(unique(mean_across_years$Year))) +
   scale_color_manual(
-    values = c("Fertility" = "#0072B2", "Sibling" = "#D55E00"),
+    values = fertility_sibling_palette,
     name = NULL
   ) +
   labs(

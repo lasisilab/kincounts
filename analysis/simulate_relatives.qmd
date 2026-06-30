@@ -1,12 +1,16 @@
 ---
 title: "Simulate the number of relatives under different fertility and sibling models"
-author: "Junhui He"
+author: "Junhui He & Tina Lasisi"
 date: today
 ---
 
 # Simulate the number of relatives
 
 We simulate the number of relatives for each individual using fertility and sibling distributions.
+
+The simulation uses a fixed two-parent pedigree anchor to connect focal individuals to parental and grandparental generations. The reported counts are the kin classes generated from fertility or size-biased sibling distributions: children, siblings, aunts/uncles, nieces/nephews, and first cousins.
+
+For an interactive version of the same model, see the [Kincounts simulator](https://kincounts.vercel.app/).
 
 ```{r setup, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_chunk$set(eval = TRUE, echo = TRUE, warning = FALSE, fig.width = 9, fig.height = 7)
@@ -15,14 +19,32 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(ggplot2)
+library(MetBrewer)
 library(MASS)     ## glm.nb
 library(pscl)     ## zeroinfl
 library(knitr)    ## kable
 
 output_path <- if (dir.exists("output")) "output" else file.path("..", "output")
+processed_path <- if (dir.exists("data")) file.path("data", "processed") else file.path("..", "data", "processed")
+
+model_palette <- setNames(
+  met.brewer("Java", 2, override.order = TRUE),
+  c("Poisson", "ZINB")
+)
+model_fit_palette <- c(
+  "ZINB fitted" = model_palette[["ZINB"]],
+  "Poisson" = model_palette[["Poisson"]]
+)
+model_sim_palette <- c(
+  "ZINB simulated" = model_palette[["ZINB"]],
+  "Poisson simulated" = model_palette[["Poisson"]]
+)
+empirical_fill <- "grey78"
 ```
 
 ## Simulate the relative counts for the focal individual
+
+This code defines the kin-count simulator under ZINB, Poisson, and fixed-mean fertility assumptions. The two-parent anchor is used internally for aunts/uncles and cousins, but parents and grandparents are not reported as modeled outcomes.
 
 ```{r simulate-relatives}
 # The fertility distribution modeled as a zero-inflated negative binomial distribution.
@@ -37,9 +59,18 @@ simulate_relatives_zinb <- function(mus, sizes, pis,
   draw_sibs <- function(n, mu, size) {
     as.integer(pmin(rnbinom(n, size + 1, mu = mu * (size + 1) / size), max_kids - 1))
   }
-  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  sum_fert <- function(counts, gen) {
+    purrr::map_int(counts, function(n) {
+      if (n == 0L) 0L else as.integer(sum(draw_fert(n, mu = mus[gen], size = sizes[gen], pi = pis[gen])))
+    })
+  }
+  sum_sibs <- function(counts, gen) {
+    purrr::map_int(counts, function(n) {
+      if (n == 0L) 0L else as.integer(sum(draw_sibs(n, mu = mus[gen], size = sizes[gen])))
+    })
+  }
+  # 1. Parents are a fixed pedigree anchor used to generate aunts and uncles.
   parents <- rep(2L, n_sim)
-  grandparents <- rep(4L, n_sim)
 
   # 2. Siblings for the focal individual
   siblings <- draw_sibs(n = n_sim, mu = mus[2], size = sizes[2])
@@ -48,28 +79,20 @@ simulate_relatives_zinb <- function(mus, sizes, pis,
   children <- draw_fert(n = n_sim, mu = mus[1], size = sizes[1], pi = pis[1])
 
   # 4. Aunts & uncles (no subtraction needed)
-  aunts_uncles <- purrr::map_int(parents, function(n_par) {
-    as.integer(sum(draw_sibs(n_par, mu = mus[3], size = sizes[3])))
-  })
+  aunts_uncles <- sum_sibs(parents, gen = 3)
 
   # 5. Nieces & nephews: for each sibling, simulate their fertility and sum
-  nieces_nephews <- purrr::map_int(siblings, function(n_sib) {
-    if (n_sib == 0L) 0L else as.integer(sum(draw_fert(n_sib, mu = mus[1], size = sizes[1], pi = pis[1])))
-  })
+  nieces_nephews <- sum_fert(siblings, gen = 1)
 
   # 6. Cousins: for each aunt/uncle, simulate their fertility and sum
-  cousins <- purrr::map_int(aunts_uncles, function(n_au) {
-    if (n_au == 0L) 0L else as.integer(sum(draw_fert(n_au, mu = mus[2], size = sizes[2], pi = pis[2])))
-  })
+  cousins <- sum_fert(aunts_uncles, gen = 2)
 
   tibble::tibble(
-    Parents    = parents,
-    Grandparents = grandparents,
     Siblings    = siblings,
     Children    = children,
     AuntUncles = aunts_uncles,
     NieceNephews = nieces_nephews,
-    Cousins     = cousins
+    Cousins = cousins
   )
 }
 
@@ -84,9 +107,18 @@ simulate_relatives_poisson <- function(mus,
   draw_sibs <- function(n, mu, size) {
     as.integer(pmin(rpois(n, lambda = mu), max_kids - 1))
   }
-  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  sum_fert <- function(counts, gen) {
+    purrr::map_int(counts, function(n) {
+      if (n == 0L) 0L else as.integer(sum(draw_fert(n, mu = mus[gen])))
+    })
+  }
+  sum_sibs <- function(counts, gen) {
+    purrr::map_int(counts, function(n) {
+      if (n == 0L) 0L else as.integer(sum(draw_sibs(n, mu = mus[gen])))
+    })
+  }
+  # 1. Parents are a fixed pedigree anchor used to generate aunts and uncles.
   parents <- rep(2L, n_sim)
-  grandparents <- rep(4L, n_sim)
 
   # 2. Siblings for the focal individual
   siblings <- draw_sibs(n = n_sim, mu = mus[2])
@@ -95,36 +127,27 @@ simulate_relatives_poisson <- function(mus,
   children <- draw_fert(n = n_sim, mu = mus[1])
 
   # 4. Aunts & uncles (no subtraction needed)
-  aunts_uncles <- purrr::map_int(parents, function(n_par) {
-    as.integer(sum(draw_sibs(n_par, mu = mus[3])))
-  })
+  aunts_uncles <- sum_sibs(parents, gen = 3)
 
   # 5. Nieces & nephews: for each sibling, simulate their fertility and sum
-  nieces_nephews <- purrr::map_int(siblings, function(n_sib) {
-    if (n_sib == 0L) 0L else as.integer(sum(draw_fert(n_sib, mu = mus[1])))
-  })
+  nieces_nephews <- sum_fert(siblings, gen = 1)
 
   # 6. Cousins: for each aunt/uncle, simulate their fertility and sum
-  cousins <- purrr::map_int(aunts_uncles, function(n_au) {
-    if (n_au == 0L) 0L else as.integer(sum(draw_fert(n_au, mu = mus[2])))
-  })
+  cousins <- sum_fert(aunts_uncles, gen = 2)
 
   tibble::tibble(
-    Parents    = parents,
-    Grandparents = grandparents,
     Siblings    = siblings,
     Children    = children,
     AuntUncles = aunts_uncles,
     NieceNephews = nieces_nephews,
-    Cousins     = cousins
+    Cousins = cousins
   )
 }
 
 # The fertility distribution fixed at the mean size.
 simulate_relatives_fixed <- function(ferts, sibs) {
-  # 1. Parents and grandparents are fixed at 2 and 4, respectively.
+  # 1. Parents are a fixed pedigree anchor used to generate aunts and uncles.
   parents <- 2
-  grandparents <- 4
 
   # 2. Siblings for the focal individual
   siblings <- sibs[2]
@@ -142,18 +165,18 @@ simulate_relatives_fixed <- function(ferts, sibs) {
   cousins <- aunts_uncles * ferts[2]
 
   tibble::tibble(
-    Parents    = parents,
-    Grandparents = grandparents,
     Siblings    = siblings,
     Children    = children,
     AuntUncles = aunts_uncles,
     NieceNephews = nieces_nephews,
-    Cousins     = cousins
+    Cousins = cousins
   )
 }
 ```
 
 ## Fertility and sibling parameters based on the IPUMS data
+
+The notebook reads fitted parameters and empirical sibling moments from the current analysis outputs, keeping these simulations synchronized with the fertility-model notebook.
 
 ```{r ipums-parameters}
 # Read the fitted parameters and empirical summaries written by fert_model.qmd
@@ -161,12 +184,15 @@ simulate_relatives_fixed <- function(ferts, sibs) {
 fert_params <- read_csv(file.path(output_path, "fertility_parameters.csv"), show_col_types = FALSE)
 fert_estimation <- read_csv(file.path(output_path, "fertility_estimation.csv"), show_col_types = FALSE)
 
-# Generations used below, in order: focal individual, parent, grandparent.
-gen_years <- c(1990, 1970, 1950)
-
 zinb_params <- fert_params %>% filter(Model == "ZINB")
 pois_params <- fert_params %>% filter(Model == "Poisson")
 sib_estimation <- fert_estimation %>% filter(distribution == "sibling")
+
+all_census_years <- sort(unique(zinb_params$Year))
+
+# Generations used in the kin-count simulation below, in order:
+# focal individual, parent, grandparent.
+gen_years <- c(1990, 1970, 1950)
 
 mus_zinb <- zinb_params$mu[match(gen_years, zinb_params$Year)]
 sizes_zinb <- zinb_params$size[match(gen_years, zinb_params$Year)]
@@ -178,30 +204,138 @@ mean_sibs <- sib_estimation$mean_data[match(gen_years, sib_estimation$Year)]
 n_sim <- 100000
 ```
 
+## Fertility and sibling model-fit PMFs
+
+These plots mirror the simulator view: empirical bars, with ZINB and Poisson model overlays. We show every census year with fitted data here; the kin-count simulation below then selects three years as a focal-parent-grandparent generation mapping.
+
+```{r visualize-input-pmfs, fig.width = 13, fig.height = 6}
+max_input_count <- 12L
+
+zinb_pmf <- function(k, mu, size, pi0) {
+  ifelse(
+    k == 0L,
+    pi0 + (1 - pi0) * dnbinom(k, size = size, mu = mu),
+    (1 - pi0) * dnbinom(k, size = size, mu = mu)
+  )
+}
+
+tail_pmf <- function(values) {
+  pmax(0, 1 - sum(values))
+}
+
+model_pmf_for_year <- function(year) {
+  z <- zinb_params %>% filter(Year == year)
+  p <- pois_params %>% filter(Year == year)
+  k <- 0:(max_input_count - 1L)
+
+  fert_zinb <- zinb_pmf(k, mu = z$mu, size = z$size, pi0 = z$pi0)
+  fert_pois <- dpois(k, lambda = p$mu)
+  sib_zinb <- dnbinom(k, size = z$size + 1, mu = z$mu * (z$size + 1) / z$size)
+  sib_pois <- dpois(k, lambda = p$mu)
+
+  bind_rows(
+    tibble(Year = year, Distribution = "Fertility", Count = c(k, max_input_count),
+           poissonFit = c(fert_pois, tail_pmf(fert_pois)),
+           zinbFit = c(fert_zinb, tail_pmf(fert_zinb))),
+    tibble(Year = year, Distribution = "Sibling", Count = c(k, max_input_count),
+           poissonFit = c(sib_pois, tail_pmf(sib_pois)),
+           zinbFit = c(sib_zinb, tail_pmf(sib_zinb)))
+  )
+}
+
+emp_fert_pmf <- read_csv(
+  file.path(processed_path, "ipums_fertility_pmf_by_cohort.csv"),
+  show_col_types = FALSE
+) %>%
+  filter(Year %in% all_census_years) %>%
+  group_by(Year, cohort, Count = pmin(children, max_input_count)) %>%
+  summarise(empirical = sum(probability), .groups = "drop") %>%
+  mutate(Distribution = "Fertility")
+
+emp_sib_pmf <- emp_fert_pmf %>%
+  filter(Distribution == "Fertility") %>%
+  group_by(Year, cohort) %>%
+  group_modify(~ {
+    probs <- numeric(max_input_count + 1L)
+    probs[.x$Count + 1L] <- .x$empirical
+    fert_mean <- fert_estimation$mean_data[
+      fert_estimation$distribution == "fertility" &
+        fert_estimation$Year == .y$Year
+    ]
+    known <- (1:max_input_count) * probs[2:(max_input_count + 1L)] / fert_mean
+    tibble(
+      Count = 0:max_input_count,
+      empirical = c(known, pmax(0, 1 - sum(known))),
+      Distribution = "Sibling"
+    )
+  }) %>%
+  ungroup()
+
+input_model_pmf <- bind_rows(lapply(all_census_years, model_pmf_for_year))
+
+input_pmf <- bind_rows(emp_fert_pmf, emp_sib_pmf) %>%
+  left_join(input_model_pmf, by = c("Year", "Distribution", "Count")) %>%
+  mutate(
+    CountLabel = factor(
+      if_else(Count == max_input_count, paste0(max_input_count, "+"), as.character(Count)),
+      levels = c(as.character(0:(max_input_count - 1L)), paste0(max_input_count, "+"))
+    ),
+    Year = factor(Year, levels = all_census_years),
+    Distribution = factor(Distribution, levels = c("Fertility", "Sibling"))
+  )
+
+ggplot(input_pmf, aes(x = CountLabel)) +
+  geom_col(aes(y = empirical), fill = empirical_fill, alpha = 0.65, width = 0.82) +
+  geom_line(aes(y = zinbFit, group = 1, color = "ZINB fitted"), linewidth = 1) +
+  geom_point(aes(y = zinbFit, color = "ZINB fitted"), size = 1.8) +
+  geom_line(aes(y = poissonFit, group = 1, color = "Poisson"), linewidth = 0.9, linetype = "dashed") +
+  geom_point(aes(y = poissonFit, color = "Poisson"), size = 1.6) +
+  facet_grid(Distribution ~ Year) +
+  scale_color_manual(values = model_fit_palette, name = NULL) +
+  scale_y_continuous(labels = function(x) paste0(round(100 * x), "%")) +
+  labs(x = "Count", y = "Probability") +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 9)
+  )
+
+ggsave(file = file.path(output_path, "fertility_sibling_model_fit_pmf.pdf"), width = 13, height = 6)
+```
+
 ## Simulate relative counts for each fertility and sibling model
 
+We run the relationship calculations under fixed-mean, Poisson, and ZINB assumptions. The illustrative generation mapping is focal = 1990, parent = 1970, and grandparent = 1950, corresponding to roughly 20-year generational spacing.
+
 ```{r simulate-relative-counts}
-relative_counts = list()
-relative_counts[[1]] = simulate_relatives_fixed(
-  ferts = mean_ferts,
-  sibs = mean_sibs
-)
-relative_counts[[2]] = simulate_relatives_poisson(
-  mus = mus_poisson,
-  n_sim = n_sim
-)
-relative_counts[[3]] = simulate_relatives_zinb(
-  mus = mus_zinb,
-  sizes = sizes_zinb,
-  pis = pis_zinb,
-  n_sim = n_sim
+relative_counts <- list(
+  # Fixed-mean baseline: replace each draw with the empirical mean.
+  fixed = simulate_relatives_fixed(
+    ferts = mean_ferts,
+    sibs = mean_sibs
+  ),
+  # Poisson model: simulate fertility with one mean parameter per generation.
+  poisson = simulate_relatives_poisson(
+    mus = mus_poisson,
+    n_sim = n_sim
+  ),
+  # ZINB model: simulate fertility with fitted mean, dispersion, and zero inflation.
+  zinb = simulate_relatives_zinb(
+    mus = mus_zinb,
+    sizes = sizes_zinb,
+    pis = pis_zinb,
+    n_sim = n_sim
+  )
 )
 ```
 
 ## Summarize mean and variance of relative counts
 
+The summary table reports only modeled or fertility-derived kin counts; fixed parents and grandparents are treated as pedigree assumptions rather than outcomes.
+
 ```{r summarize-relative-counts}
-relative_model_names <- c("fixed", "poisson", "zinb")
+relative_model_names <- names(relative_counts)
 
 relative_summary <- Map(function(dat, model_name) {
   tibble(
@@ -242,50 +376,49 @@ kable(
 )
 ```
 
-## Visualize the relative count distributions for each model
+## Visualize relative count distributions as boxplots
 
-```{r visualize-relative-counts, fig.width = 10, fig.height = 4}
+The boxplots summarize the simulated count distributions and make the model-level shifts in medians and tails easy to compare.
+
+```{r visualize-relative-count-boxplots, fig.width = 10, fig.height = 4}
+relative_labels <- c(
+  Siblings = "Siblings",
+  Children = "Children",
+  AuntUncles = "Aunts and uncles",
+  NieceNephews = "Nieces and nephews",
+  Cousins = "First cousins"
+)
+
+relative_levels <- c(
+  "Siblings", "Children", "Aunts and uncles",
+  "Nieces and nephews", "First cousins"
+)
+
 relative_distribution <- bind_rows(
-  relative_counts[[2]] %>% mutate(Model = "Poisson"),
-  relative_counts[[3]] %>% mutate(Model = "ZINB")
+  relative_counts$poisson %>% mutate(Model = "Poisson"),
+  relative_counts$zinb %>% mutate(Model = "ZINB")
 ) %>%
   pivot_longer(
     cols = -Model,
     names_to = "Relative",
     values_to = "Count"
   ) %>%
-  filter(!Relative %in% c("Parents", "Grandparents")) %>%
   mutate(
-    Relative = recode(
-      Relative,
-      "Siblings" = "Siblings",
-      "Children" = "Children",
-      "AuntUncles" = "Aunts and uncles",
-      "NieceNephews" = "Nieces and nephews",
-      "Cousins" = "First cousins"
-    ),
-    Relative = factor(
-      Relative,
-      levels = c(
-        "Siblings", "Children", "Aunts and uncles",
-        "Nieces and nephews", "First cousins"
-      )
-    )
+    Relative = recode(Relative, !!!relative_labels),
+    Relative = factor(Relative, levels = relative_levels)
   )
 
 ggplot(relative_distribution, aes(x = Model, y = Count, fill = Model)) +
   geom_boxplot(width = 0.65, alpha = 0.85, outlier.size = 0.35) +
   facet_wrap(~ Relative, scales = "free_y", nrow = 1) +
-  scale_fill_manual(values = c("Poisson" = "#0072B2", "ZINB" = "#D55E00")) +
+  scale_fill_manual(values = model_palette) +
   labs(
-    # title = "Relative Count Distributions Under Poisson and ZINB Models",
     x = NULL,
     y = "Relative count",
     fill = "Model"
   ) +
   theme_minimal(base_size = 12) +
   theme(
-    plot.title = element_text(size = 14, hjust = 0.5),
     legend.position = "bottom",
     panel.grid.minor = element_blank(),
     axis.text.x = element_blank(),
@@ -293,4 +426,73 @@ ggplot(relative_distribution, aes(x = Model, y = Count, fill = Model)) +
   )
 
 ggsave(file = file.path(output_path, "relative_count_distributions.pdf"), width = 10, height = 4)
+```
+
+## Visualize the relative count PMFs
+
+For derived kin classes, the chart compares simulated PMFs: ZINB as bars, with Poisson overlaid as a dashed line with points.
+
+```{r visualize-relative-count-pmfs, fig.width = 11, fig.height = 7}
+relative_caps <- c(
+  Siblings = 18L,
+  Children = 12L,
+  AuntUncles = 28L,
+  NieceNephews = 45L,
+  Cousins = 50L
+)
+
+relative_pmf <- bind_rows(lapply(c("Poisson", "ZINB"), function(model_name) {
+  dat <- if (model_name == "Poisson") relative_counts$poisson else relative_counts$zinb
+
+  bind_rows(lapply(names(dat), function(relative_name) {
+    cap <- relative_caps[[relative_name]]
+    binned <- pmin(as.integer(dat[[relative_name]]), cap)
+    counts <- tabulate(binned + 1L, nbins = cap + 1L)
+    tibble(
+      Model = model_name,
+      Relative = relative_labels[[relative_name]],
+      Count = 0:cap,
+      probability = counts / sum(counts)
+    )
+  }))
+})) %>%
+  mutate(
+    Relative = factor(
+      Relative,
+      levels = relative_levels
+    )
+  )
+
+ggplot() +
+  geom_col(
+    data = relative_pmf %>% filter(Model == "ZINB"),
+    aes(x = Count, y = probability, fill = "ZINB simulated"),
+    alpha = 0.45, width = 0.9
+  ) +
+  geom_line(
+    data = relative_pmf %>% filter(Model == "Poisson"),
+    aes(x = Count, y = probability, color = "Poisson simulated"),
+    linewidth = 0.8, linetype = "dashed"
+  ) +
+  geom_point(
+    data = relative_pmf %>% filter(Model == "Poisson"),
+    aes(x = Count, y = probability, color = "Poisson simulated"),
+    size = 1.4
+  ) +
+  facet_wrap(~ Relative, scales = "free_x", ncol = 3) +
+  scale_fill_manual(values = model_sim_palette["ZINB simulated"], name = NULL) +
+  scale_color_manual(values = model_sim_palette["Poisson simulated"], name = NULL) +
+  scale_y_continuous(labels = function(x) paste0(round(100 * x), "%")) +
+  labs(
+    x = "Relative count",
+    y = "Probability"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 9)
+  )
+
+ggsave(file = file.path(output_path, "relative_count_pmfs.pdf"), width = 11, height = 7)
 ```

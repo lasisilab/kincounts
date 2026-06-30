@@ -4,7 +4,7 @@ author: "Junhui He"
 date: today
 ---
 
-In this article, we develop a statistical framework for modelling the relationship between the fertility distribution and sibling distribution: Given a fertility distribution, we derive what the resulting sibling distribution would be in the next generation. Specifically, the fertility distribution describes the number of children per woman, while the sibling distribution describes the number of siblings per person in the next generation.
+This note gives the formal relationship between a fertility distribution and the sibling distribution it implies in the next generation. The fertility distribution describes the number of children per woman; the sibling distribution describes the number of siblings per person. Once the fertility distribution is specified, the sibling distribution is a deterministic size-biased transform of that fertility distribution.
 
 # Fertility Distribution
 
@@ -23,41 +23,38 @@ The zero inflated negative binomial distribution with parameters mean fertility 
 
 # Sibling distribution
 
-The number of siblings per person in the next generation is modelled using a sibling distribution, which can be derived from the fertility distribution. The sibling distribution describes the probability of an individual having a certain number of siblings, which is directly related to the number of children their mothers have.
+The number of siblings per person in the next generation is described by a sibling distribution. This distribution is derived directly from the fertility distribution because children are sampled from births, not from mothers. Mothers with more children contribute more individuals to the next generation, so their fertility counts receive weight proportional to family size.
 
-## Sibship size paradox
+## Deterministic fertility-to-sibling transform
 
-A common mistake is that the sibling distribution should be the same as the fertility distribution minus one. However, this is not the case due to the sibship size paradox: individuals with more siblings are more likely to be sampled in the population, leading to a bias in the observed sibling distribution compared to the underlying fertility distribution. 
+Let $N_{child}$ be the random variable for the number of children per woman, with probability mass function $p_j = P(N_{child}=j)$ and mean $\mu_F = E[N_{child}]$. Let $N_{sib}$ be the number of siblings for a person in the next generation. A person with $k$ siblings must come from a mother with $k+1$ children, and that family contributes $k+1$ children to the population. Therefore, for any count $k \geq 0$,
 
-For example, if we have a population of $N_0$ women where $50\%$ of women have 0 children, $25\%$ of women have 1 child, and $25\%$ of women have 2 children, the fertility distribution is $P(N_{child}=0)=0.5$, $P(N_{child}=1)=0.25$, and $P(N_{child}=2)=0.25$. Thus, in the next generation, the population size is $$N_1 = 0.5N_0 \cdot 0 + 0.25N_0 \cdot 1 + 0.25N_0 \cdot 2 = 0.75N_0.$$ And $0.25N_0 \cdot 1$ individuals have 0 siblings, $0.25N_0 \cdot 2$ individuals have 1 sibling. Therefore, the sibling distribution is $$P(N_{sib}=0)=\frac{0.25N_0}{0.75N_0}=\frac{1}{3},\quad P(N_{sib}=1)=\frac{0.25N_0 \cdot 2}{0.75N_0}=\frac{2}{3}.$$
+$$P(N_{sib}=k) = \frac{(k+1)P(N_{child}=k+1)}{E[N_{child}]} = \frac{(k+1)p_{k+1}}{\mu_F}.$$ {#eq-sibship}
 
-To conclude, most people come from large families even when most families are small. This apparent paradox occurs because individuals with more siblings are sampled with an importance weight proportional to their family size. 
+This is a deterministic transform: no additional stochastic model is needed to obtain the sibling distribution once the fertility PMF is known. More distant kin counts can be built from the same fertility and sibling relationships, but this note focuses only on the direct fertility-to-sibling derivation.
 
-Formally, the relationship between the fertility distribution and sibling distribution can be expressed as follows: Let $N_{child}$ be the random variable representing the number of children per woman, and $N_{sib}$ be the random variable representing the number of siblings per person in the next generation. Then, for any count $k \geq 0$, the probability that an individual has $k$ siblings is proportional to the probability that their mother has $k+1$ children, multiplied by the number of ways the individual could be one of those children. Therefore, we have: $$P(N_{sib}=k) \propto (k+1)P(N_{child}=k+1).$$ {#eq-sibship} This relationship holds for any fertility distribution, and the sibling distribution can be derived accordingly.
-
-## Sibling distribution for different fertility distributions
+## Sibling distribution for Poisson and ZINB fertility models
 
 In this section, we derive the sibling distribution for the two fertility distributions discussed above: Poisson distribution and zero inflated negative binomial distribution, using the relationship established in the previous section.
 
 ### Fertility distribution: Poisson distribution
 
-If the fertility distribution is $\text{Poisson}(\mu)$, then the sibling distribution is given by: for a count $k \geq 0$, 
+If the fertility distribution is $\text{Poisson}(\mu)$, then the sibling distribution is given by: for a count $k \geq 0$,
 $$\begin{equation}
 \begin{split}
-P(N_{sib}=k) & \propto (k+1)P(N_{child}=k+1) \\
-& \propto (k+1)e^{-\mu}\frac{\mu^{k+1}}{(k+1)!} \\
-& = e^{-\mu}\frac{\mu^{k+1}}{k!}\propto e^{-\mu}\frac{\mu^k}{k!}, \\
+P(N_{sib}=k) & = \frac{(k+1)P(N_{child}=k+1)}{\mu} \\
+& = \frac{(k+1)e^{-\mu}\frac{\mu^{k+1}}{(k+1)!}}{\mu} \\
+& = e^{-\mu}\frac{\mu^k}{k!}, \\
 \end{split}
 \end{equation}
 $$ {#eq-sibship-poisson} which is also a Poisson distribution with mean $\mu$.
 
 ### Fertility distribution: Zero inflated negative binomial distribution
 
-If the fertility distribution is $\text{ZINB}(\mu, \theta, \pi_0)$, then the sibling distribution is given by: for a count $k \geq 0$, $$\begin{equation}
+If the fertility distribution is $\text{ZINB}(\mu, \theta, \pi_0)$, then $E[N_{child}] = \mu(1-\pi_0)$. The sibling distribution is given by: for a count $k \geq 0$, $$\begin{equation}
 \begin{split}
-P(N_{sib}=k) & \propto (k+1)P(N_{child}=k+1) \\
-& \propto (1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\theta} \\
-& \propto \frac{\theta(1-p)}{p} \frac{(k+\theta)!}{k!\theta!}(1-p)^k p^{\theta+1} \\
-& \propto \binom{k+\theta}{k}(1-p)^k p^{\theta+1}, \\
+P(N_{sib}=k) & = \frac{(k+1)P(N_{child}=k+1)}{\mu(1-\pi_0)} \\
+& = \frac{(1-\pi_0)(k+1)\binom{k+\theta}{k+1}(1-p)^{k+1} p^{\theta}}{\mu(1-\pi_0)} \\
+& = \binom{k+\theta}{k}(1-p)^k p^{\theta+1}, \\
 \end{split}
-\end{equation}$$ {#eq-sibship-zinb} where $p = \frac{\theta}{\mu+\theta}$. Therefore, the sibling distribution is a negative binomial distribution with parameters mean fertility ($\frac{\mu(\theta+1)}{\theta}$), dispersion/size ($\theta+1$), denoted as $\text{NB}(\frac{\mu(\theta+1)}{\theta}, \theta+1)$. The variance is $\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}$.
+\end{equation}$$ {#eq-sibship-zinb} where $p = \frac{\theta}{\mu+\theta}$. The zero-inflation term cancels because childless women do not contribute sampled children to the next generation. Therefore, the sibling distribution is a negative binomial distribution with parameters mean $\frac{\mu(\theta+1)}{\theta}$ and dispersion/size $\theta+1$, denoted as $\text{NB}(\frac{\mu(\theta+1)}{\theta}, \theta+1)$. The variance is $\frac{\mu(\theta+1)}{\theta} + \frac{\mu^2(\theta+1)}{\theta^2}$.

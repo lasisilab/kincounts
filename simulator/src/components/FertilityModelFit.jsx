@@ -276,7 +276,7 @@ export default function FertilityModelFit({ dataset, selectedYear, onYearChange 
                 <div className="fmf-gof-title">Whole-distribution fit · N = {fertGOF.N.toLocaleString()}</div>
                 <table className="fmf-table fmf-gof-table">
                   <thead>
-                    <tr><th></th><th>χ²/df</th><th>ΔAIC</th></tr>
+                    <tr><th></th><th>χ²/df</th><th>ΔAIC (0 = best)</th></tr>
                   </thead>
                   <tbody>
                     <tr className={fertGOF.best === 'zinb' ? 'fit-winner' : ''}>
@@ -288,7 +288,9 @@ export default function FertilityModelFit({ dataset, selectedYear, onYearChange 
                   </tbody>
                 </table>
                 <p className="fmf-gof-note">
-                  Lower = closer. ΔAIC penalizes ZINB's extra parameters; the lower-AIC model is preferred.
+                  χ²/df is lower when the fitted PMF is closer to the empirical counts.
+                  ΔAIC is measured relative to the best model in this table, so 0 marks
+                  the reference fit; positive values are worse by that many AIC units.
                   At census sample sizes both models are formally rejected by χ², so these are comparative, not pass/fail.
                 </p>
               </div>
