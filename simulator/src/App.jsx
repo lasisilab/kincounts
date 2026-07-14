@@ -37,6 +37,7 @@ export default function App() {
   // The ACTIVE dataset. Defaults to IPUMS; an imported dataset replaces it
   // everywhere (Fertility Fit + Simulator) with no special-casing.
   const [dataset,     setDataset]     = useState(IPUMS_DATASET)
+  const [userDataset, setUserDataset] = useState(null)
   const defaults = useMemo(() => defaultsFromDataset(dataset), [dataset])
 
   const [importOpen,  setImportOpen]  = useState(false)
@@ -56,6 +57,7 @@ export default function App() {
   function applyDataset(ds) {
     const d = defaultsFromDataset(ds)
     setDataset(ds)
+    if (ds.id !== 'ipums') setUserDataset(ds)
     setModel('zinb')
     setGenParams(d.byModel.zinb)
     setSelectedYear(newestYear(ds))
@@ -118,16 +120,32 @@ export default function App() {
       </nav>
       <p className="tab-desc">{activeTabMeta.desc}</p>
 
-      <div className="dataset-bar">
-        <span className="dataset-bar-label">Data source</span>
-        <span className="dataset-bar-name">{dataset.label}</span>
-        <button className="dataset-bar-btn" onClick={() => setImportOpen(o => !o)}>
-          {importOpen ? 'Close importer' : 'Use your own data'}
+      <div className="mode-pills">
+        <button
+          className={`mode-pill ${dataset.id === 'ipums' && !importOpen ? 'active' : ''}`}
+          onClick={() => {
+            if (dataset.id !== 'ipums') applyDataset(IPUMS_DATASET)
+            else setImportOpen(false)
+          }}
+        >
+          Demo (IPUMS)
         </button>
-        {dataset.id !== 'ipums' && (
-          <button className="dataset-bar-reset" onClick={() => applyDataset(IPUMS_DATASET)}>
-            Reset to IPUMS
-          </button>
+        <button
+          className={`mode-pill ${dataset.id !== 'ipums' || importOpen ? 'active' : ''}`}
+          onClick={() => {
+            if (userDataset && dataset.id === 'ipums') applyDataset(userDataset)
+            else setImportOpen(true)
+          }}
+        >
+          Upload Your Data
+        </button>
+        {dataset.id !== 'ipums' && !importOpen && (
+          <>
+            <span className="mode-pills-name">Using: {dataset.label}</span>
+            <button className="mode-pill-reupload" onClick={() => setImportOpen(true)}>
+              Change data
+            </button>
+          </>
         )}
       </div>
 
@@ -140,7 +158,7 @@ export default function App() {
       )}
 
       {/* ══ Fertility Fit ══ */}
-      {activeTab === 'fit' && (
+      {activeTab === 'fit' && !importOpen && (
         <div className="tab-content">
           <FertilityModelFit
             dataset={dataset}
