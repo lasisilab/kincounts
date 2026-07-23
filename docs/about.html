@@ -129,6 +129,10 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
         <li>
+    <a class="dropdown-item" href="./analysis/preprocess.html">
+ <span class="dropdown-text">Preprocessing IPUMS data</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./analysis/fert_sibling.html">
  <span class="dropdown-text">Fertility and sibling relationship</span></a>
   </li>  
@@ -142,6 +146,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="https://kincounts.vercel.app/"> 
+<span class="menu-text">Simulator</span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./about.html" aria-current="page"> 
 <span class="menu-text">About</span></a>
@@ -215,11 +223,10 @@ window.Quarto = {
 <h2 data-number="3" class="anchored" data-anchor-id="software"><span class="header-section-number">3</span> Software</h2>
 <p>This project uses:</p>
 <ul>
-<li>R for statistical computing</li>
-<li>Shiny for interactive visualizations</li>
-<li>workflowr for reproducible research</li>
-<li>pscl for zero-inflated models</li>
-<li>ggplot2 for data visualization</li>
+<li>R for statistical computing, with <code>pscl</code> for zero-inflated models and <code>ggplot2</code> for visualization</li>
+<li>Quarto for the methods and analysis website</li>
+<li>React, Vite, and Recharts for the interactive <a href="https://kincounts.vercel.app/">Kincounts simulator</a> (deployed on Vercel)</li>
+<li>A legacy Shiny app, kept for local use</li>
 </ul>
 </section>
 <section id="authors" class="level2" data-number="4">

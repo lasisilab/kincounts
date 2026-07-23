@@ -32,7 +32,7 @@ model_palette <- setNames(
   c("Poisson", "ZINB")
 )
 model_fit_palette <- c(
-  "ZINB fitted" = model_palette[["ZINB"]],
+  "ZINB" = model_palette[["ZINB"]],
   "Poisson" = model_palette[["Poisson"]]
 )
 model_sim_palette <- c(
@@ -286,8 +286,8 @@ input_pmf <- bind_rows(emp_fert_pmf, emp_sib_pmf) %>%
 
 ggplot(input_pmf, aes(x = CountLabel)) +
   geom_col(aes(y = empirical), fill = empirical_fill, alpha = 0.65, width = 0.82) +
-  geom_line(aes(y = zinbFit, group = 1, color = "ZINB fitted"), linewidth = 1) +
-  geom_point(aes(y = zinbFit, color = "ZINB fitted"), size = 1.8) +
+  geom_line(aes(y = zinbFit, group = 1, color = "ZINB"), linewidth = 1) +
+  geom_point(aes(y = zinbFit, color = "ZINB"), size = 1.8) +
   geom_line(aes(y = poissonFit, group = 1, color = "Poisson"), linewidth = 0.9, linetype = "dashed") +
   geom_point(aes(y = poissonFit, color = "Poisson"), size = 1.6) +
   facet_grid(Distribution ~ Year) +
@@ -438,7 +438,7 @@ relative_caps <- c(
   Children = 12L,
   AuntUncles = 28L,
   NieceNephews = 45L,
-  Cousins = 50L
+  Cousins = 60L
 )
 
 relative_pmf <- bind_rows(lapply(c("Poisson", "ZINB"), function(model_name) {

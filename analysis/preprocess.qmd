@@ -277,6 +277,8 @@ file_summary <- tibble(
     rebuild_processed
   )
 )
+
+output_path <- if (dir.exists("output")) "output" else file.path("..", "output")
 ```
 
 ```{r build-or-load-aggregates}
@@ -812,7 +814,8 @@ band_summary %>%
   scale_color_manual(values = universe_palette) +
   scale_x_continuous(breaks = c(1960, 1970, 1980, 1990)) +
   labs(x = "Census year", y = "Mean children ever born",
-       title = "Same birth cohorts under all-women vs ever-married universes")
+       title = "")
+ggsave(file = file.path(output_path, "cohort_trajectory.pdf"), width = 9, height = 6)
 ```
 
 ```{r fig-early-pmf}
@@ -965,7 +968,8 @@ validation_1950_pmf %>%
   scale_fill_manual(values = validation_palette) +
   scale_x_continuous(breaks = 0:12) +
   labs(x = "Children ever born (12 = 12+)", y = "Probability",
-       title = "1950 cohort: direct vs proxy")
+       title = "")
+ggsave(file = file.path(output_path, "validation_1950_pmf.pdf"), width = 8, height = 4.5)
 ```
 
 ```{r tbl-validation}
