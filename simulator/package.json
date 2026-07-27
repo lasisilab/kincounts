@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "check": "node scripts/check-example-fits.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

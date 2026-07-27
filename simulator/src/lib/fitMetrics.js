@@ -51,6 +51,37 @@ export function aic(empProbs, modelProbs, N, nParams) {
   return 2 * nParams - 2 * ll
 }
 
+// Parameter counts charged by AIC. ZINB nests Poisson, so on equidispersed data
+// it can only match Poisson's likelihood while paying for 2 extra parameters —
+// which is what makes ΔAIC prefer the simpler model when that is the truth.
+export const ZINB_PARAMS = 3    // mu, theta, pi0
+export const POISSON_PARAMS = 1 // lambda
+
+/**
+ * Whole-distribution comparison of the Poisson and ZINB fits to one cohort's
+ * observed fertility counts: reduced Pearson χ² and ΔAIC for each, plus which
+ * model AIC prefers. Shared by the Fertility Fit view and the example-fit check
+ * script so the two cannot disagree.
+ *
+ * `nBins` is the number of PMF bins (0..11 plus the 12+ bin).
+ */
+export function compareFertilityFits({ empProbs, zinbProbs, poisProbs, N, nBins }) {
+  if (!N) return null
+  const chiZ = pearsonChiSq(empProbs, zinbProbs, N)
+  const chiP = pearsonChiSq(empProbs, poisProbs, N)
+  const aicZ = aic(empProbs, zinbProbs, N, ZINB_PARAMS)
+  const aicP = aic(empProbs, poisProbs, N, POISSON_PARAMS)
+  const minAIC = Math.min(aicZ, aicP)
+  const dfZ = nBins - 1 - ZINB_PARAMS
+  const dfP = nBins - 1 - POISSON_PARAMS
+  return {
+    N,
+    zinb:    { redChi: chiZ / dfZ, dAIC: aicZ - minAIC, aic: aicZ },
+    poisson: { redChi: chiP / dfP, dAIC: aicP - minAIC, aic: aicP },
+    best: bestFit({ zinb: aicZ, poisson: aicP }),
+  }
+}
+
 // Key of the smallest finite score (lower = better); null if nothing comparable.
 export function bestFit(scores) {
   let best = null
