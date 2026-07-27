@@ -41,8 +41,8 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
       <p className="import-intro">
         Provide fertility as <strong>raw counts</strong> — the number of women with each
         number of children ever born, per year. The app computes the empirical
-        distribution and fits Poisson and ZINB; your data then replaces the census
-        data throughout. The top child count is treated as “that many or more”.
+        distribution and fits Poisson and ZINB models to your data.
+        The top child count is treated as “that many or more”.
       </p>
 
       <ol className="import-steps">
@@ -51,7 +51,7 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
             ↓ Download CSV template
           </button>
           <span className="import-hint">
-            Pre-filled with the census cohorts as a worked example — replace the numbers with yours.
+            Pre-filled with a worked example — replace the numbers with yours.
           </span>
         </li>
         <li>
@@ -86,7 +86,7 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
 
       <div className="import-actions">
         <button className="import-btn-primary" onClick={handleLoad} disabled={!text.trim()}>
-          Load data → replace census data
+          Load data
         </button>
         <button className="import-btn-secondary" onClick={onClose}>Cancel</button>
       </div>
