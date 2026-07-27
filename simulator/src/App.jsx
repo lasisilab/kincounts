@@ -151,7 +151,6 @@ export default function App() {
 
       {importOpen && (
         <DataImport
-          baseDataset={IPUMS_DATASET}
           onLoad={applyDataset}
           onClose={() => setImportOpen(false)}
         />

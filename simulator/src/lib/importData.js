@@ -159,17 +159,6 @@ export function buildUserDataset(text, name = 'Your data') {
   return { dataset, warnings }
 }
 
-// Produce a fillable raw-counts template from an existing dataset's PMFs,
-// scaled to a nominal sample size so users see a real, valid example.
-export function makeTemplateCSV(dataset, nominalN = 10000) {
-  const lines = ['year,label,children,count']
-  const cohorts = [...dataset.cohorts].sort((a, b) => a.year - b.year)
-  for (const c of cohorts) {
-    const probs = dataset.pmfByYear[c.year]
-    if (!probs) continue
-    for (let k = 0; k < probs.length; k++) {
-      lines.push(`${c.year},${c.cohort},${k},${Math.round(probs[k] * nominalN)}`)
-    }
-  }
-  return lines.join('\n') + '\n'
-}
+// The fill-in template and the synthetic worked examples live in exampleData.js:
+// they are generated from named distributions rather than derived from the census
+// data, so nothing shown in the importer can be mistaken for a real observation.

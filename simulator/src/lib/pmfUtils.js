@@ -1,4 +1,4 @@
-import { zinbPMF } from './distributions.js'
+import { poissonPMF, zinbPMF } from './distributions.js'
 
 export const BUTTERFLY_MAX_K = 12  // counts 0–11, then 12+ bin
 
@@ -16,6 +16,23 @@ export function fertilityPMFArray(mu, theta, pi0) {
   }
   probs.push(Math.max(0, 1 - cumulative))  // 12+ bin
   return probs  // length = BUTTERFLY_MAX_K + 1 = 13
+}
+
+/**
+ * Compute the Poisson fertility PMF for k = 0 … BUTTERFLY_MAX_K, binned the same
+ * way as fertilityPMFArray so the two are directly comparable against observed
+ * counts. The final bin (index 12) accumulates all P(X ≥ 12).
+ */
+export function poissonPMFArray(lambda) {
+  const probs = []
+  let cumulative = 0
+  for (let k = 0; k < BUTTERFLY_MAX_K; k++) {
+    const p = poissonPMF(k, lambda)
+    probs.push(p)
+    cumulative += p
+  }
+  probs.push(Math.max(0, 1 - cumulative))  // 12+ bin
+  return probs
 }
 
 /**
