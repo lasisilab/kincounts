@@ -51,7 +51,7 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
             ↓ Download CSV template
           </button>
           <span className="import-hint">
-            Pre-filled with a worked example — replace the numbers with yours.
+            Pre-filled with the demo (IPUMS) cohorts as a worked example — replace the numbers with yours.
           </span>
         </li>
         <li>
