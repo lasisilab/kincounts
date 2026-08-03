@@ -1,11 +1,18 @@
 import { useState } from 'react'
-import { buildUserDataset, makeTemplateCSV } from '../lib/importData.js'
+import { buildUserDataset } from '../lib/importData.js'
+import {
+  makeTemplateCSV,
+  poissonExampleCSV,
+  overdispersedExampleCSV,
+  POISSON_EXAMPLE,
+  OVERDISPERSED_EXAMPLE,
+} from '../lib/exampleData.js'
 import { downloadText } from '../lib/exportUtils.js'
 
 // Panel for importing your own fertility data. The app fits Poisson + ZINB to
 // the raw counts you provide; the result replaces IPUMS everywhere. Two entry
 // routes: upload a CSV file, or type/paste counts directly.
-export default function DataImport({ baseDataset, onLoad, onClose }) {
+export default function DataImport({ onLoad, onClose }) {
   const [text, setText] = useState('')
   const [name, setName] = useState('My data')
   const [error, setError] = useState(null)
@@ -28,7 +35,16 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
   }
 
   function handleTemplate() {
-    downloadText('kincounts_data_template.csv', makeTemplateCSV(baseDataset))
+    downloadText('kincounts_data_template.csv', makeTemplateCSV())
+  }
+
+  // Drop a synthetic example into the textarea rather than loading it straight
+  // in, so the counts can be inspected (and edited) before they are fitted.
+  function loadExample(csv, exampleName) {
+    setText(csv)
+    setName(exampleName)
+    setError(null)
+    setWarnings([])
   }
 
   return (
@@ -51,7 +67,7 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
             ↓ Download CSV template
           </button>
           <span className="import-hint">
-            Pre-filled with a worked example — replace the numbers with yours.
+            Two placeholder cohorts showing the required columns — replace the numbers with yours.
           </span>
         </li>
         <li>
@@ -62,6 +78,29 @@ export default function DataImport({ baseDataset, onLoad, onClose }) {
           <span className="import-hint">…or paste / edit the rows below.</span>
         </li>
       </ol>
+
+      <div className="import-examples">
+        <span className="import-examples-label">Or load a synthetic example</span>
+        <button
+          className="import-btn-secondary"
+          onClick={() => loadExample(poissonExampleCSV(), POISSON_EXAMPLE.name)}
+        >
+          Poisson (λ = 1.8, 2.2)
+        </button>
+        <button
+          className="import-btn-secondary"
+          onClick={() => loadExample(overdispersedExampleCSV(), OVERDISPERSED_EXAMPLE.name)}
+        >
+          Overdispersed (θ = 2.5, 3.0)
+        </button>
+        <span className="import-hint">
+          Generated from the named distribution — illustrative, not real data. Because the
+          truth is known, these check the fit: the Poisson example should select
+          <strong> Poisson</strong> (ZINB can only match it, and pays for two extra
+          parameters), the overdispersed one should select <strong>ZINB</strong> (Poisson
+          cannot represent variance above the mean).
+        </span>
+      </div>
 
       <label className="import-name">
         Dataset name

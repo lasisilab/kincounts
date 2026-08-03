@@ -209,7 +209,7 @@ mean_across_years %>%
   ) +
   labs(
     # title = "Mean Fertility and Sibling Counts Across Census Years",
-    x = "Year",
+    x = "Census year",
     y = "Mean family size"
   ) +
   theme_minimal(base_size = 13) +

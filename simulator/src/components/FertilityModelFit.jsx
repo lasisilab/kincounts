@@ -5,10 +5,12 @@ import {
 } from 'recharts'
 import {
   siblingPMFFromFertility,
+  fertilityPMFArray,
+  poissonPMFArray,
   BUTTERFLY_MAX_K,
 } from '../lib/pmfUtils.js'
-import { poissonPMF, zinbPMF, nbPMF } from '../lib/distributions.js'
-import { relativeError, pearsonChiSq, aic, bestFit } from '../lib/fitMetrics.js'
+import { poissonPMF, nbPMF } from '../lib/distributions.js'
+import { relativeError, bestFit, compareFertilityFits } from '../lib/fitMetrics.js'
 import { downloadCSV, downloadChartPng, svgFromRef } from '../lib/exportUtils.js'
 import { describeMothers } from '../lib/datasets.js'
 import GenerationDiagram from './GenerationDiagram.jsx'
@@ -97,21 +99,16 @@ export default function FertilityModelFit({ dataset, selectedYear, onYearChange 
 
   // ── Fertility chart data ──
   const fertChartData = useMemo(() => {
-    const rows = []
-    let pSum = 0, zSum = 0
-    for (let k = 0; k < BUTTERFLY_MAX_K; k++) {
-      const poisP = poissonPMF(k, empMean)
-      const zinbP = zinbPMF(k, mu, theta, pi0)
-      pSum += poisP; zSum += zinbP
-      rows.push({ count: String(k), empirical: fertProbs?.[k] ?? null, poissonFit: poisP, zinbFit: zinbP })
-    }
-    rows.push({
-      count: '12+',
-      empirical:  fertProbs?.[BUTTERFLY_MAX_K] ?? null,
-      poissonFit: Math.max(0, 1 - pSum),
-      zinbFit:    Math.max(0, 1 - zSum),
-    })
-    return rows
+    // Shared binned PMFs, so the example-fit check script scores exactly the
+    // curves drawn here.
+    const poisProbs = poissonPMFArray(empMean)
+    const zinbProbs = fertilityPMFArray(mu, theta, pi0)
+    return poisProbs.map((poisP, k) => ({
+      count:      k === BUTTERFLY_MAX_K ? '12+' : String(k),
+      empirical:  fertProbs?.[k] ?? null,
+      poissonFit: poisP,
+      zinbFit:    zinbProbs[k],
+    }))
   }, [fertProbs, empMean, mu, theta, pi0])
 
   // ── Sibling chart data ──
@@ -165,20 +162,13 @@ export default function FertilityModelFit({ dataset, selectedYear, onYearChange 
   // Cheap (13-bin loops), so computed each render rather than memoized.
   const fertGOF = (() => {
     if (!N) return { N: null, best: bestFit({ zinb: fertMoments.zinb.varErr, poisson: fertMoments.poisson.varErr }) }
-    const zinbProbs = fertChartData.map(r => r.zinbFit)
-    const poisProbs = fertChartData.map(r => r.poissonFit)
-    const chiZ = pearsonChiSq(fertProbs, zinbProbs, N)
-    const chiP = pearsonChiSq(fertProbs, poisProbs, N)
-    const aicZ = aic(fertProbs, zinbProbs, N, 3)  // μ, θ, π₀
-    const aicP = aic(fertProbs, poisProbs, N, 1)  // λ
-    const minAIC = Math.min(aicZ, aicP)
-    const dfZ = N_BINS - 1 - 3, dfP = N_BINS - 1 - 1
-    return {
+    return compareFertilityFits({
+      empProbs:  fertProbs,
+      zinbProbs: fertChartData.map(r => r.zinbFit),
+      poisProbs: fertChartData.map(r => r.poissonFit),
       N,
-      zinb:    { redChi: chiZ / dfZ, dAIC: aicZ - minAIC },
-      poisson: { redChi: chiP / dfP, dAIC: aicP - minAIC },
-      best: bestFit({ zinb: aicZ, poisson: aicP }),
-    }
+      nBins: N_BINS,
+    })
   })()
 
   const varRatio = (empVariance / empMean).toFixed(1)

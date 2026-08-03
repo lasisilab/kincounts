@@ -151,7 +151,6 @@ export default function App() {
 
       {importOpen && (
         <DataImport
-          baseDataset={IPUMS_DATASET}
           onLoad={applyDataset}
           onClose={() => setImportOpen(false)}
         />
@@ -173,7 +172,7 @@ export default function App() {
       )}
 
       {/* ══ Simulator ══ */}
-      {activeTab === 'sim' && (
+      {activeTab === 'sim' && !importOpen && (
         <div className="tab-content">
           <div className="app-body">
             <aside className="controls-panel">

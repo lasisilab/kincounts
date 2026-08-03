@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Junhui He &amp; Tina Lasisi">
-<meta name="dcterms.date" content="2026-06-30">
+<meta name="dcterms.date" content="2026-07-22">
 
 <title>Simulate the number of relatives under different fertility and sibling models – Kincounts</title>
 <style>
@@ -224,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 30, 2026</p>
+      <p class="date">July 22, 2026</p>
     </div>
   </div>
   
@@ -490,8 +490,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(input_pmf, <span class="fu">aes</span>(<span class="at">x =</span> CountLabel)) <span class="sc">+</span></span>
 <span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> empirical), <span class="at">fill =</span> empirical_fill, <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">width =</span> <span class="fl">0.82</span>) <span class="sc">+</span></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> zinbFit, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"ZINB fitted"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> zinbFit, <span class="at">color =</span> <span class="st">"ZINB fitted"</span>), <span class="at">size =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> zinbFit, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"ZINB"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> zinbFit, <span class="at">color =</span> <span class="st">"ZINB"</span>), <span class="at">size =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
 <span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> poissonFit, <span class="at">group =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"Poisson"</span>), <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> poissonFit, <span class="at">color =</span> <span class="st">"Poisson"</span>), <span class="at">size =</span> <span class="fl">1.6</span>) <span class="sc">+</span></span>
 <span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Distribution <span class="sc">~</span> Year) <span class="sc">+</span></span>
@@ -619,47 +619,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: left;">Siblings</td>
 <td style="text-align: right;">3.344</td>
-<td style="text-align: right;">2.373</td>
-<td style="text-align: right;">3.252</td>
+<td style="text-align: right;">2.375</td>
+<td style="text-align: right;">3.258</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">2.373</td>
-<td style="text-align: right;">5.405</td>
+<td style="text-align: right;">2.365</td>
+<td style="text-align: right;">5.384</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Children</td>
 <td style="text-align: right;">3.047</td>
-<td style="text-align: right;">3.043</td>
-<td style="text-align: right;">3.054</td>
+<td style="text-align: right;">3.039</td>
+<td style="text-align: right;">3.041</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">3.042</td>
-<td style="text-align: right;">4.094</td>
+<td style="text-align: right;">3.026</td>
+<td style="text-align: right;">4.065</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">AuntUncles</td>
 <td style="text-align: right;">8.383</td>
-<td style="text-align: right;">5.634</td>
-<td style="text-align: right;">8.224</td>
-<td style="text-align: right;">0</td>
 <td style="text-align: right;">5.635</td>
-<td style="text-align: right;">16.080</td>
+<td style="text-align: right;">8.201</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.610</td>
+<td style="text-align: right;">16.042</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">NieceNephews</td>
 <td style="text-align: right;">10.187</td>
-<td style="text-align: right;">7.246</td>
-<td style="text-align: right;">9.909</td>
+<td style="text-align: right;">7.230</td>
+<td style="text-align: right;">9.935</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">29.099</td>
-<td style="text-align: right;">63.235</td>
+<td style="text-align: right;">29.147</td>
+<td style="text-align: right;">63.494</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Cousins</td>
 <td style="text-align: right;">19.927</td>
-<td style="text-align: right;">13.391</td>
-<td style="text-align: right;">19.581</td>
+<td style="text-align: right;">13.394</td>
+<td style="text-align: right;">19.493</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">45.292</td>
-<td style="text-align: right;">127.715</td>
+<td style="text-align: right;">45.181</td>
+<td style="text-align: right;">127.100</td>
 </tr>
 </tbody>
 </table>
@@ -740,7 +740,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Children =</span> <span class="dv">12</span>L,</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">AuntUncles =</span> <span class="dv">28</span>L,</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">NieceNephews =</span> <span class="dv">45</span>L,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cousins =</span> <span class="dv">50</span>L</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cousins =</span> <span class="dv">60</span>L</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>relative_pmf <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">"Poisson"</span>, <span class="st">"ZINB"</span>), <span class="cf">function</span>(model_name) {</span>
