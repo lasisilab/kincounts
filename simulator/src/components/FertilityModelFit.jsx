@@ -10,6 +10,7 @@ import {
 import { poissonPMF, zinbPMF, nbPMF } from '../lib/distributions.js'
 import { relativeError, pearsonChiSq, aic, bestFit } from '../lib/fitMetrics.js'
 import { downloadCSV, downloadChartPng, svgFromRef } from '../lib/exportUtils.js'
+import { describeMothers } from '../lib/datasets.js'
 import GenerationDiagram from './GenerationDiagram.jsx'
 import DataProvenance from './DataProvenance.jsx'
 
@@ -223,7 +224,7 @@ export default function FertilityModelFit({ dataset, selectedYear, onYearChange 
               It describes the sibship sizes experienced by <strong>their children</strong>, obtained
               by size-biasing the fertility distribution.
             </p>
-            <GenerationDiagram year={cohort.year} cohort={cohort.cohort} />
+            <GenerationDiagram year={cohort.year} mothers={describeMothers(dataset, cohort)} />
             <PmfChart
               title={`Sibling Distribution — children of the ${cohort.year} cohort`}
               data={sibChartData}

@@ -35,6 +35,9 @@ export const IPUMS_DATASET = {
     source: 'IPUMS USA (Ruggles et al.), decennial census microdata',
     variable: 'CHBORN — children ever born (excludes stillbirths, adopted, and stepchildren)',
     sample: 'Women aged 50–59 at each census, 1950–1990 — chosen to capture completed fertility while limiting mortality selection',
+    // Short form of `sample` for inline use in the generation diagram. Only
+    // datasets that know their own sample definition supply this.
+    sampleShort: 'women aged 50–59',
     cohorts: 'Decade birth cohorts, 1891–1940',
     caveat: 'In the earliest censuses the children-ever-born question covered only ever-married women (1950–1960). Early-cohort fertility therefore excludes never-married mothers; see the methods page.',
     // Rendered Quarto methods page (GitHub Pages). Update if the Pages URL differs.
@@ -43,6 +46,17 @@ export const IPUMS_DATASET = {
   },
   cohorts: IPUMS_COHORTS,
   pmfByYear: ipumsPmfByYear,
+}
+
+// Describe the women whose fertility a cohort measures, for the generation
+// diagram. A dataset that documents its own sample (`provenance.sampleShort`)
+// gets that definition, and its `cohort` label is a birth cohort worth naming.
+// Imported data documents neither — its label column is free text — so it gets
+// a neutral description that asserts nothing the file does not support.
+export function describeMothers(dataset, cohort) {
+  const sampleShort = dataset.provenance?.sampleShort
+  if (!sampleShort) return 'women from dataset'
+  return `${sampleShort}${cohort.cohort ? `, born ${cohort.cohort}` : ''}`
 }
 
 // Per-model default parameters for one generation, derived from a cohort.

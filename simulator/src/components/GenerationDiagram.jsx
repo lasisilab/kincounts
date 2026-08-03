@@ -1,20 +1,22 @@
 // Compact diagram clarifying WHOSE distribution the sibling curve describes.
 //
-// The fertility distribution describes the women observed at a census (aged
-// 50–59, completed fertility). The sibling distribution describes a DIFFERENT
-// generation — their children — and is the size-biased transform of fertility.
-// Plotting "sibling mean" against a census year is otherwise easy to misread as
-// siblings measured in that year, which it is not.
-export default function GenerationDiagram({ year, cohort }) {
+// The fertility distribution describes the women observed in a given year. The
+// sibling distribution describes a DIFFERENT generation — their children — and
+// is the size-biased transform of fertility. Plotting "sibling mean" against an
+// observation year is otherwise easy to misread as siblings measured in that
+// year, which it is not.
+//
+// `mothers` describes who the fertility distribution was measured on; it comes
+// from the active dataset (see describeMothers in lib/datasets.js), since only
+// the dataset knows whether it has a documented sample definition.
+export default function GenerationDiagram({ year, mothers }) {
   return (
     <div className="gen-diagram">
       <div className="gen-diagram-row">
         <div className="gen-diagram-node mothers">
           <span className="gen-diagram-tag">Observed at {year}</span>
           <span className="gen-diagram-title">Mothers</span>
-          <span className="gen-diagram-sub">
-            women aged 50–59{cohort ? `, born ${cohort}` : ''}
-          </span>
+          <span className="gen-diagram-sub">{mothers}</span>
           <span className="gen-diagram-metric">completed fertility = X</span>
         </div>
 
