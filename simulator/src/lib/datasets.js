@@ -51,12 +51,21 @@ export const IPUMS_DATASET = {
 // Describe the women whose fertility a cohort measures, for the generation
 // diagram. A dataset that documents its own sample (`provenance.sampleShort`)
 // gets that definition, and its `cohort` label is a birth cohort worth naming.
-// Imported data documents neither — its label column is free text — so it gets
-// a neutral description that asserts nothing the file does not support.
+//
+// Imported data documents neither: its label column is free text that may be a
+// real cohort ("Born 1920s Rural Cohort") or a bare parameter ("θ = 3.0"), and
+// nothing distinguishes them. So the label is shown parenthetically rather than
+// read into the sentence — it stays the user's own words without the diagram
+// asserting what they mean.
 export function describeMothers(dataset, cohort) {
   const sampleShort = dataset.provenance?.sampleShort
-  if (!sampleShort) return 'women from dataset'
-  return `${sampleShort}${cohort.cohort ? `, born ${cohort.cohort}` : ''}`
+  if (sampleShort) {
+    return `${sampleShort}${cohort.cohort ? `, born ${cohort.cohort}` : ''}`
+  }
+  // A CSV with no label column falls back to the year as its label, which the
+  // diagram already shows as "Observed at {year}" — don't repeat it.
+  const label = cohort.cohort && cohort.cohort !== String(cohort.year) ? cohort.cohort : null
+  return label ? `women from dataset (${label})` : 'women from dataset'
 }
 
 // Per-model default parameters for one generation, derived from a cohort.
