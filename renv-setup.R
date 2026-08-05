@@ -1,8 +1,7 @@
-# Install R packages required by the analysis notebooks, helper scripts,
-# and optional legacy Shiny app.
+# Install R packages required by the analysis notebooks and helper scripts.
 #
-# This list is derived from explicit library()/pkg:: usage in analysis/*.qmd,
-# code/*.R, and app/*.R files.
+# This list is derived from explicit library()/pkg:: usage in analysis/*.qmd
+# and code/*.R files.
 required <- c(
   "ipumsr",
   "dplyr",
@@ -19,9 +18,6 @@ required <- c(
   "broom",
   "viridisLite",
   "quarto",
-  "shiny",
-  "bslib",
-  "DT",
   "rlang",
   "here"
 )

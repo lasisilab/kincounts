@@ -36,11 +36,10 @@ The models use a zero-inflated negative binomial (ZINB) distribution to capture 
 - `analysis/`: Quarto analysis pages (methods, model fitting, simulation)
 - `simulator/`: React + Vite interactive simulator (deployed to Vercel)
 - `code/`: utility scripts (including the generator that keeps the simulator in sync with the analysis)
-- `app/`: legacy R/Shiny app (local use only)
 - `data/`: raw (local-only) and processed (shareable) data
 - `docs/`: generated website files
 - `output/`: analysis outputs
 
 ## Getting Started
 
-Explore the analyses using the navigation bar above, or open the interactive simulator. A legacy Shiny app is also available for local use (`shiny::runApp("app/app.R")`).
+Explore the analyses using the navigation bar above, or open the interactive simulator.
