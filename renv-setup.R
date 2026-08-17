@@ -18,8 +18,7 @@ required <- c(
   "broom",
   "viridisLite",
   "quarto",
-  "rlang",
-  "here"
+  "rlang"
 )
 
 installed <- rownames(installed.packages())
