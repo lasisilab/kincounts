@@ -36,7 +36,6 @@ This project uses:
 - R for statistical computing, with `pscl` for zero-inflated models and `ggplot2` for visualization
 - Quarto for the methods and analysis website
 - React, Vite, and Recharts for the interactive [Kincounts simulator](https://kincounts.vercel.app/) (deployed on Vercel)
-- A legacy Shiny app, kept for local use
 
 ## Authors
 

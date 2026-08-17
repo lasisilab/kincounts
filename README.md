@@ -8,7 +8,6 @@ This repository includes:
 - An interactive **Kincounts simulator** (React + Vite), deployed on Vercel, with two parts: an empirical **Fertility Fit** view and a **Simulator** for kin counts
 - A data folder that keeps restricted raw IPUMS extracts separate from shareable processed summaries
 - Output folders with generated files
-- A legacy R/Shiny app (kept for local use; the React simulator is the primary interactive tool)
 
 ## Project layout
 
@@ -16,7 +15,6 @@ This repository includes:
 - [analysis](analysis): analysis pages and supporting files (including the IPUMS preprocessing methods page)
 - [simulator](simulator): React + Vite interactive simulator (deployed to Vercel)
 - [code](code): utility scripts, including `generate_empirical_data.R`, which syncs the simulator's empirical parameters from the analysis outputs
-- [app](app): legacy R/Shiny app (local use only)
 - [data](data): raw and processed data; `data/raw/` is local-only, while `data/processed/` contains shareable aggregate summaries
 - [output](output): generated outputs from analyses/simulations
 - [docs](docs): rendered site output
@@ -86,15 +84,6 @@ npm run build   # outputs to simulator/dist
 Vercel is configured with the project **Root Directory** set to `simulator` (so it picks up `simulator/vercel.json`, runs `npm install`, then `npm run build`).
 
 Live app: <https://kincounts.vercel.app/>
-
-## Run the legacy Shiny app (optional)
-
-The React simulator is the primary interactive tool. An earlier R/Shiny app is kept for local use. To run it, install its dependencies and launch from R:
-
-```r
-install.packages(c("shiny", "bslib", "DT"), repos = "https://cloud.r-project.org")
-shiny::runApp("app/app.R")
-```
 
 ## Notes
 

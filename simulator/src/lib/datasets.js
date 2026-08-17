@@ -35,6 +35,9 @@ export const IPUMS_DATASET = {
     source: 'IPUMS USA (Ruggles et al.), decennial census microdata',
     variable: 'CHBORN — children ever born (excludes stillbirths, adopted, and stepchildren)',
     sample: 'Women aged 50–59 at each census, 1950–1990 — chosen to capture completed fertility while limiting mortality selection',
+    // Short form of `sample` for inline use in the generation diagram. Only
+    // datasets that know their own sample definition supply this.
+    sampleShort: 'women aged 50–59',
     cohorts: 'Decade birth cohorts, 1891–1940',
     caveat: 'In the earliest censuses the children-ever-born question covered only ever-married women (1950–1960). Early-cohort fertility therefore excludes never-married mothers; see the methods page.',
     // Rendered Quarto methods page (GitHub Pages). Update if the Pages URL differs.
@@ -43,6 +46,26 @@ export const IPUMS_DATASET = {
   },
   cohorts: IPUMS_COHORTS,
   pmfByYear: ipumsPmfByYear,
+}
+
+// Describe the women whose fertility a cohort measures, for the generation
+// diagram. A dataset that documents its own sample (`provenance.sampleShort`)
+// gets that definition, and its `cohort` label is a birth cohort worth naming.
+//
+// Imported data documents neither: its label column is free text that may be a
+// real cohort ("Born 1920s Rural Cohort") or a bare parameter ("θ = 3.0"), and
+// nothing distinguishes them. So the label is shown parenthetically rather than
+// read into the sentence — it stays the user's own words without the diagram
+// asserting what they mean.
+export function describeMothers(dataset, cohort) {
+  const sampleShort = dataset.provenance?.sampleShort
+  if (sampleShort) {
+    return `${sampleShort}${cohort.cohort ? `, born ${cohort.cohort}` : ''}`
+  }
+  // A CSV with no label column falls back to the year as its label, which the
+  // diagram already shows as "Observed at {year}" — don't repeat it.
+  const label = cohort.cohort && cohort.cohort !== String(cohort.year) ? cohort.cohort : null
+  return label ? `women from dataset (${label})` : 'women from dataset'
 }
 
 // Per-model default parameters for one generation, derived from a cohort.
